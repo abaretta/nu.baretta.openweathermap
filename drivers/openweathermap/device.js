@@ -72,16 +72,18 @@ class openweathermap extends Homey.Device {
 
     onDeleted() {
             let id = this.getData().id;
+            let device_data = this.getData();
             this.log('device deleted:', id);
-            var name = "openweathermap" + id + "123";
-            var cronName = name.toLowerCase();
-            Homey.ManagerCron.unregisterTask(cronName, function(err, success) {});
+            let name = device_data.name + device_data.id;
+            let cronName = name.toLowerCase();
             Homey.ManagerCron.unregisterAllTasks(function(err, success) {});
+           // Homey.ManagerCron.unregisterTask(cronName, function(err, success) {});
         } // end onDeleted
 
 
     pollOpenWeatherMap(device_data) {
         let device = Homey.ManagerDrivers.getDriver('openweathermap').getDevice(this.getData());
+        let id = this.getData().id; 
         console.log("polling weather...");
         var APIKey = device_data.APIKey;
         var language = device_data.language;
@@ -97,7 +99,7 @@ class openweathermap extends Homey.Device {
         weather.setCoordinate(lat, lon);
 
         weather.getAllWeather(function(err, data) {
-            console.log(data);
+            //console.log(data);
             var temp = data.main.temp
             var hum = data.main.humidity
             var pressure = data.main.pressure
@@ -117,7 +119,6 @@ class openweathermap extends Homey.Device {
             device.setCapabilityValue('description', description)
 
         });
-
     }
 
     onCapabilityTemp(value, opts, callback) {
