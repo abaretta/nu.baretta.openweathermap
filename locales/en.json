@@ -1,0 +1,16 @@
+{
+	"pair": {
+		"start": {
+      "title": "Setup OpenWeatherMap",
+      "intro": "Enter your API key and a name.",
+			"error": "An error has occurred.",
+      "required": "API key is a required value.",
+      "updatefrequency": "Enter the update frequency:",
+      "geolocation": "Use Homey's location:",
+      "unit": "Use imperial units:",
+      "language": "Select language:",
+      "deviceName": "Device name:",
+      "saveSettings": "Save settings"
+		}
+  }
+}

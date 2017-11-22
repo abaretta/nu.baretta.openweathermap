@@ -1,0 +1,17 @@
+{
+	"pair": {
+		"start": {
+      "title": "Setup OpenWeatherMap",
+      "intro": "Voer de OpenWeatherMap API key in en een naam:",
+			"error": "An error has occurred.",
+      "apiKey": "API key:",
+      "required": "API key is een vereist veld",
+      "updatefrequency": "Voer de update frequentie in:",
+      "geolocation": "Gebruik Homey's locatie:",
+      "unit": "Selecteer voor imperiale eenheden ipv. metrisch:",
+      "language": "Selecteer taal:",
+      "deviceName": "Device name:",
+      "saveSettings": "Instellingen opslaan"
+		}
+  }
+}
