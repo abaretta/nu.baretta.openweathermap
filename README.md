@@ -2,9 +2,9 @@
 
 This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows.
 
-The app is based on the openweather-apis. 
+The app is based on 'openweather-apis' . 
 
-Current fully supported capabilities in flows and the mobile interface:
+Current fully supported capabilities in flow (triggers) and the mobile interface:
 
 - temperature
 - humidity
@@ -18,3 +18,5 @@ Only supported in the mobile interface:
 - cloudcover
 - weather description
 - visibility
+
+Forecast capabilities will be added in a later version.
