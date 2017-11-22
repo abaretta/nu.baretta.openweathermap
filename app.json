@@ -20,6 +20,10 @@
 			"klimaat"
 		]
 	},
+        "images":{
+           "large":"./assets/images/large.png",
+           "small":"./assets/images/small.png"
+        },
 	"category": "internet",
 	"version": "0.0.1",
 	"compatibility": ">=1.5.0",
@@ -91,8 +95,8 @@
 			"nl": "OpenWeatherMap Driver"
 		},
 		"images": {
-			"large": "/drivers/openweathermap/assets/images/large.png",
-			"small": "/drivers/openweathermap/assets/images/small.png"
+			"large": "/drivers/openweathermap/assets/images/large.jpg",
+			"small": "/drivers/openweathermap/assets/images/small.jpg"
 		},
 		"class": "sensor",
 		"capabilities": [
