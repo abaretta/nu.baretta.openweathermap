@@ -90,7 +90,8 @@ class openweathermap extends Homey.Device {
         var lat = device_data.lat;
         var lon = device_data.lon;
         weather.setAPPID(APIKey);
-        weather.setLang(language);
+        //weather.setLang(language);
+        weather.setLang('nl');
         weather.setUnits('metric');
         //weather.setCity('tilburg');
         weather.setCoordinate(lat, lon);
