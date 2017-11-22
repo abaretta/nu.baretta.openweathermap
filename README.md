@@ -4,8 +4,12 @@ This app allows you to poll the OpenWeatherMap API for localised weather data an
 
 The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://github.com/CICCIOSGAMINO/openweather-apis. 
 
+# Screenshots
+The mobile interface looks as follows:
 ![](https://drive.google.com/uc?id=1hUEi4D0QGifNUfk5uqPaIDbdZuvmlZci)
+
 ![](https://drive.google.com/uc?id=1rfCh8ZXmo3WBmkYD-RPTQgHEgePtN3rK)
+
 ![](https://drive.google.com/uc?id=1k25X5gkiGLikZThAHJvAK_pb7h_dOmA6)
 
 # Features
