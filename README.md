@@ -6,6 +6,7 @@ The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://
 
 # Screenshots
 The mobile interface looks as follows:
+
 ![](https://drive.google.com/uc?id=1hUEi4D0QGifNUfk5uqPaIDbdZuvmlZci)
 
 ![](https://drive.google.com/uc?id=1rfCh8ZXmo3WBmkYD-RPTQgHEgePtN3rK)
