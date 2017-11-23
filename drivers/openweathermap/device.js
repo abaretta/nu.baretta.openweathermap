@@ -105,7 +105,7 @@ class openweathermap extends Homey.Device {
             var hum = data.main.humidity
             var pressure = data.main.pressure
             if(data.rain){
-              console(data.rain)
+              console.log(data.rain)
               var rain3h = data.rain;
               var rain = Math.round(rain3h['3h'] / 3);
             }
