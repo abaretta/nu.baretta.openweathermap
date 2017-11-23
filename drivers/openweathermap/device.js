@@ -37,6 +37,7 @@ class openweathermap extends Homey.Device {
             this.registerCapabilityListener('measure_temperature', this.onCapabilityTemp.bind(this));
             this.registerCapabilityListener('measure_humidity', this.onCapabilityHumidity.bind(this));
             this.registerCapabilityListener('measure_pressure', this.onCapabilityPressure.bind(this));
+            this.registerCapabilityListener('measure_rain', this.onCapabilityRain.bind(this));
             this.registerCapabilityListener('measure_wind_strength', this.onCapabilityWindSpeed.bind(this));
             this.registerCapabilityListener('measure_wind_angle', this.onCapabilityWindAngle.bind(this));
             this.registerCapabilityListener('measure_cloudiness', this.onCapabilityCloudCover.bind(this));
@@ -103,7 +104,17 @@ class openweathermap extends Homey.Device {
             var temp = data.main.temp
             var hum = data.main.humidity
             var pressure = data.main.pressure
-            var windstrength = data.wind.speed
+            if(data.rain){
+              console(data.rain)
+              var rain3h = data.rain;
+              var rain = Math.round(rain3h['3h'] / 3);
+            }
+            else {
+              var rain = 0
+            }
+
+            // convert from m/s to km/h
+            var windstrength = ( 3.6 * data.wind.speed)
             var windangle = data.wind.deg
             var cloudiness = data.clouds.all
             var visibility = data.visibility
@@ -112,6 +123,7 @@ class openweathermap extends Homey.Device {
             device.setCapabilityValue('measure_temperature', temp)
             device.setCapabilityValue('measure_humidity', hum)
             device.setCapabilityValue('measure_pressure', pressure)
+            device.setCapabilityValue('measure_rain', rain)
             device.setCapabilityValue('measure_wind_strength', windstrength)
             device.setCapabilityValue('measure_wind_angle', windangle)
             device.setCapabilityValue('measure_cloudiness', cloudiness)
@@ -131,6 +143,10 @@ class openweathermap extends Homey.Device {
 
     onCapabilityPressure(value, opts, callback) {
         callback(err, pressure);
+    }
+
+    onCapabilityRain(value, opts, callback) {
+        callback(err, rain);
     }
 
     onCapabilityWindSpeed(value, opts, callback) {
