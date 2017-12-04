@@ -23,7 +23,7 @@ class openweathermap extends Homey.Device {
         let lon = ManagerCloud.getLongitude();
         let language = Homey.ManagerI18n.getLanguage();
         let units = Homey.ManagerI18n.getUnits();
-        let interval = 10;
+        let interval = 60;
         console.log("language and units: ");
         console.log(language);
         console.log(units);

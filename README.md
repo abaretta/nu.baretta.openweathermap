@@ -1,6 +1,6 @@
 # OpenWeatherMap-app for Homey
 
-This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows.
+This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. Currently the app only includes current weatherconditions, forecasts will be added, as well as flow conditions.
 
 The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://github.com/CICCIOSGAMINO/openweather-apis. 
 
