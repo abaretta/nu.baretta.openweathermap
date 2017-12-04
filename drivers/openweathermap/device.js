@@ -4,132 +4,141 @@
 const Homey = require('homey');
 const weather = require('index.js');
 
-//var devices = [];
-
 class openweathermap extends Homey.Device {
 
+
     onInit() {
-            this.log('device init');
-            console.dir(this.getSettings()); // for debugging
-            console.dir(this.getData()); // for debugging
-            this.log('name: ', this.getName());
-            this.log('class: ', this.getClass());
+        this.log('device init');
+        console.dir("getSettings: "); // for debugging
+        // console.dir(this.getSettings()); // for debugging
+        // console.dir("getData: "); // for debugging
+        // console.dir(this.getData()); // for debugging
+        this.log('name: ', this.getName());
+        this.log('class: ', this.getClass());
+        let id = this.getData().id;
+        let name = this.getName();
+        let settings = this.getSettings();
+        let ManagerCloud = Homey.ManagerGeolocation;
+        let lat = ManagerCloud.getLatitude();
+        let lon = ManagerCloud.getLongitude();
+        let language = Homey.ManagerI18n.getLanguage();
+        let units = Homey.ManagerI18n.getUnits();
+        let interval = 10;
+        console.log("language and units: ");
+        console.log(language);
+        console.log(units);
+        settings["lat"] = lat;
+        settings["lon"] = lon;
+        settings["units"] = units;
+        settings["language"] = language;
+        //console.dir(this.getSettings()); // for debugging
 
-            //let freq = this.getData().updateFrequency;
-            // let id = this.getData().id;
-            //this.log( 'id: ', id );
-            let device_data = this.getData();
-            this.log('device_data.id: ', device_data.id);
-            let freq = device_data.updateFrequency;
-            this.log('updateFrequency: ', freq);
+        let device_data = [{
+            data: {
+                id: id
+            },
+            name: name,
+            settings: settings,
+        }];
+        //this.log("device_data on init: ");
+        //this.log(device_data);
 
-            let id = this.getData().id;
-            let ManagerCloud = Homey.ManagerGeolocation;
-            let lat = ManagerCloud.getLatitude();
-            let lon = ManagerCloud.getLongitude();
-            let name = device_data.name + device_data.id;
-            let cronName = name.toLowerCase();
+        // register capability listeners
+        this.registerCapabilityListener('measure_temperature', this.onCapabilityTemp.bind(this));
+        this.registerCapabilityListener('measure_humidity', this.onCapabilityHumidity.bind(this));
+        this.registerCapabilityListener('measure_pressure', this.onCapabilityPressure.bind(this));
+        this.registerCapabilityListener('measure_rain', this.onCapabilityRain.bind(this));
+        this.registerCapabilityListener('measure_wind_strength', this.onCapabilityWindSpeed.bind(this));
+        this.registerCapabilityListener('measure_wind_angle', this.onCapabilityWindAngle.bind(this));
+        this.registerCapabilityListener('measure_cloudiness', this.onCapabilityCloudCover.bind(this));
+        this.registerCapabilityListener('measure_visibility', this.onCapabilityVisibility.bind(this));
+        this.registerCapabilityListener('description', this.onCapabilityDescription.bind(this));
 
-            device_data.lat = lat;
-            device_data.lon = lon;
 
-            // register capability listeners
-            this.registerCapabilityListener('measure_temperature', this.onCapabilityTemp.bind(this));
-            this.registerCapabilityListener('measure_humidity', this.onCapabilityHumidity.bind(this));
-            this.registerCapabilityListener('measure_pressure', this.onCapabilityPressure.bind(this));
-            this.registerCapabilityListener('measure_rain', this.onCapabilityRain.bind(this));
-            this.registerCapabilityListener('measure_wind_strength', this.onCapabilityWindSpeed.bind(this));
-            this.registerCapabilityListener('measure_wind_angle', this.onCapabilityWindAngle.bind(this));
-            this.registerCapabilityListener('measure_cloudiness', this.onCapabilityCloudCover.bind(this));
-            this.registerCapabilityListener('measure_visibility', this.onCapabilityVisibility.bind(this));
-            this.registerCapabilityListener('description', this.onCapabilityDescription.bind(this));
+        this.pollWeather(interval, settings);
 
-            console.log("cronName:" + cronName);
-            var interval = Math.round(this.getData().updateFrequency / 60);
-
-            if (Homey.ManagerCron.getTask("cronName")) {
-                console.log("Task is already registered, unregister: " + cronName);
-                Homey.ManagerCron.unregisterTask("cronName");
-            }
-
-            Homey.ManagerCron.registerTask("cronName", "30 * * * * *", device_data)
-                .then(task => {
-                    task.on('run', () => this.pollOpenWeatherMap(device_data));
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-
-            // flow conditions
-            //new Homey.FlowCardCondition(id)
-
-        } // end onInit
+    } // end onInit
 
     onAdded() {
-            let id = this.getData().id;
-            this.log('device added: ', id);
+        let id = this.getData().id;
+        this.log('device added: ', id);
 
-        } // end onAdded
+    } // end onAdded
 
     onDeleted() {
-            let id = this.getData().id;
-            let device_data = this.getData();
-            this.log('device deleted:', id);
-            let name = device_data.name + device_data.id;
-            let cronName = name.toLowerCase();
-            Homey.ManagerCron.unregisterAllTasks(function(err, success) {});
-           // Homey.ManagerCron.unregisterTask(cronName, function(err, success) {});
-        } // end onDeleted
+        clearInterval(this.pollingInterval);
+        let id = this.getData().id;
+        //  let device_data = this.getData();
+        this.log('device deleted:', id);
+    } // end onDeleted
 
+    pollWeather(interval, settings) {
+        clearInterval(this.pollingInterval);
+        this.pollingInterval = setInterval(() => {
+            this.pollOpenWeatherMap(settings)
+        }, 1000 * interval);
+    }
 
-    pollOpenWeatherMap(device_data) {
-        let device = Homey.ManagerDrivers.getDriver('openweathermap').getDevice(this.getData());
-        let id = this.getData().id; 
-        console.log("polling weather...");
-        var APIKey = device_data.APIKey;
-        var language = device_data.language;
-        var GEOlocationCity = device_data.GEOlocationCity;
-        var GEOlocationZip = device_data.GEOlocationZip;
-        var lat = device_data.lat;
-        var lon = device_data.lon;
-        weather.setAPPID(APIKey);
-        //weather.setLang(language);
-        weather.setLang('nl');
-        weather.setUnits('metric');
-        //weather.setCity('tilburg');
-        weather.setCoordinate(lat, lon);
+    pollOpenWeatherMap(settings) {
+        this.log("polling weather...");
 
-        weather.getAllWeather(function(err, data) {
-            //console.log(data);
-            var temp = data.main.temp
-            var hum = data.main.humidity
-            var pressure = data.main.pressure
-            if(data.rain){
-              var rain3h = data.rain;
-              var rain = Math.round(rain3h['3h'] / 3);
-            }
-            else {
-              var rain = 0
-            }
+        getURL(settings).then(url => {
+                return getWeatherData(url);
+            })
+            .then(data => {
+               // this.log(data);
 
-            // convert from m/s to km/h
-            var windstrength = ( 3.6 * data.wind.speed)
-            var windangle = data.wind.deg
-            var cloudiness = data.clouds.all
-            var visibility = data.visibility
-            var description = data.weather[0].description
+                var temp = data.temp
+                var hum = data.humidity
+                var pressure = data.pressure
+                var rain = data.rain
+                // convert from m/s to km/h
+                var windstrength = (3.6 * data.windspeed)
+                var windangle = data.windangle
+                var cloudiness = data.clouds
+                var visibility = data.visibility
+                var description = data.description
 
-            device.setCapabilityValue('measure_temperature', temp)
-            device.setCapabilityValue('measure_humidity', hum)
-            device.setCapabilityValue('measure_pressure', pressure)
-            device.setCapabilityValue('measure_rain', rain)
-            device.setCapabilityValue('measure_wind_strength', windstrength)
-            device.setCapabilityValue('measure_wind_angle', windangle)
-            device.setCapabilityValue('measure_cloudiness', cloudiness)
-            device.setCapabilityValue('measure_visibility', visibility)
-            device.setCapabilityValue('description', description)
+                this.setCapabilityValue('measure_temperature', temp)
+                this.setCapabilityValue('measure_humidity', hum)
+                this.setCapabilityValue('measure_pressure', pressure)
+                this.setCapabilityValue('measure_rain', rain)
+                this.setCapabilityValue('measure_wind_strength', windstrength)
+                this.setCapabilityValue('measure_wind_angle', windangle)
+                this.setCapabilityValue('measure_cloudiness', cloudiness)
+                this.setCapabilityValue('measure_visibility', visibility)
+                this.setCapabilityValue('description', description)
+            })
+            .catch(error => {
+                this.log(error);
+            });
 
-        });
+        function getWeatherData(url) {
+            return new Promise((resolve, reject) => {
+                weather.getURLJSON(url,
+                    (error, smart) => {
+                        if (smart) {
+                            resolve(smart);
+                        } else {
+                            reject(error);
+                        }
+                    });
+            });
+        }
+
+        function getURL(settings) {
+            return new Promise((resolve, reject) => {
+                weather.getCoordinateURL(settings,
+                    (error, url) => {
+                        if (url) {
+                            resolve(url);
+                        } else {
+                            reject(error);
+                        }
+                    });
+            });
+        }
+
     }
 
     onCapabilityTemp(value, opts, callback) {
