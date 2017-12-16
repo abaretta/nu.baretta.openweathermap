@@ -8,198 +8,341 @@ class openweathermap extends Homey.Device {
 
 
     onInit() {
-        this.log('device init');
-        console.dir("getSettings: "); // for debugging
-        // console.dir(this.getSettings()); // for debugging
-        // console.dir("getData: "); // for debugging
-        // console.dir(this.getData()); // for debugging
-        this.log('name: ', this.getName());
-        this.log('class: ', this.getClass());
-        let id = this.getData().id;
-        let name = this.getName();
-        let settings = this.getSettings();
-        let ManagerCloud = Homey.ManagerGeolocation;
-        let lat = ManagerCloud.getLatitude();
-        let lon = ManagerCloud.getLongitude();
-        let language = Homey.ManagerI18n.getLanguage();
-        let units = Homey.ManagerI18n.getUnits();
-        let interval = 60;
-        console.log("language and units: ");
-        console.log(language);
-        console.log(units);
-        settings["lat"] = lat;
-        settings["lon"] = lon;
-        settings["units"] = units;
-        settings["language"] = language;
-        //console.dir(this.getSettings()); // for debugging
+            this.log('device init');
 
-        let device_data = [{
-            data: {
-                id: id
-            },
-            name: name,
-            settings: settings,
-        }];
-        //this.log("device_data on init: ");
-        //this.log(device_data);
+            console.dir("getSettings: "); // for debugging
+            console.dir(this.getSettings()); // for debugging
+            console.dir("getData: "); // for debugging
+            console.dir(this.getData()); // for debugging
 
-        // register capability listeners
-        this.registerCapabilityListener('measure_temperature', this.onCapabilityTemp.bind(this));
-        this.registerCapabilityListener('measure_humidity', this.onCapabilityHumidity.bind(this));
-        this.registerCapabilityListener('measure_pressure', this.onCapabilityPressure.bind(this));
-        this.registerCapabilityListener('measure_rain', this.onCapabilityRain.bind(this));
-        this.registerCapabilityListener('measure_wind_strength', this.onCapabilityWindSpeed.bind(this));
-        this.registerCapabilityListener('measure_wind_angle', this.onCapabilityWindAngle.bind(this));
-        this.registerCapabilityListener('measure_cloudiness', this.onCapabilityCloudCover.bind(this));
-        this.registerCapabilityListener('measure_visibility', this.onCapabilityVisibility.bind(this));
-        this.registerCapabilityListener('description', this.onCapabilityDescription.bind(this));
+            let settings = this.getSettings();
+            let intervalCurrent = 30;
+            let intervalHourly = 300;
+            let forecastInterval = this.getSetting('forecastInterval') || 0;
+            let mobile_display = this.getSetting('mobile_display') || "current";
 
+            settings["lat"] = Homey.ManagerGeolocation.getLatitude();
+            settings["lon"] = Homey.ManagerGeolocation.getLongitude();
+            settings["units"] = Homey.ManagerI18n.getUnits();
+            settings["language"] = Homey.ManagerI18n.getLanguage();
+            settings["intervalCurrent"] = intervalCurrent;
+            settings["intervalHourly"] = intervalHourly;
+            settings["forecastInterval"] = forecastInterval;
+            settings["mobile_display"] = mobile_display;
+            // updating settings object for settings dialogue
+            this.setSettings({
+                    language: Homey.ManagerI18n.getLanguage(),
+                    units: Homey.ManagerI18n.getUnits(),
+                    lat: Homey.ManagerGeolocation.getLatitude(),
+                    lon: Homey.ManagerGeolocation.getLongitude(),
+                    intervalCurrent: intervalCurrent,
+                    intervalHourly: intervalHourly,
+                    forecastInterval: forecastInterval,
+                    mobile_display: mobile_display,
+                })
+                .then(this.log)
+                .catch(this.error)
 
-        this.pollWeather(interval, settings);
+            if (settings.mobile_display == "forecast") {
+                this.pollWeatherHourly(settings);
+            } else if (settings.mobile_display == "current") {
+                this.pollWeatherCurrent(settings);
+            }
 
-    } // end onInit
+        } // end onInit
 
     onAdded() {
-        let id = this.getData().id;
-        this.log('device added: ', id);
+            let id = this.getData().id;
+            this.log('device added: ', id);
 
-    } // end onAdded
+        } // end onAdded
 
     onDeleted() {
-        clearInterval(this.pollingInterval);
-        let id = this.getData().id;
-        //  let device_data = this.getData();
-        this.log('device deleted:', id);
-    } // end onDeleted
 
-    pollWeather(interval, settings) {
-        clearInterval(this.pollingInterval);
+            let id = this.getData().id;
+
+
+            if (this.getSetting('mobile_display') == "forecast") {
+                clearInterval(this.getSetting('intervalHourly'));
+            } else if (this.getSettings('mobile_display') == "current") {
+                clearInterval(this.getSetting('intervalCurrent'));
+            }
+
+            this.log('device deleted:', id);
+
+        } // end onDeleted
+
+    pollWeatherCurrent(settings) {
+        //run once, then at interval
+        clearInterval(settings.intervalCurrent);
+        this.pollOpenWeatherMapCurrent(settings)
         this.pollingInterval = setInterval(() => {
-            this.pollOpenWeatherMap(settings)
-        }, 1000 * interval);
+            this.pollOpenWeatherMapCurrent(settings)
+        }, 1000 * settings.intervalCurrent);
     }
 
-    pollOpenWeatherMap(settings) {
-        this.log("polling weather...");
+    pollWeatherHourly(settings) {
+        //run once, then at interval
+        clearInterval(settings.intervalHourly);
+        this.pollOpenWeatherMapHourly(settings)
+        this.pollingInterval = setInterval(() => {
+            this.pollOpenWeatherMapHourly(settings)
+        }, 1000 * settings.intervalHourly);
+    }
 
-        getURL(settings).then(url => {
-                return getWeatherData(url);
+    pollOpenWeatherMapCurrent(settings) {
+        this.log("polling weather..." + settings.GEOlocation);
+
+        weather.getURLCurrent(settings).then(url => {
+                return weather.getWeatherData(url);
             })
             .then(data => {
-               // this.log(data);
+                //   this.log(settings);
+                //   this.log(data);
 
-                var temp = data.temp
-                var hum = data.humidity
-                var pressure = data.pressure
-                var rain = data.rain
+                var GEOlocation = data.name + ", " + data.sys.country
+
+                this.setSettings({
+                        GEOlocation: GEOlocation,
+                    })
+                    .then(this.log)
+                    .catch(this.error)
+
+                var temp = data.main.temp
+                var temp_min = data.main.temp_min
+                var temp_max = data.main.temp_max
+                var hum = data.main.humidity
+                var pressure = data.main.pressure
+                    // return the rain in mm if present
+                if (data.precipitation) {
+                    var rain = data.precipitation.value;
+                } else {
+                    var rain = 0;
+                }
+
+                if (data.rain) {
+                    var rain3h = data.rain;
+                    //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
+                    var rain = rain3h['3h'] / 3;
+                }
+                if (data.wind.speed) {
+                    var windstrength = 3.6 * data.wind.speed;
+                } else {
+                    var windstrength = {};
+                }
+
+                if (data.wind.deg) {
+                    var windangle = data.wind.deg;
+                } else {
+                    var windangle = null;
+                }
                 // convert from m/s to km/h
-                var windstrength = (3.6 * data.windspeed)
-                var windangle = data.windangle
-                var cloudiness = data.clouds
+                //var windstrength = (3.6 * data.windspeed)
+                // convert to beaufort and concatenate with wind direction
+                var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
+                    // var windangle = data.windangle
+                var cloudiness = data.clouds.all
                 var visibility = data.visibility
-                var description = data.description
+                var description = data.weather[0].description
 
-                this.setCapabilityValue('measure_temperature', temp)
-                this.setCapabilityValue('measure_humidity', hum)
-                this.setCapabilityValue('measure_pressure', pressure)
-                this.setCapabilityValue('measure_rain', rain)
-                this.setCapabilityValue('measure_wind_strength', windstrength)
-                this.setCapabilityValue('measure_wind_angle', windangle)
-                this.setCapabilityValue('measure_cloudiness', cloudiness)
-                this.setCapabilityValue('measure_visibility', visibility)
-                this.setCapabilityValue('description', description)
+                if (this.getSetting('mobile_display') == "current") {
+
+                    this.setCapabilityValue('measure_temperature', temp)
+                    this.setCapabilityValue('measure_humidity', hum)
+                    this.setCapabilityValue('measure_pressure', pressure)
+                    this.setCapabilityValue('measure_rain', rain)
+                    this.setCapabilityValue('measure_wind_combined', windcombined)
+                    this.setCapabilityValue('measure_wind_strength', windstrength)
+                    this.setCapabilityValue('measure_wind_angle', windangle)
+                    this.setCapabilityValue('measure_cloudiness', cloudiness)
+                    this.setCapabilityValue('measure_visibility', visibility)
+                    this.setCapabilityValue('description', description)
+                }
             })
             .catch(error => {
                 this.log(error);
             });
+    }
 
-        function getWeatherData(url) {
-            return new Promise((resolve, reject) => {
-                weather.getURLJSON(url,
-                    (error, smart) => {
-                        if (smart) {
-                            resolve(smart);
-                        } else {
-                            reject(error);
-                        }
-                    });
+    pollOpenWeatherMapHourly(settings) {
+        this.log("polling weather..." + settings.GEOlocation);
+
+        weather.getURLHourly(settings).then(url => {
+                return weather.getWeatherData(url);
+            })
+            .then(data => {
+                this.log(settings);
+                this.log(data);
+
+                var GEOlocation = data.city.name + ", " + data.city.country
+
+                this.setSettings({
+                        GEOlocation: GEOlocation,
+                    })
+                    .then(this.log)
+                    .catch(this.error)
+
+                var forecastInterval = this.getSetting('forecastInterval');
+                var temp = data.list[forecastInterval].main.temp
+                var temp_min = data.list[forecastInterval].main.temp_min
+                var temp_max = data.list[forecastInterval].main.temp_max
+                var pressure = data.list[forecastInterval].main.pressure
+                var hum = data.list[forecastInterval].main.humidity
+                var cloudiness = data.list[forecastInterval].clouds.all
+                var description = data.list[forecastInterval].weather[0].description
+
+                if (data.list[forecastInterval].precipitation) {
+                    var rain = data.list[forecastInterval].precipitation.value;
+                } else {
+                    var rain = 0;
+                }
+
+                if (data.list[forecastInterval].rain) {
+                    if (data.list[forecastInterval].rain == undefined) {
+                        var rain = 0;
+                    }
+                } else {
+                    var rain3h = data.list[forecastInterval].rain;
+                    //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
+                    var rain = rain3h['3h'] / 3;
+                }
+                if (data.list[forecastInterval].wind.speed) {
+                    var windstrength = 3.6 * data.list[forecastInterval].wind.speed;
+                } else {
+                    var windstrength = {};
+                }
+
+                if (data.list[forecastInterval].wind.deg) {
+                    var windangle = data.list[forecastInterval].wind.deg;
+                } else {
+                    var windangle = null;
+                }
+                var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
+
+/*
+                this.log("forecast interval")
+                this.log(forecastInterval)
+                this.log("temp forecast")
+                this.log(temp)
+                this.log("forecast description")
+                this.log(description)
+                this.log("forecast rain")
+                this.log(rain)
+                this.log("temp_min")
+                this.log(temp_min)
+                this.log("temp_max")
+                this.log(temp_max)
+                this.log("City")
+                this.log(data.city.name)
+                this.log("Country")
+                this.log(data.city.country)
+                this.log("GEOlocation")
+                this.log(GEOlocation)
+                this.log("getSetting(mobile_display)")
+                this.log(this.getSetting('mobile_display')) 
+*/
+
+                if (this.getSetting('mobile_display') == "forecast") {
+
+                    this.setCapabilityValue('measure_temperature', temp)
+                        //  this.setCapabilityValue('measure_temp_min', temp_min)
+                        //  this.setCapabilityValue('measure_temp_max', temp_max)
+                    this.setCapabilityValue('measure_humidity', hum)
+                    this.setCapabilityValue('measure_pressure', pressure)
+                    this.setCapabilityValue('measure_rain', rain)
+                    this.setCapabilityValue('measure_wind_combined', windcombined)
+                    this.setCapabilityValue('measure_wind_strength', windstrength)
+                    this.setCapabilityValue('measure_wind_angle', windangle)
+                    this.setCapabilityValue('measure_cloudiness', cloudiness)
+                        //             this.setCapabilityValue('measure_visibility', visibility)
+                    this.setCapabilityValue('description', description)
+
+                }
+            })
+            .catch(error => {
+                this.log(error);
             });
+    }
+
+    onSettings(settings, newSettingsObj, changedKeysArr, callback) {
+        try {
+            for (var i = 0; i < changedKeysArr.length; i++) {
+                switch (changedKeysArr[i]) {
+                    case 'APIKey':
+                        this.log('APIKey changed to ' + newSettingsObj.APIKey);
+                        settings.APIKey = newSettingsObj.APIKey;
+                        break;
+
+                    case 'GEOlocationCity':
+                        this.log('GEOlocationCity changed to ' + newSettingsObj.GEOlocationCity);
+                        settings.GEOlocationCity = newSettingsObj.GEOlocationCity;
+                        break;
+
+                    case 'GEOlocationZip':
+                        this.log('GEOlocationZip changed to ' + newSettingsObj.GEOlocationZip);
+                        settings.GEOlocationZip = newSettingsObj.GEOlocationZip;
+                        break;
+
+                    case 'language':
+                        this.log('language changed to ' + newSettingsObj.language);
+                        settings.language = newSettingsObj.language;
+                        break;
+
+                    case 'units':
+                        this.log('units changed to ' + newSettingsObj.units);
+                        settings.units = newSettingsObj.units;
+                        break;
+
+                    case 'forecastInterval':
+                        this.log('forecastInterval changed to ' + newSettingsObj.forecastInterval);
+                        settings.forecastInterval = newSettingsObj.forecastInterval;
+                        break;
+
+                    case 'mobile_display':
+                        this.log('mobile_display changed to ' + newSettingsObj.mobile_display);
+                        settings.mobile_display = newSettingsObj.mobile_display;
+                        break;
+
+                    default:
+                        this.log("Key not matched: " + i);
+                }
+                if (newSettingsObj.mobile_display == "forecast") {
+                    clearInterval(settings.intervalCurrent);
+                    this.pollWeatherHourly(settings);
+                } else if (newSettingsObj.mobile_display == "current") {
+                    clearInterval(settings.intervalHourly);
+                    this.pollWeatherCurrent(settings);
+                }
+            }
+            callback(null, true)
+        } catch (error) {
+            callback(error)
         }
+    }
 
-        function getURL(settings) {
-            return new Promise((resolve, reject) => {
-                weather.getCoordinateURL(settings,
-                    (error, url) => {
-                        if (url) {
-                            resolve(url);
-                        } else {
-                            reject(error);
-                        }
-                    });
-            });
+
+
+    beaufortFromKmh(kmh) {
+        var beaufortKmhLimits = [1, 6, 11, 19, 30, 39, 50, 61, 74, 87, 102, 117, 177, 249, 332, 418, 512];
+        // undefined for negative values...
+        if (kmh < 0 || kmh == undefined) return undefined;
+
+        var beaufortNum = beaufortKmhLimits.reduce(function(previousValue, currentValue, index, array) {
+            return previousValue + (kmh > currentValue ? 1 : 0);
+        }, 0);
+        return beaufortNum;
+    }
+
+    degToCompass(settings, num) {
+        while (num < 0) num += 360;
+        while (num >= 360) num -= 360;
+        var val = Math.round((num - 11.25) / 22.5);
+        if (settings['language'] == "nl") {
+            var arr = ["N", "NNO", "NO", "ONO", "O", "OZO", "ZO", "ZZO", "Z", "ZZW", "ZW", "WZW", "W", "WNW", "NW", "NNW"];
+        } else {
+            var arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
         }
-
+        return arr[Math.abs(val)];
     }
-
-    onCapabilityTemp(value, opts, callback) {
-        callback(err, temp);
-    }
-
-    onCapabilityHumidity(value, opts, callback) {
-        callback(err, humidity);
-    }
-
-    onCapabilityPressure(value, opts, callback) {
-        callback(err, pressure);
-    }
-
-    onCapabilityRain(value, opts, callback) {
-        callback(err, rain);
-    }
-
-    onCapabilityWindSpeed(value, opts, callback) {
-        callback(err, windspeed);
-    }
-
-    onCapabilityWindAngle(value, opts, callback) {
-        callback(err, windangle);
-    }
-
-    onCapabilityCloudCover(value, opts, callback) {
-        callback(err, cloudiness);
-    }
-
-    onCapabilityVisibility(value, opts, callback) {
-        callback(err, visibility);
-    }
-
-    onCapabilityDescription(value, opts, callback) {
-        callback(err, description);
-    }
-
-
-    /* function degToCompass(device_data, num) {
-        var val = Math.floor((num / 22.5) + 0.5);
-       if ( device_data.language == "nl") {
-        var arr = ["N", "NNO", "NO", "ONO", "O", "OZO", "ZO", "ZZO", "Z", "ZZW", "ZW", "WZW", "W", "WNW", "NW", "NNW"];
-             }
-        else {
-        var arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
-             }
-        return arr[(val % 16)];
-        } */
-
-    /*function degToCompass(device_data, num) {
-        while( num < 0 ) num += 360 ;
-        while( num >= 360 ) num -= 360 ;
-        val= Math.round( (num -11.25 ) / 22.5 ) ;
-       if ( device_data.language == "nl") {
-        arr=["N","NNO","NO","ONO","O","OZO", "ZO", "ZZO","Z","ZZW","ZW","WZW","W","WNW","NW","NNW"] ;
-        else {
-        arr=["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"] ;
-             }
-        return arr[ Math.abs(val) ] ;
-    } */
-
 }
 module.exports = openweathermap;
