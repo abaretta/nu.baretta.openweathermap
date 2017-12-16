@@ -27,7 +27,7 @@ Only supported in the mobile interface:
 
 - cloudcover
 - weather description
-- visibility
+- visibility (only available in data for current weather conditions)
 
 Forecast capabilities will be added in a later version.
 
