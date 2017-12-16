@@ -278,26 +278,26 @@
 					"id": "mobile_display",
 					"type": "radio",
 					"label": {
-						"en": "Use current or forecast data for mobile interface:",
-						"nl": "Gebruik actuele metingen of voorspelling voor mobiele weergave:"
+						"en": "Use current or forecast data:",
+						"nl": "Gebruik actuele metingen of voorspelling:"
 					},
 					"hint": {
-						"en": "You can choose whether to view the actual or forecast data in the mobile interface.",
-						"nl": "U kunt kiezen voor weergave van actuele (gemeten) data of voorspelde data in de mobiele interface."
+						"en": "You can choose whether to poll the actual weather conditions or the forecast.",
+						"nl": "U kunt kiezen voor weergave van actuele (gemeten) data of voorspelde data."
 					},
 					"value": "mobile_display",
 					"values": [{
 							"id": "current",
 							"label": {
-								"en": "Use current data for mobile interface",
-								"nl": "Gebruik actuele data voor mobiele weergave"
+								"en": "Use current data",
+								"nl": "Gebruik actuele datae"
 							}
 						},
 						{
 							"id": "forecast",
 							"label": {
-								"en": "Use forecast data for mobile interface",
-								"nl": "Gebruik voorspelde data voor mobiele weergave"
+								"en": "Use forecast data",
+								"nl": "Gebruik voorspelde data"
 							}
 						}
 					]
