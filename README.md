@@ -9,9 +9,9 @@ The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://
 # Screenshots
 The mobile interface looks as follows:
 
-<img src="https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv" width="312" height="250">
-<img src="https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA" width="312" height="250">
-<img src="https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV" width="312" height="250">
+<img src="https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv" width="500" height="400">
+<img src="https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA" width="500" height="400">
+<img src="https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV" width="500" height="400">
 
 The pairing view:
 
