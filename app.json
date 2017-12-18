@@ -88,11 +88,7 @@
 			"setable": false,
 			"units": {
 				"en": "C"
-			},
-			"decimals": 2,
-			"min": -999,
-			"max": 999,
-			"step": 0.01
+			}
 		},
 		"measure_temp_max": {
 			"type": "number",
@@ -104,11 +100,7 @@
 			"setable": false,
 			"units": {
 				"en": "C"
-			},
-			"decimals": 2,
-			"min": -999,
-			"max": 999,
-			"step": 0.01
+			}
 		},
 		"measure_wind_combined": {
 			"type": "string",
@@ -127,6 +119,15 @@
 			},
 			"getable": true,
 			"setable": false
+		},
+		"date_txt": {
+			"type": "string",
+			"title": {
+				"en": "Date",
+				"nl": "Datum"
+			},
+			"getable": true,
+			"setable": false
 		}
 	},
 	"drivers": [{
@@ -142,6 +143,8 @@
 		"class": "sensor",
 		"capabilities": [
 			"measure_temperature",
+			"measure_temp_min",
+			"measure_temp_max",
 			"measure_humidity",
 			"measure_pressure",
 			"measure_rain",
@@ -150,178 +153,190 @@
 			"measure_wind_angle",
 			"measure_cloudiness",
 			"measure_visibility",
-			"description"
+			"description",
+			"date_txt"
 		],
 		"pair": [{
-				"id": "pair"
+			"id": "pair"
+		}],
+		"settings": [{
+				"type": "group",
+				"label": {
+					"en": "OpenWeatherMap general settings",
+					"nl": "OpenWeatherMap algemene instellingen"
+				},
+				"children": [{
+						"id": "APIKey",
+						"type": "text",
+						"value": "abcdef0123456789abcdef0123456789",
+						"label": {
+							"en": "OpenWeatherMap API key:",
+							"nl": "OpenWeatherMap API sleutel:"
+						},
+						"hint": {
+							"en": "An API key can be obtained at http://openweathermap.org.",
+							"nl": "Een API sleutel kan op http://openweathermap.org verkregen worden."
+						}
+					},
+					{
+						"id": "GEOlocation",
+						"type": "label",
+						"value": "...pending first data...",
+						"label": {
+							"en": "Current location found by OpenWeatherMap:",
+							"nl": "Huidige door OpenWeatherMap gevonden locatie:"
+						},
+						"hint": {
+							"en": "Note: appears after first polling interval.",
+							"nl": "De locatie verschijnt zodra de eerste data binnen is."
+						}
+					}
+				]
 			},
 			{
-				"id": "list_devices",
-				"template": "list_devices",
-				"navigation": {
-					"next": "add_devices"
-				}
+				"type": "group",
+				"label": {
+					"en": "Optional location settings",
+					"nl": "Optionele locatie instellingen"
+				},
+				"children": [{
+						"id": "GEOlocationCity",
+						"type": "text",
+						"value": "Paris,FR",
+						"label": {
+							"en": "City, countrycode (optional):",
+							"nl": "Stad, landencode (optioneel):"
+						},
+						"hint": {
+							"en": "Optionally the location can be entered by city/country, e.g. Paris,fr.",
+							"nl": "De locatie kan optioneel als stad/land opgegeven worden, bijv. Utrecht,nl."
+						}
+					},
+					{
+						"id": "GEOlocationZip",
+						"type": "text",
+						"value": "94040,us",
+						"label": {
+							"en": "Zip code, countrycode (optional):",
+							"nl": "Postcode, landencode (optioneel):"
+						},
+						"hint": {
+							"en": "Optionally the location can be entered by zip code/country, e.g. 94040,us.",
+							"nl": "De locatie kan optioneel als postcode/land opgegeven worden, bijv. 1234,NL."
+						}
+					}
+                                ]
+                        },
+                        {
+                                "type": "group",
+                                "label": {
+                                        "en": "Data source options: current or forecast",
+                                        "nl": "Brondata opties: actueel of voorspelling"
+                                },
+                                "children": [{
+						"id": "datasource",
+						"type": "radio",
+						"value": "datasource",
+						"label": {
+							"en": "Use current or forecast data:",
+							"nl": "Gebruik actuele metingen of voorspelling:"
+						},
+						"hint": {
+							"en": "You can choose whether to poll the actual weather conditions or the forecast.",
+							"nl": "U kunt kiezen voor weergave van actuele (gemeten) data of voorspelde data."
+						},
+						"values": [{
+								"id": "current",
+								"label": {
+									"en": "Use current data",
+									"nl": "Gebruik actuele data"
+								}
+							},
+							{
+								"id": "forecast",
+								"label": {
+									"en": "Use forecast data",
+									"nl": "Gebruik voorspelde data"
+								}
+							}
+						]
+					},
+					{
+						"id": "forecastInterval",
+						"type": "number",
+						"value": 0,
+						"label": {
+							"en": "Forecast, number of 3-hour intervals ahead:",
+							"nl": "Voorspelling, aantal 3-uur intervallen vooruit:"
+						},
+						"hint": {
+							"en": "You can choose the timeframe for the forecast data in three-hour intervals. Choose '8' for instance to get the forecast for the weather in 24 hours. Choose '0' for data in the current three-hour interval.",
+							"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling in intervallen van drie uur. Kies bijvoorbeeld '8' voor de voorspelling van het weer over 24 uur. Kies '0' voor data in het huidige interval van drie uur."
+						},
+						"attr": {
+							"min": 0,
+							"max": 39
+						}
+					}
+				]
 			},
 			{
-				"id": "add_devices",
-				"template": "add_devices"
+				"type": "group",
+				"label": {
+					"en": "Language/units settings",
+					"nl": "Taal/eenheden instellingen"
+				},
+				"children": [{
+						"id": "language",
+						"type": "dropdown",
+						"value": "en",
+						"label": {
+							"en": "Language of weather description:",
+							"nl": "Taal van weersbeschrijving:"
+						},
+						"values": [{
+								"id": "en",
+								"label": {
+									"en": "English",
+									"nl": "Engels"
+								}
+							},
+							{
+								"id": "nl",
+								"label": {
+									"en": "Dutch",
+									"nl": "Nederlands"
+								}
+							}
+						]
+					},
+					{
+						"id": "units",
+						"type": "dropdown",
+						"value": "metric",
+						"label": {
+							"en": "Units used:",
+							"nl": "Gebruikte eenheden:"
+						},
+						"values": [{
+								"id": "metric",
+								"label": {
+									"en": "Metric",
+									"nl": "Metrisch"
+								}
+							},
+							{
+								"id": "imperial",
+								"label": {
+									"en": "Imperial",
+									"nl": "Imperiaal"
+								}
+							}
+						]
+					}
+				]
 			}
 		],
-		"settings": [{
-			"type": "group",
-			"label": {
-				"en": "OpenWeatherMap settings",
-				"nl": "OpenWeatherMap instellingen"
-			},
-			"children": [{
-					"id": "APIKey",
-					"type": "text",
-					"label": {
-						"en": "OpenWeatherMap API key:",
-						"nl": "OpenWeatherMap API sleutel:"
-					},
-					"hint": {
-						"en": "An API key can be obtained at http://openweathermap.org.",
-						"nl": "Een API sleutel kan op http://openweathermap.org verkregen worden."
-					},
-					"value": "abcdef0123456789abcdef0123456789"
-				},
-				{
-					"id": "GEOlocation",
-					"type": "label",
-					"value": "GEOlocation:",
-					"label": {
-						"en": "Current location found by OpenWeatherMap:",
-						"nl": "Huidige door OpenWeatherMap gevonden locatie:"
-					},
-					"hint": {
-						"en": "Note: appears after first polling interval.",
-						"nl": "De locatie verschijnt zodra de eerste data binnen is."
-					},
-					"value": "...pending first data..."
-				},
-				{
-					"id": "GEOlocationCity",
-					"type": "text",
-					"label": {
-						"en": "Optional: city, countrycode:",
-						"nl": "Optioneel: stad, landencode:"
-					},
-					"hint": {
-						"en": "Optionally the location can be entered by city/country, e.g. Paris,fr.",
-						"nl": "De locatie kan optioneel als stad/land opgegeven worden, bijv. Utrecht,nl."
-					},
-					"value": "Paris,FR"
-				},
-				{
-					"id": "GEOlocationZip",
-					"type": "text",
-					"label": {
-						"en": "Optional: zip code, countrycode:",
-						"nl": "Optioneel: postcode, landencode:"
-					},
-					"hint": {
-						"en": "Optionally the location can be entered by zip code/country, e.g. 94040,us.",
-						"nl": "De locatie kan optioneel als postcode/land opgegeven worden, bijv. 94040,us."
-					},
-					"value": "1234,NL"
-				},
-				{
-					"id": "language",
-					"type": "dropdown",
-					"value": "en",
-					"label": {
-						"en": "Language of weather description:",
-						"nl": "Taal van weersbeschrijving:"
-					},
-					"values": [{
-							"id": "en",
-							"label": {
-								"en": "English",
-								"nl": "Engels"
-							}
-						},
-						{
-							"id": "nl",
-							"label": {
-								"en": "Dutch",
-								"nl": "Nederlands"
-							}
-						}
-					]
-				},
-				{
-					"id": "units",
-					"type": "dropdown",
-					"value": "metric",
-					"label": {
-						"en": "Units used:",
-						"nl": "Gebruikte eenheden:"
-					},
-					"values": [{
-							"id": "metric",
-							"label": {
-								"en": "Metric",
-								"nl": "Metrisch"
-							}
-						},
-						{
-							"id": "imperial",
-							"label": {
-								"en": "Imperial",
-								"nl": "Imperiaal"
-							}
-						}
-					]
-				},
-				{
-					"id": "mobile_display",
-					"type": "radio",
-					"label": {
-						"en": "Use current or forecast data:",
-						"nl": "Gebruik actuele metingen of voorspelling:"
-					},
-					"hint": {
-						"en": "You can choose whether to poll the actual weather conditions or the forecast.",
-						"nl": "U kunt kiezen voor weergave van actuele (gemeten) data of voorspelde data."
-					},
-					"value": "mobile_display",
-					"values": [{
-							"id": "current",
-							"label": {
-								"en": "Use current data",
-								"nl": "Gebruik actuele data"
-							}
-						},
-						{
-							"id": "forecast",
-							"label": {
-								"en": "Use forecast data",
-								"nl": "Gebruik voorspelde data"
-							}
-						}
-					]
-				},
-				{
-					"id": "forecastInterval",
-					"type": "number",
-					"value": "forecastInterval",
-					"label": {
-						"en": "Forecast, number of 3-hour intervals ahead:",
-						"nl": "Voorspelling, aantal 3-uur intervallen vooruit:"
-					},
-					"hint": {
-						"en": "You can choose the timeframe for the forecast data in three-hour intervals. Choose '8' for instance to get the forecast for the weather in 24 hours. Choose '0' for data in the current three-hour interval.",
-						"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling in intervallen van drie uur. Kies bijvoorbeeld '8' voor de voorspelling van het weer over 24 uur. Kies '0' voor data in het huidige interval van drie uur."
-					},
-					"value": 0,
-					"attr": {
-						"min": 0,
-						"max": 39
-					}
-				}
-			]
-		}],
 		"mobile": {
 			"components": [{
 					"id": "icon",
@@ -336,14 +351,16 @@
 						"measure_rain",
 						"measure_pressure",
 						"measure_cloudiness",
-						"description"
+						"description",
+						"date_txt"
 					],
 					"options": {
 						"icons": {
 							"measure_wind_combined": "./drivers/openweathermap/assets/images/wind_angle.svg",
 							"measure_wind_angle": "./drivers/openweathermap/assets/images/wind_angle.svg",
 							"measure_cloudiness": "./drivers/openweathermap/assets/images/clouds.svg",
-							"description": "./drivers/openweathermap/assets/images/description.png"
+							"description": "./drivers/openweathermap/assets/images/description.png",
+							"date_txt": "./drivers/openweathermap/assets/images/description.png"
 						}
 					}
 				}

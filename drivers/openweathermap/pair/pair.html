@@ -16,40 +16,41 @@
   }
 </style>
 <p class="form-group">
-  <label for="address">Give your OpenWeatherMap sensor a name:
+  <label for="name">Give your OpenWeatherMap sensor a name:
   </label>
   <span class="input-wrap">
     <input type="text" id="name" placeholder="Naam" value="" />
   </span>
   <br/>
-  <label for="address">Enter the OpenWeatherMap API key:
+  <label for="apikey">Enter the OpenWeatherMap API key:
   </label>
   <span class="input-wrap">
     <input type="text" id="apiKey" placeholder="abcdef0123456789abcdef0123456789" value="" />
   </span>
   <br/>
   <br/>
-  <label for="address">Use forecast instead of current data:
+  <label for="datasource">Use forecast instead of current data:
   </label>
-  <span class="input-wrap">
-    <input type="checkbox" name="mobile_display" id="mobile_display" value="forecast" />
+  <span class="input-wrap" >
+    <input type="radio" name="datasource" value="current" checked="checked" />Current<br/>
+    <input type="radio" name="datasource" value="forecast" />Forecast<br/>
     <br/>
   </span>
-  <label for="address">Enter number of 3-hour forecast intervals ahead of current time for forecast:
+  <label for="forecastInterval">Enter number of 3-hour forecast intervals ahead of current time for forecast:
   </label>
   <span class="input-wrap">
-    <input type="number" id="forecastInterval" min="0" max="39" value="0" />
+    <input type="number" id="forecastInterval" min="0" max="39" value=0 />
     <br/>
   </span>
   <br/>
   <br/>
-  <label for="address">Optional: enter the location for the weather data, City/countrycode:
+  <label for="geolocationcity">Optional: enter the location for the weather data, City/countrycode:
   </label>
   <span class="input-wrap">
     <input type="text" id="geolocationcity" placeholder="Paris,FR" value="" />
   </span>
   <br/>
-  <label for="address">...or (numeric) zipcode with countrycode:
+  <label for="geolocationzip">...or (numeric) zipcode with countrycode:
   </label>
   <span class="input-wrap">
     <input type="text" id="geolocationzip" placeholder="1234,NL" value="" />
@@ -73,14 +74,26 @@
 <script type="text/javascript">
     $(function() {
         $('#validate').click(function() {
+
+function getRadioVal(radioName) {
+  var rads = document.getElementsByName(radioName);
+
+  for(var rad in rads) {
+    if(rads[rad].checked)
+      return rads[rad].value;
+  }
+
+  return null;
+}
+
             // variables
             var id = Math.round(Math.random() * (100000 - 10000) + 10000);
             var APIKey = document.getElementById('apiKey').value;
             var name = document.getElementById('name').value;
             var GEOlocationCity = document.getElementById('geolocationcity').value;
             var GEOlocationZip = document.getElementById('geolocationzip').value;
-            var mobile_display = document.getElementById('mobile_display').value;
-            var forecastInterval = document.getElementById('forecastInterval').value;
+            var datasource = getRadioVal('datasource');
+            var forecastInterval = Number(document.getElementById('forecastInterval').value);
             // APIkey is required
             if (APIKey == "") {
                 // Give error, required values
@@ -95,7 +108,7 @@
                 APIKey: APIKey,
                 GEOlocationCity: GEOlocationCity,
                 GEOlocationZip: GEOlocationZip,
-                mobile_display: mobile_display,
+                datasource: datasource,
                 forecastInterval: forecastInterval,
             }, function(err, result) {
                 $('.solar-status').removeClass('visible');
@@ -111,7 +124,7 @@
                             APIKey: APIKey,
                             GEOlocationCity: GEOlocationCity,
                             GEOlocationZip: GEOlocationZip,
-                            mobile_display: mobile_display,
+                            datasource: datasource,
                             forecastInterval: forecastInterval
                         }
                     };

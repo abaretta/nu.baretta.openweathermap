@@ -16,10 +16,11 @@ class openweathermap extends Homey.Device {
             console.dir(this.getData()); // for debugging
 
             let settings = this.getSettings();
-            let intervalCurrent = 30;
+            let intervalCurrent = 120;
             let intervalHourly = 300;
             let forecastInterval = this.getSetting('forecastInterval') || 0;
-            let mobile_display = this.getSetting('mobile_display') || "current";
+//            if(forecastInterval == undefined) { forecastInterval = 0; }
+            let datasource = this.getSetting('datasource') || "current";
 
             settings["lat"] = Homey.ManagerGeolocation.getLatitude();
             settings["lon"] = Homey.ManagerGeolocation.getLongitude();
@@ -28,7 +29,7 @@ class openweathermap extends Homey.Device {
             settings["intervalCurrent"] = intervalCurrent;
             settings["intervalHourly"] = intervalHourly;
             settings["forecastInterval"] = forecastInterval;
-            settings["mobile_display"] = mobile_display;
+            settings["datasource"] = datasource;
             // updating settings object for settings dialogue
             this.setSettings({
                     language: Homey.ManagerI18n.getLanguage(),
@@ -38,14 +39,14 @@ class openweathermap extends Homey.Device {
                     intervalCurrent: intervalCurrent,
                     intervalHourly: intervalHourly,
                     forecastInterval: forecastInterval,
-                    mobile_display: mobile_display,
+                    datasource: datasource,
                 })
                 .then(this.log)
                 .catch(this.error)
 
-            if (settings.mobile_display == "forecast") {
+            if (settings.datasource == "forecast") {
                 this.pollWeatherHourly(settings);
-            } else if (settings.mobile_display == "current") {
+            } else if (settings.datasource == "current") {
                 this.pollWeatherCurrent(settings);
             }
 
@@ -62,9 +63,9 @@ class openweathermap extends Homey.Device {
             let id = this.getData().id;
 
 
-            if (this.getSetting('mobile_display') == "forecast") {
+            if (this.getSetting('datasource') == "forecast") {
                 clearInterval(this.getSetting('intervalHourly'));
-            } else if (this.getSettings('mobile_display') == "current") {
+            } else if (this.getSettings('datasource') == "current") {
                 clearInterval(this.getSetting('intervalCurrent'));
             }
 
@@ -126,6 +127,7 @@ class openweathermap extends Homey.Device {
                     var rain = rain3h['3h'] / 3;
                 }
                 if (data.wind.speed) {
+                    // convert from m/s to km/h
                     var windstrength = 3.6 * data.wind.speed;
                 } else {
                     var windstrength = {};
@@ -136,18 +138,24 @@ class openweathermap extends Homey.Device {
                 } else {
                     var windangle = null;
                 }
-                // convert from m/s to km/h
-                //var windstrength = (3.6 * data.windspeed)
-                // convert to beaufort and concatenate with wind direction
+                // convert to beaufort and concatenate in a string with wind direction
                 var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
-                    // var windangle = data.windangle
                 var cloudiness = data.clouds.all
                 var visibility = data.visibility
                 var description = data.weather[0].description
 
-                if (this.getSetting('mobile_display') == "current") {
+                var date_txt = new Date(data.dt * 1e3).toISOString().slice(-24, -5);
+                date_txt = date_txt.replace('T', ' ');
+
+                this.log("Converted date:");
+                this.log(date_txt);
+
+                if (this.getSetting('datasource') == "current") {
 
                     this.setCapabilityValue('measure_temperature', temp)
+                    this.setCapabilityValue('measure_temp_min', temp_min)
+                    this.setCapabilityValue('measure_temp_max', temp_max)
+                    this.setCapabilityValue('date_txt', date_txt)
                     this.setCapabilityValue('measure_humidity', hum)
                     this.setCapabilityValue('measure_pressure', pressure)
                     this.setCapabilityValue('measure_rain', rain)
@@ -218,6 +226,7 @@ class openweathermap extends Homey.Device {
                     var windangle = null;
                 }
                 var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
+                var date_txt = data.list[forecastInterval].dt_txt;
 
 /*
                 this.log("forecast interval")
@@ -226,6 +235,8 @@ class openweathermap extends Homey.Device {
                 this.log(temp)
                 this.log("forecast description")
                 this.log(description)
+                this.log("date_txt")
+                this.log(date_txt)
                 this.log("forecast rain")
                 this.log(rain)
                 this.log("temp_min")
@@ -238,15 +249,16 @@ class openweathermap extends Homey.Device {
                 this.log(data.city.country)
                 this.log("GEOlocation")
                 this.log(GEOlocation)
-                this.log("getSetting(mobile_display)")
-                this.log(this.getSetting('mobile_display')) 
+                this.log("getSetting(datasource)")
+                this.log(this.getSetting('datasource')) 
 */
 
-                if (this.getSetting('mobile_display') == "forecast") {
+                if (this.getSetting('datasource') == "forecast") {
 
                     this.setCapabilityValue('measure_temperature', temp)
-                        //  this.setCapabilityValue('measure_temp_min', temp_min)
-                        //  this.setCapabilityValue('measure_temp_max', temp_max)
+                    this.setCapabilityValue('measure_temp_min', temp_min)
+                    this.setCapabilityValue('measure_temp_max', temp_max)
+                    this.setCapabilityValue('date_txt', date_txt)
                     this.setCapabilityValue('measure_humidity', hum)
                     this.setCapabilityValue('measure_pressure', pressure)
                     this.setCapabilityValue('measure_rain', rain)
@@ -254,7 +266,8 @@ class openweathermap extends Homey.Device {
                     this.setCapabilityValue('measure_wind_strength', windstrength)
                     this.setCapabilityValue('measure_wind_angle', windangle)
                     this.setCapabilityValue('measure_cloudiness', cloudiness)
-                        //             this.setCapabilityValue('measure_visibility', visibility)
+                 // not available in hourly API data
+                 // this.setCapabilityValue('measure_visibility', visibility)
                     this.setCapabilityValue('description', description)
 
                 }
@@ -298,18 +311,18 @@ class openweathermap extends Homey.Device {
                         settings.forecastInterval = newSettingsObj.forecastInterval;
                         break;
 
-                    case 'mobile_display':
-                        this.log('mobile_display changed to ' + newSettingsObj.mobile_display);
-                        settings.mobile_display = newSettingsObj.mobile_display;
+                    case 'datasource':
+                        this.log('datasource changed to ' + newSettingsObj.datasource);
+                        settings.datasource = newSettingsObj.datasource;
                         break;
 
                     default:
                         this.log("Key not matched: " + i);
                 }
-                if (newSettingsObj.mobile_display == "forecast") {
+                if (newSettingsObj.datasource == "forecast") {
                     clearInterval(settings.intervalCurrent);
                     this.pollWeatherHourly(settings);
-                } else if (newSettingsObj.mobile_display == "current") {
+                } else if (newSettingsObj.datasource == "current") {
                     clearInterval(settings.intervalHourly);
                     this.pollWeatherCurrent(settings);
                 }
