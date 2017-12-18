@@ -7,11 +7,19 @@ The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://
 # Screenshots
 The mobile interface looks as follows:
 
-![](https://drive.google.com/uc?id=1hUEi4D0QGifNUfk5uqPaIDbdZuvmlZci)
+![](https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv)
 
-![](https://drive.google.com/uc?id=1rfCh8ZXmo3WBmkYD-RPTQgHEgePtN3rK)
+![](https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA)
 
-![](https://drive.google.com/uc?id=1k25X5gkiGLikZThAHJvAK_pb7h_dOmA6)
+![](https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV)
+
+The pairing view:
+
+![](https://drive.google.com/open?id=1r_MclxSsvWH_LMkfDEbFgll73eKEGyTL)
+
+Settings can be chaned after pairing:
+
+![](https://drive.google.com/open?id=1sqyaFJEKcFdo9L-MFsyawKvWUlY3bhrn)
 
 # Features
 Current fully supported capabilities in flow (triggers) and the mobile interface:
@@ -23,13 +31,17 @@ Current fully supported capabilities in flow (triggers) and the mobile interface
 - wind angle
 - rain
 
+Tracked in insights but not useable in flows yet:
+
+- minimum temperature
+- maximum temperature
+
 Only supported in the mobile interface:
 
-- cloudcover
 - weather description
 - visibility (only available in data for current weather conditions)
+- date (timestamp for API data)
 
-Forecast capabilities will be added in a later version.
 
 # Requirements
 To use the app, you need to get a (free) OpenWeatherMap API key at http://openweathermap.org.
