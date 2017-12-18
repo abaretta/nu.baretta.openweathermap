@@ -10,16 +10,15 @@ class openweathermap extends Homey.Device {
     onInit() {
             this.log('device init');
 
-            console.dir("getSettings: "); // for debugging
-            console.dir(this.getSettings()); // for debugging
-            console.dir("getData: "); // for debugging
-            console.dir(this.getData()); // for debugging
+         //   console.dir("getSettings: "); // for debugging
+         //   console.dir(this.getSettings()); // for debugging
+         //   console.dir("getData: "); // for debugging
+         //   console.dir(this.getData()); // for debugging
 
             let settings = this.getSettings();
             let intervalCurrent = 120;
             let intervalHourly = 300;
             let forecastInterval = this.getSetting('forecastInterval') || 0;
-//            if(forecastInterval == undefined) { forecastInterval = 0; }
             let datasource = this.getSetting('datasource') || "current";
 
             settings["lat"] = Homey.ManagerGeolocation.getLatitude();
@@ -147,9 +146,6 @@ class openweathermap extends Homey.Device {
                 var date_txt = new Date(data.dt * 1e3).toISOString().slice(-24, -5);
                 date_txt = date_txt.replace('T', ' ');
 
-                this.log("Converted date:");
-                this.log(date_txt);
-
                 if (this.getSetting('datasource') == "current") {
 
                     this.setCapabilityValue('measure_temperature', temp)
@@ -179,8 +175,8 @@ class openweathermap extends Homey.Device {
                 return weather.getWeatherData(url);
             })
             .then(data => {
-                this.log(settings);
-                this.log(data);
+               // this.log(settings);
+               // this.log(data);
 
                 var GEOlocation = data.city.name + ", " + data.city.country
 
