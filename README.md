@@ -1,25 +1,27 @@
 # OpenWeatherMap-app for Homey
 
-This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. In version 0.0.6 forecast data is added from the OpenWeatherMap 5-day view, refer to http://openweathermap.org/forecast5. During pairing you can choose the 3-hour interval you want to have weather data from. Interval 0 gives you data from the currently running 3-hour interval (should be close to the current weather), interval 8 gives data 24 hours ahead, etc.   
+This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. 
+
+In version 0.0.6 forecast data is added from the OpenWeatherMap 5-day view, refer to http://openweathermap.org/forecast5. During pairing you can choose the 3-hour interval you want to have weather data from. Interval 0 gives you data from the currently running 3-hour interval (should be close to the current weather), interval 8 gives data 24 hours ahead, etc.   
 
 The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://github.com/CICCIOSGAMINO/openweather-apis. 
 
 # Screenshots
 The mobile interface looks as follows:
 
-![](https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv)
+![](https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv | width=250)
 
-![](https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA)
+![](https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA | width=250)
 
-![](https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV)
+![](https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV | width=250)
 
 The pairing view:
 
-![](https://drive.google.com/open?id=1r_MclxSsvWH_LMkfDEbFgll73eKEGyTL)
+![](https://drive.google.com/open?id=1r_MclxSsvWH_LMkfDEbFgll73eKEGyTL | width=300)
 
-Settings can be chaned after pairing:
+Settings can be changed after pairing:
 
-![](https://drive.google.com/open?id=1sqyaFJEKcFdo9L-MFsyawKvWUlY3bhrn)
+![](https://drive.google.com/open?id=1sqyaFJEKcFdo9L-MFsyawKvWUlY3bhrn | width=300)
 
 # Features
 Current fully supported capabilities in flow (triggers) and the mobile interface:
