@@ -8,20 +8,19 @@ The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://
 
 # Screenshots
 The mobile interface looks as follows:
+<img src="https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv" width="250" height="100">
 
-![](https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv | width=250)
+<img src="https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA" width="250" height="100">
 
-![](https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA | width=250)
-
-![](https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV | width=250)
+<img src="https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV" width="250" height="100">
 
 The pairing view:
 
-![](https://drive.google.com/open?id=1r_MclxSsvWH_LMkfDEbFgll73eKEGyTL | width=300)
+<img src="https://drive.google.com/uc?id=1r_MclxSsvWH_LMkfDEbFgll73eKEGyTL" width="250" height="100">
 
 Settings can be changed after pairing:
 
-![](https://drive.google.com/open?id=1sqyaFJEKcFdo9L-MFsyawKvWUlY3bhrn | width=300)
+<img src="https://drive.google.com/uc?id=1sqyaFJEKcFdo9L-MFsyawKvWUlY3bhrn" width="250" height="100">
 
 # Features
 Current fully supported capabilities in flow (triggers) and the mobile interface:
