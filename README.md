@@ -4,7 +4,7 @@ This app allows you to poll the OpenWeatherMap API for localised weather data an
 
 Forecast data has been added to the app from the OpenWeatherMap 5-day view, refer to http://openweathermap.org/forecast5. During pairing you can choose the 3-hour interval you want to have weather data from. Interval 0 gives you data from the currently running 3-hour interval (should be close to the current weather), interval 8 gives data 24 hours ahead, etc.   
 
-The OpenWeatherMap polling is based on the 'openweather-apis', refer to https://github.com/CICCIOSGAMINO/openweather-apis. 
+The OpenWeatherMap polling is inspired by the 'openweather-apis', refer to https://github.com/CICCIOSGAMINO/openweather-apis. 
 
 Please use the forum for questions and comments related to the app.
 
