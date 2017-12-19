@@ -6,7 +6,7 @@ Forecast data has been added to the app from the OpenWeatherMap 5-day view, refe
 
 The OpenWeatherMap polling is inspired by the 'openweather-apis', refer to https://github.com/CICCIOSGAMINO/openweather-apis. 
 
-Please use the forum for questions and comments related to the app.
+Please use the forum for questions and comments related to the app: https://forum.athom.com/discussion/4225/.
 
 # Screenshots
 The mobile interface looks as follows:
