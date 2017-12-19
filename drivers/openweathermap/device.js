@@ -16,8 +16,8 @@ class openweathermap extends Homey.Device {
          //   console.dir(this.getData()); // for debugging
 
             let settings = this.getSettings();
-            let intervalCurrent = 120;
-            let intervalHourly = 300;
+            let intervalCurrent = 180;
+            let intervalHourly = 600;
             let forecastInterval = this.getSetting('forecastInterval') || 0;
             let datasource = this.getSetting('datasource') || "current";
 
