@@ -8,69 +8,69 @@ class openweathermap extends Homey.Device {
 
 
     onInit() {
-            this.log('device init');
+        this.log('device init');
 
-         //   console.dir("getSettings: "); // for debugging
-         //   console.dir(this.getSettings()); // for debugging
-         //   console.dir("getData: "); // for debugging
-         //   console.dir(this.getData()); // for debugging
+        //   console.dir("getSettings: "); // for debugging
+        //   console.dir(this.getSettings()); // for debugging
+        //   console.dir("getData: "); // for debugging
+        //   console.dir(this.getData()); // for debugging
 
-            let settings = this.getSettings();
-            let intervalCurrent = 180;
-            let intervalHourly = 600;
-            let forecastInterval = this.getSetting('forecastInterval') || 0;
-            let datasource = this.getSetting('datasource') || "current";
+        let settings = this.getSettings();
+        let intervalCurrent = 180;
+        let intervalHourly = 600;
+        let forecastInterval = this.getSetting('forecastInterval') || 0;
+        let datasource = this.getSetting('datasource') || "current";
 
-            settings["lat"] = Homey.ManagerGeolocation.getLatitude();
-            settings["lon"] = Homey.ManagerGeolocation.getLongitude();
-            settings["units"] = Homey.ManagerI18n.getUnits();
-            settings["language"] = Homey.ManagerI18n.getLanguage();
-            settings["intervalCurrent"] = intervalCurrent;
-            settings["intervalHourly"] = intervalHourly;
-            settings["forecastInterval"] = forecastInterval;
-            settings["datasource"] = datasource;
-            // updating settings object for settings dialogue
-            this.setSettings({
-                    language: Homey.ManagerI18n.getLanguage(),
-                    units: Homey.ManagerI18n.getUnits(),
-                    lat: Homey.ManagerGeolocation.getLatitude(),
-                    lon: Homey.ManagerGeolocation.getLongitude(),
-                    intervalCurrent: intervalCurrent,
-                    intervalHourly: intervalHourly,
-                    forecastInterval: forecastInterval,
-                    datasource: datasource,
-                })
-                .then(this.log)
-                .catch(this.error)
+        settings["lat"] = Homey.ManagerGeolocation.getLatitude();
+        settings["lon"] = Homey.ManagerGeolocation.getLongitude();
+        settings["units"] = Homey.ManagerI18n.getUnits();
+        settings["language"] = Homey.ManagerI18n.getLanguage();
+        settings["intervalCurrent"] = intervalCurrent;
+        settings["intervalHourly"] = intervalHourly;
+        settings["forecastInterval"] = forecastInterval;
+        settings["datasource"] = datasource;
+        // updating settings object for settings dialogue
+        this.setSettings({
+                language: Homey.ManagerI18n.getLanguage(),
+                units: Homey.ManagerI18n.getUnits(),
+                lat: Homey.ManagerGeolocation.getLatitude(),
+                lon: Homey.ManagerGeolocation.getLongitude(),
+                intervalCurrent: intervalCurrent,
+                intervalHourly: intervalHourly,
+                forecastInterval: forecastInterval,
+                datasource: datasource,
+            })
+            .then(this.log)
+            .catch(this.error)
 
-            if (settings.datasource == "forecast") {
-                this.pollWeatherHourly(settings);
-            } else if (settings.datasource == "current") {
-                this.pollWeatherCurrent(settings);
-            }
+        if (settings.datasource == "forecast") {
+            this.pollWeatherHourly(settings);
+        } else if (settings.datasource == "current") {
+            this.pollWeatherCurrent(settings);
+        }
 
-        } // end onInit
+    } // end onInit
 
     onAdded() {
-            let id = this.getData().id;
-            this.log('device added: ', id);
+        let id = this.getData().id;
+        this.log('device added: ', id);
 
-        } // end onAdded
+    } // end onAdded
 
     onDeleted() {
 
-            let id = this.getData().id;
+        let id = this.getData().id;
 
 
-            if (this.getSetting('datasource') == "forecast") {
-                clearInterval(this.getSetting('intervalHourly'));
-            } else if (this.getSettings('datasource') == "current") {
-                clearInterval(this.getSetting('intervalCurrent'));
-            }
+        if (this.getSetting('datasource') == "forecast") {
+            clearInterval(this.getSetting('intervalHourly'));
+        } else if (this.getSettings('datasource') == "current") {
+            clearInterval(this.getSetting('intervalCurrent'));
+        }
 
-            this.log('device deleted:', id);
+        this.log('device deleted:', id);
 
-        } // end onDeleted
+    } // end onDeleted
 
     pollWeatherCurrent(settings) {
         //run once, then at interval
@@ -97,8 +97,8 @@ class openweathermap extends Homey.Device {
                 return weather.getWeatherData(url);
             })
             .then(data => {
-                //   this.log(settings);
-                //   this.log(data);
+                //  this.log(settings);
+                //  this.log(data);
 
                 var GEOlocation = data.name + ", " + data.sys.country
 
@@ -113,7 +113,7 @@ class openweathermap extends Homey.Device {
                 var temp_max = data.main.temp_max
                 var hum = data.main.humidity
                 var pressure = data.main.pressure
-                    // return the rain in mm if present
+                // return the rain in mm if present
                 if (data.precipitation) {
                     var rain = data.precipitation.value;
                 } else {
@@ -126,8 +126,13 @@ class openweathermap extends Homey.Device {
                     var rain = rain3h['3h'] / 3;
                 }
                 if (data.wind.speed) {
-                    // convert from m/s to km/h
-                    var windstrength = 3.6 * data.wind.speed;
+                    if (settings["units"] == "metric") {
+                        // convert from m/s to km/h
+                        var windstrength = 3.6 * data.wind.speed;
+                    } else {
+                        // windspeed in mph
+                        var windstrength = data.wind.speed;
+                    }
                 } else {
                     var windstrength = {};
                 }
@@ -137,8 +142,12 @@ class openweathermap extends Homey.Device {
                 } else {
                     var windangle = null;
                 }
-                // convert to beaufort and concatenate in a string with wind direction
-                var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
+                if (settings["units"] == "metric") {
+                    // convert to beaufort and concatenate in a string with wind direction
+                    var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
+                } else {
+                    var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromMph(windstrength)
+                }
                 var cloudiness = data.clouds.all
                 var visibility = data.visibility
                 var description = data.weather[0].description
@@ -175,8 +184,8 @@ class openweathermap extends Homey.Device {
                 return weather.getWeatherData(url);
             })
             .then(data => {
-               // this.log(settings);
-               // this.log(data);
+                // this.log(settings);
+                // this.log(data);
 
                 var GEOlocation = data.city.name + ", " + data.city.country
 
@@ -211,7 +220,13 @@ class openweathermap extends Homey.Device {
                     var rain = rain3h['3h'] / 3;
                 }
                 if (data.list[forecastInterval].wind.speed) {
-                    var windstrength = 3.6 * data.list[forecastInterval].wind.speed;
+                    if (settings["units"] == "metric") {
+                        // convert from m/s to km/h
+                        var windstrength = 3.6 * data.list[forecastInterval].wind.speed;
+                    } else {
+                        // windspeed in mph
+                        var windstrength = data.list[forecastInterval].wind.speed;
+                    }
                 } else {
                     var windstrength = {};
                 }
@@ -221,33 +236,38 @@ class openweathermap extends Homey.Device {
                 } else {
                     var windangle = null;
                 }
-                var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
+                if (settings["units"] == "metric") {
+                    // convert to beaufort and concatenate in a string with wind direction
+                    var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromKmh(windstrength)
+                } else {
+                    var windcombined = this.degToCompass(settings, windangle) + " " + this.beaufortFromMph(windstrength)
+                }
                 var date_txt = data.list[forecastInterval].dt_txt;
 
-/*
-                this.log("forecast interval")
-                this.log(forecastInterval)
-                this.log("temp forecast")
-                this.log(temp)
-                this.log("forecast description")
-                this.log(description)
-                this.log("date_txt")
-                this.log(date_txt)
-                this.log("forecast rain")
-                this.log(rain)
-                this.log("temp_min")
-                this.log(temp_min)
-                this.log("temp_max")
-                this.log(temp_max)
-                this.log("City")
-                this.log(data.city.name)
-                this.log("Country")
-                this.log(data.city.country)
-                this.log("GEOlocation")
-                this.log(GEOlocation)
-                this.log("getSetting(datasource)")
-                this.log(this.getSetting('datasource')) 
-*/
+                /*
+                                this.log("forecast interval")
+                                this.log(forecastInterval)
+                                this.log("temp forecast")
+                                this.log(temp)
+                                this.log("forecast description")
+                                this.log(description)
+                                this.log("date_txt")
+                                this.log(date_txt)
+                                this.log("forecast rain")
+                                this.log(rain)
+                                this.log("temp_min")
+                                this.log(temp_min)
+                                this.log("temp_max")
+                                this.log(temp_max)
+                                this.log("City")
+                                this.log(data.city.name)
+                                this.log("Country")
+                                this.log(data.city.country)
+                                this.log("GEOlocation")
+                                this.log(GEOlocation)
+                                this.log("getSetting(datasource)")
+                                this.log(this.getSetting('datasource'))
+                */
 
                 if (this.getSetting('datasource') == "forecast") {
 
@@ -262,8 +282,8 @@ class openweathermap extends Homey.Device {
                     this.setCapabilityValue('measure_wind_strength', windstrength)
                     this.setCapabilityValue('measure_wind_angle', windangle)
                     this.setCapabilityValue('measure_cloudiness', cloudiness)
-                 // not available in hourly API data
-                 // this.setCapabilityValue('measure_visibility', visibility)
+                    // not available in hourly API data
+                    // this.setCapabilityValue('measure_visibility', visibility)
                     this.setCapabilityValue('description', description)
 
                 }
@@ -325,10 +345,9 @@ class openweathermap extends Homey.Device {
             }
             callback(null, true)
         } catch (error) {
-            callback(error)
+            callback(error, null)
         }
     }
-
 
 
     beaufortFromKmh(kmh) {
@@ -342,6 +361,18 @@ class openweathermap extends Homey.Device {
         return beaufortNum;
     }
 
+    beaufortFromMph(mph) {
+        var beaufortMphLimits = [1, 4, 8, 13, 19, 25, 32, 39, 47, 55, 64, 73, 111, 155, 208, 261, 320];
+        // undefined for negative values...
+        if (mph < 0 || mph == undefined) return undefined;
+
+        var beaufortNum = beaufortMphLimits.reduce(function(previousValue, currentValue, index, array) {
+            return previousValue + (mph > currentValue ? 1 : 0);
+        }, 0);
+        return beaufortNum;
+    }
+
+
     degToCompass(settings, num) {
         while (num < 0) num += 360;
         while (num >= 360) num -= 360;
@@ -354,4 +385,4 @@ class openweathermap extends Homey.Device {
         return arr[Math.abs(val)];
     }
 }
-module.exports = openweathermap;
+module.exports = openweathermap; 

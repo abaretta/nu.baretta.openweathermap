@@ -279,64 +279,8 @@
 						}
 					}
 				]
-			},
-			{
-				"type": "group",
-				"label": {
-					"en": "Language/units settings",
-					"nl": "Taal/eenheden instellingen"
-				},
-				"children": [{
-						"id": "language",
-						"type": "dropdown",
-						"value": "en",
-						"label": {
-							"en": "Language of weather description:",
-							"nl": "Taal van weersbeschrijving:"
-						},
-						"values": [{
-								"id": "en",
-								"label": {
-									"en": "English",
-									"nl": "Engels"
-								}
-							},
-							{
-								"id": "nl",
-								"label": {
-									"en": "Dutch",
-									"nl": "Nederlands"
-								}
-							}
-						]
-					},
-					{
-						"id": "units",
-						"type": "dropdown",
-						"value": "metric",
-						"label": {
-							"en": "Units used:",
-							"nl": "Gebruikte eenheden:"
-						},
-						"values": [{
-								"id": "metric",
-								"label": {
-									"en": "Metric",
-									"nl": "Metrisch"
-								}
-							},
-							{
-								"id": "imperial",
-								"label": {
-									"en": "Imperial",
-									"nl": "Imperiaal"
-								}
-							}
-						]
-					}
-				]
 			}
-		],
+			],
 		"mobile": {
 			"components": [{
 					"id": "icon",
