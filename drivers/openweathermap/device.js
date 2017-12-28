@@ -312,16 +312,6 @@ class openweathermap extends Homey.Device {
                         settings.GEOlocationZip = newSettingsObj.GEOlocationZip;
                         break;
 
-                    case 'language':
-                        this.log('language changed to ' + newSettingsObj.language);
-                        settings.language = newSettingsObj.language;
-                        break;
-
-                    case 'units':
-                        this.log('units changed to ' + newSettingsObj.units);
-                        settings.units = newSettingsObj.units;
-                        break;
-
                     case 'forecastInterval':
                         this.log('forecastInterval changed to ' + newSettingsObj.forecastInterval);
                         settings.forecastInterval = newSettingsObj.forecastInterval;
