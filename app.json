@@ -12,12 +12,14 @@
 		"en": [
 			"weather",
 			"forecast",
-			"climate"
+			"climate",
+			"OWM"
 		],
 		"nl": [
 			"weer",
 			"vooruitzicht",
-			"klimaat"
+			"klimaat",
+			"OWM"
 		]
 	},
 	"images": {
@@ -25,7 +27,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"compatibility": ">=1.5.0",
 	"author": {
 		"name": "Anne Baretta",
@@ -111,11 +113,44 @@
 			"getable": true,
 			"setable": false
 		},
+		"measure_wind_direction_string": {
+			"type": "string",
+			"title": {
+				"en": "Wind direction (compass)",
+				"nl": "Windrichting (kompas)"
+			},
+			"getable": true,
+			"setable": false
+		},
+		"measure_windstrength_beaufort": {
+			"type": "number",
+			"title": {
+				"en": "Wind speed in Beaufort scale",
+				"nl": "Windkracht in Beaufort schaal"
+			},
+			"getable": true,
+			"setable": false,
+			"units": {
+				"en": "Beaufort"
+			},
+			"min": 0,
+			"max": 12,
+			"step": 1
+		},
 		"description": {
 			"type": "string",
 			"title": {
 				"en": "Description",
 				"nl": "Beschrijving"
+			},
+			"getable": true,
+			"setable": false
+		},
+		"conditioncode": {
+			"type": "number",
+			"title": {
+				"en": "OWM condition code",
+				"nl": "OWM conditie code"
 			},
 			"getable": true,
 			"setable": false
@@ -128,140 +163,899 @@
 			},
 			"getable": true,
 			"setable": false
+		},
+		"sunrise": {
+			"type": "string",
+			"title": {
+				"en": "Sunrise",
+				"nl": "Zonsopgang"
+			},
+			"getable": true,
+			"setable": false
+		},
+		"sunset": {
+			"type": "string",
+			"title": {
+				"en": "Sunset",
+				"nl": "Zonsondergang"
+			},
+			"getable": true,
+			"setable": false
 		}
 	},
-	"drivers": [{
-		"id": "openweathermap",
-		"name": {
-			"en": "OpenWeatherMap Driver",
-			"nl": "OpenWeatherMap Driver"
-		},
-		"images": {
-			"large": "/drivers/openweathermap/assets/images/large.png",
-			"small": "/drivers/openweathermap/assets/images/small.png"
-		},
-		"class": "sensor",
-		"capabilities": [
-			"measure_temperature",
-			"measure_temp_min",
-			"measure_temp_max",
-			"measure_humidity",
-			"measure_pressure",
-			"measure_rain",
-			"measure_wind_combined",
-			"measure_wind_strength",
-			"measure_wind_angle",
-			"measure_cloudiness",
-			"measure_visibility",
-			"description",
-			"date_txt"
-		],
-		"pair": [{
-			"id": "pair"
-		}],
-		"settings": [{
-				"type": "group",
-				"label": {
-					"en": "OpenWeatherMap general settings",
-					"nl": "OpenWeatherMap algemene instellingen"
+	"flow": {
+		"triggers": [{
+				"id": "WeatherChanged",
+				"title": {
+					"en": "The weather(forecast) has changed",
+					"nl": "Het weer is veranderd"
 				},
-				"children": [{
-						"id": "APIKey",
-						"type": "text",
-						"value": "abcdef0123456789abcdef0123456789",
-						"label": {
-							"en": "OpenWeatherMap API key:",
-							"nl": "OpenWeatherMap API sleutel:"
+				"hint": {
+					"en": "Triggers when the description of the weather changes.",
+					"nl": "Triggert zodra de beschrijving van het weer veranderd."
+				},
+				"tokens": [{
+						"name": "description",
+						"type": "string",
+						"title": {
+							"en": "Weather description",
+							"nl": "Weersbeschrijving"
 						},
-						"hint": {
-							"en": "An API key can be obtained at http://openweathermap.org.",
-							"nl": "Een API sleutel kan op http://openweathermap.org verkregen worden."
+						"example": {
+							"en": "Clear sky",
+							"nl": "Onbewolkt"
 						}
 					},
 					{
-						"id": "GEOlocation",
-						"type": "label",
-						"value": "...pending first data...",
-						"label": {
-							"en": "Current location found by OpenWeatherMap:",
-							"nl": "Huidige door OpenWeatherMap gevonden locatie:"
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
 						},
-						"hint": {
-							"en": "Note: appears after first polling interval.",
-							"nl": "De locatie verschijnt zodra de eerste data binnen is."
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
 						}
+					}
+				],
+				"args": [{
+					"name": "ChangedDescription",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast"
+				}]
+			},
+			{
+				"id": "WindBeaufortChanged",
+				"title": {
+					"en": "The wind strength (Beaufort) has changed",
+					"nl": "De windkracht (Beaufort) is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the strength of the wind (Beaufort) changes.",
+					"nl": "Triggert zodra de windkracht (Beaufort) veranderd."
+				},
+				"tokens": [{
+						"name": "measure_windstrength_beaufort",
+						"type": "number",
+						"title": {
+							"en": "Wind strength in Beaufort scale",
+							"nl": "Windkracht (Beaufort)"
+						},
+						"example": {
+							"en": "4",
+							"nl": "4"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedWindspeedBeaufort",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast"
+				}]
+			},
+			{
+				"id": "MintempChanged",
+				"title": {
+					"en": "The minimum temperature has changed",
+					"nl": "De minimum temperatuur is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the minimum temperature changes.",
+					"nl": "Triggert zodra de minimum temperatuur veranderd."
+				},
+				"tokens": [{
+						"name": "measure_temperature_min",
+						"type": "number",
+						"title": {
+							"en": "Minimum temperature",
+							"nl": "Minimum temperatuur"
+						},
+						"example": {
+							"en": "-2",
+							"nl": "-2"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedMinTemperature",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast"
+				}]
+			},
+			{
+				"id": "MaxtempChanged",
+				"title": {
+					"en": "The maximum temperature has changed",
+					"nl": "De maximum temperatuur is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the maximum temperature changes.",
+					"nl": "Triggert zodra de maximum temperatuur veranderd."
+				},
+				"tokens": [{
+						"name": "measure_temperature_max",
+						"type": "number",
+						"title": {
+							"en": "Maximum temperature",
+							"nl": "Maximum temperatuur"
+						},
+						"example": {
+							"en": "26",
+							"nl": "26"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedMaxTemperature",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast"
+				}]
+			},
+			{
+				"id": "CloudinessChanged",
+				"title": {
+					"en": "The cloudiness (%) has changed",
+					"nl": "De bewolking (%) is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the cloud cover changes.",
+					"nl": "Triggert zodra de bewolking veranderd."
+				},
+				"tokens": [{
+						"name": "measure_cloudiness",
+						"type": "number",
+						"title": {
+							"en": "Cloudiness (%)",
+							"nl": "Bewolking (%)"
+						},
+						"example": {
+							"en": "65%",
+							"nl": "65%"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedCloudiness",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast"
+				}]
+			},
+			{
+				"id": "WindDirectionCompassChanged",
+				"title": {
+					"en": "The compass direction of the wind has changed",
+					"nl": "De kompasrichting van de wind is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when compass direction of wind changes.",
+					"nl": "Triggert zodra de kompas richting van de wind veranderd."
+				},
+				"tokens": [{
+						"name": "measure_wind_direction_string",
+						"type": "string",
+						"title": {
+							"en": "Winddirection (compass)",
+							"nl": "Windrichting (kompas)"
+						},
+						"example": {
+							"en": "NNW",
+							"nl": "NNW"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedWindDirectionCompass",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast"
+				}]
+			},
+			{
+				"id": "VisibilityChanged",
+				"title": {
+					"en": "The visibility has changed",
+					"nl": "Het zicht is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when visibility (meters) changes.",
+					"nl": "Triggert zodra het zicht (meter) veranderd."
+				},
+				"tokens": [{
+						"name": "measure_visibility",
+						"type": "number",
+						"title": {
+							"en": "Visibility in meters",
+							"nl": "Zicht in aantal meter"
+						},
+						"example": {
+							"en": "1000",
+							"nl": "1000"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedMinTemperature",
+					"type": "device",
+					"filter": "driver_id=owmCurrent"
+				}]
+			}
+		],
+		"conditions": [{
+				"id": "conditioncode",
+				"title": {
+					"en": "The overall weather !{{is|isn't}}",
+					"nl": "Het weer !{{is|is niet}}"
+				},
+				"hint": {
+					"en": "Description of the weather.",
+					"nl": "Beschrijving van het weer."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast"
+					},
+					{
+						"name": "argument_main",
+						"type": "dropdown",
+						"values": [{
+								"id": "Clouds",
+								"label": {
+									"en": "Cloudy",
+									"nl": "Bewolkt"
+								}
+							},
+							{
+								"id": "Rain",
+								"label": {
+									"en": "Rainy",
+									"nl": "Regenachtig"
+								}
+							},
+							{
+								"id": "Clear",
+								"label": {
+									"en": "Clear",
+									"nl": "Helder"
+								}
+							},
+							{
+								"id": "Drizzle",
+								"label": {
+									"en": "Drizzly",
+									"nl": "Miezerig"
+								}
+							},
+							{
+								"id": "Misty",
+								"label": {
+									"en": "Misty",
+									"nl": "Mistig"
+								}
+							},
+							{
+								"id": "Thunderstorm",
+								"label": {
+									"en": "Thunderstorm",
+									"nl": "Onweer"
+								}
+							},
+							{
+								"id": "Snow",
+								"label": {
+									"en": "Snow",
+									"nl": "Sneeuw"
+								}
+							},
+							{
+								"id": "Extreme",
+								"label": {
+									"en": "Extreme",
+									"nl": "Extreem"
+								}
+							}
+						]
 					}
 				]
 			},
 			{
-				"type": "group",
-				"label": {
-					"en": "Optional location settings",
-					"nl": "Optionele locatie instellingen"
+				"id": "Temp",
+				"title": {
+					"en": "The temperature !{{is|isn't}} higher than",
+					"nl": "De temperatuur !{{is|is niet}} hoger dan"
 				},
-				"children": [{
-						"id": "GEOlocationCity",
-						"type": "text",
-						"value": "Paris,FR",
-						"label": {
-							"en": "City, countrycode (optional):",
-							"nl": "Stad, landencode (optioneel):"
-						},
-						"hint": {
-							"en": "Optionally the location can be entered by city/country, e.g. Paris,fr.",
-							"nl": "De locatie kan optioneel als stad/land opgegeven worden, bijv. Utrecht,nl."
-						}
+				"hint": {
+					"en": "Temperature in degrees Celsius.",
+					"nl": "Temperatuur in graden Celsius."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast"
 					},
 					{
-						"id": "GEOlocationZip",
-						"type": "text",
-						"value": "94040,us",
-						"label": {
-							"en": "Zip code, countrycode (optional):",
-							"nl": "Postcode, landencode (optioneel):"
+						"name": "degrees",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Pressure",
+				"title": {
+					"en": "The pressure !{{is|isn't}} higher than",
+					"nl": "De luchtdruk !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Pressure in millibar.",
+					"nl": "Luchtdruk in millibar."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast"
+					},
+					{
+						"name": "bar",
+						"filter": "driver_id=owmCurrent|owmForecast",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Clouds",
+				"title": {
+					"en": "The cloudiness !{{is|isn't}} more than",
+					"nl": "De bewolking !{{is|is niet}} meer dan"
+				},
+				"hint": {
+					"en": "Percentage of cloud cover.",
+					"nl": "Percentage bewolking."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast"
+					},
+					{
+						"name": "cloudiness",
+						"filter": "driver_id=owmCurrent|owmForecast",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Humidity",
+				"title": {
+					"en": "The humidity !{{is|isn't}} higher than",
+					"nl": "De vochtigheid !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Percentage of moisture in air.",
+					"nl": "Percentage luchtvochtigheid in de lucht."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast"
+					},
+					{
+						"name": "humidity",
+						"filter": "driver_id=owmCurrent|owmForecast",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Windspeed",
+				"title": {
+					"en": "The windspeed (km/h) !{{is|isn't}} higher than",
+					"nl": "De windsnelheid (km/u) !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Speed of the wind in km/h.",
+					"nl": "Windkracht in km/h."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast"
+					},
+					{
+						"name": "windspeed",
+						"filter": "driver_id=owmCurrent|owmForecast",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Windforce",
+				"title": {
+					"en": "The windforce (Beaufort) !{{is|isn't}} higher than",
+					"nl": "De windkracht (Beaufort) !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Speed of the wind in Beaufort scale.",
+					"nl": "Windkracht in Beaufort."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast"
+					},
+					{
+						"name": "windforce",
+						"filter": "driver_id=owmCurrent|owmForecast",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Winddirection",
+				"title": {
+					"en": "The (compass) direction of the wind !{{is|isn't}}",
+					"nl": "De (kompas) richting van de wind !{{is|is niet}}"
+				},
+				"hint": {
+					"en": "Compass direction of the wind",
+					"nl": "Kompasrichting van de wind"
+				},
+				"args": [{
+					"name": "winddirection",
+					"type": "dropdown",
+					"values": [{
+							"id": "N",
+							"label": {
+								"en": "N: North",
+								"nl": "N: Noord"
+							}
 						},
-						"hint": {
-							"en": "Optionally the location can be entered by zip code/country, e.g. 94040,us.",
-							"nl": "De locatie kan optioneel als postcode/land opgegeven worden, bijv. 1234,NL."
+						{
+							"id": "NNO",
+							"label": {
+								"en": "NNO: North north-West",
+								"nl": "NNO: Noord noord-west"
+							}
+						},
+						{
+							"id": "NO",
+							"label": {
+								"en": "NO: Northeast",
+								"nl": "NO: Noord-oost"
+							}
+						},
+						{
+							"id": "ONO",
+							"label": {
+								"en": "ENE: East northeast",
+								"nl": "ONO: Oost Noord-oost"
+							}
+						},
+						{
+							"id": "O",
+							"label": {
+								"en": "E: East",
+								"nl": "O: Oost"
+							}
+						},
+
+						{
+							"id": "OZO",
+							"label": {
+								"en": "ESE: East southeast",
+								"nl": "OZO: Oost zuid-oost"
+							}
+						},
+						{
+							"id": "ZO",
+							"label": {
+								"en": "SE: Southeast",
+								"nl": "ZO: Zuid-oost"
+							}
+						},
+						{
+							"id": "ZZO",
+							"label": {
+								"en": "SSO: South southeast",
+								"nl": "ZZO: Zuid zuid-oost"
+							}
+						},
+						{
+							"id": "Z",
+							"label": {
+								"en": "S: South",
+								"nl": "Z: Zuid"
+							}
+						},
+						{
+							"id": "ZZW",
+							"label": {
+								"en": "SSW: South southwest",
+								"nl": "ZZW: Zuid zuid-west"
+							}
+						},
+						{
+							"id": "ZW",
+							"label": {
+								"en": "SW: Southwest",
+								"nl": "ZW: Zuid-west"
+							}
+						},
+						{
+							"id": "WZW",
+							"label": {
+								"en": "WSW: West southwest",
+								"nl": "WZW: West zuid-west"
+							}
+						},
+						{
+							"id": "W",
+							"label": {
+								"en": "W: West",
+								"nl": "W: West"
+							}
+						},
+						{
+							"id": "WNW",
+							"label": {
+								"en": "WNW: West northwest",
+								"nl": "WNW: West noord-west"
+							}
+						},
+						{
+							"id": "NW",
+							"label": {
+								"en": "NW: Northwest",
+								"nl": "NW: Noord-west"
+							}
+						},
+						{
+							"id": "NNW",
+							"label": {
+								"en": "NNW: North northwest",
+								"nl": "NNW: Noord noord-west"
+							}
+						}
+					]
+				}]
+			}
+		]
+	},
+	"drivers": [{
+			"id": "owmCurrent",
+			"name": {
+				"en": "Current weather",
+				"nl": "Actueel weersbericht"
+			},
+			"images": {
+				"large": "/drivers/openweathermap/assets/images/large.png",
+				"small": "/drivers/openweathermap/assets/images/small.png"
+			},
+			"class": "sensor",
+			"capabilities": [
+				"measure_temperature",
+				"measure_temp_min",
+				"measure_temp_max",
+				"measure_humidity",
+				"measure_pressure",
+				"measure_rain",
+				"measure_wind_combined",
+				"measure_wind_strength",
+				"measure_wind_direction_string",
+				"measure_windstrength_beaufort",
+				"measure_wind_angle",
+				"measure_cloudiness",
+				"measure_visibility",
+				"description",
+				"conditioncode",
+				"date_txt",
+				"sunrise",
+				"sunset"
+			],
+			"capabilitiesOptions": {
+				"conditioncode": {
+					"preventInsights": true
+				}
+			},
+			"pair": [{
+				"id": "pair"
+			}],
+			"settings": [{
+					"type": "group",
+					"label": {
+						"en": "OpenWeatherMap general settings",
+						"nl": "OpenWeatherMap algemene instellingen"
+					},
+					"children": [{
+							"id": "APIKey",
+							"type": "text",
+							"value": "abcdef0123456789abcdef0123456789",
+							"label": {
+								"en": "OpenWeatherMap API key:",
+								"nl": "OpenWeatherMap API sleutel:"
+							},
+							"hint": {
+								"en": "An API key can be obtained at http://openweathermap.org.",
+								"nl": "Een API sleutel kan op http://openweathermap.org verkregen worden."
+							}
+						},
+						{
+							"id": "GEOlocation",
+							"type": "label",
+							"value": "...pending first data...",
+							"label": {
+								"en": "Current location found by OpenWeatherMap:",
+								"nl": "Huidige door OpenWeatherMap gevonden locatie:"
+							},
+							"hint": {
+								"en": "Note: appears after first polling interval.",
+								"nl": "De locatie verschijnt zodra de eerste data binnen is."
+							}
+						}
+					]
+				},
+				{
+					"type": "group",
+					"label": {
+						"en": "Optional location settings",
+						"nl": "Optionele locatie instellingen"
+					},
+					"children": [{
+							"id": "GEOlocationCity",
+							"type": "text",
+							"value": "Paris,FR",
+							"label": {
+								"en": "City, countrycode (optional):",
+								"nl": "Stad, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by city/country, e.g. Paris,fr.",
+								"nl": "De locatie kan optioneel als stad/land opgegeven worden, bijv. Utrecht,nl."
+							}
+						},
+						{
+							"id": "GEOlocationZip",
+							"type": "text",
+							"value": "94040,us",
+							"label": {
+								"en": "Zip code, countrycode (optional):",
+								"nl": "Postcode, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by zip code/country, e.g. 94040,us.",
+								"nl": "De locatie kan optioneel als postcode/land opgegeven worden, bijv. 1234,NL."
+							}
+						}
+					]
+				}
+			],
+			"mobile": {
+				"components": [{
+						"id": "icon",
+						"capabilities": []
+					},
+					{
+						"id": "sensor",
+						"capabilities": [
+							"measure_temperature",
+							"measure_wind_combined",
+							"measure_humidity",
+							"measure_rain",
+							"measure_pressure",
+							"measure_cloudiness",
+							"description",
+							"date_txt"
+						],
+						"options": {
+							"icons": {
+								"measure_wind_combined": "./drivers/openweathermap/assets/images/wind_angle.svg",
+								"measure_wind_angle": "./drivers/openweathermap/assets/images/wind_angle.svg",
+								"measure_cloudiness": "./drivers/openweathermap/assets/images/clouds.svg",
+								"description": "./drivers/openweathermap/assets/images/description.png",
+								"date_txt": "./drivers/openweathermap/assets/images/description.png"
+							}
 						}
 					}
-                                ]
-                        },
-                        {
-                                "type": "group",
-                                "label": {
-                                        "en": "Data source options: current or forecast",
-                                        "nl": "Brondata opties: actueel of voorspelling"
-                                },
-                                "children": [{
-						"id": "datasource",
-						"type": "radio",
-						"value": "datasource",
-						"label": {
-							"en": "Use current or forecast data:",
-							"nl": "Gebruik actuele metingen of voorspelling:"
-						},
-						"hint": {
-							"en": "You can choose whether to poll the actual weather conditions or the forecast.",
-							"nl": "U kunt kiezen voor weergave van actuele (gemeten) data of voorspelde data."
-						},
-						"values": [{
-								"id": "current",
-								"label": {
-									"en": "Use current data",
-									"nl": "Gebruik actuele data"
-								}
-							},
-							{
-								"id": "forecast",
-								"label": {
-									"en": "Use forecast data",
-									"nl": "Gebruik voorspelde data"
-								}
-							}
-						]
+				]
+			}
+		},
+		{
+			"id": "owmForecast",
+			"name": {
+				"en": "Forecast up to 5 days",
+				"nl": "Weersvoorspelling tot 5 dagen"
+			},
+			"images": {
+				"large": "/drivers/openweathermap/assets/images/large.png",
+				"small": "/drivers/openweathermap/assets/images/small.png"
+			},
+			"class": "sensor",
+			"capabilities": [
+				"measure_temperature",
+				"measure_temp_min",
+				"measure_temp_max",
+				"measure_humidity",
+				"measure_pressure",
+				"measure_rain",
+				"measure_wind_combined",
+				"measure_wind_strength",
+				"measure_wind_direction_string",
+				"measure_windstrength_beaufort",
+				"measure_wind_angle",
+				"measure_cloudiness",
+				"description",
+				"conditioncode",
+				"date_txt"
+			],
+			"pair": [{
+				"id": "pair"
+			}],
+			"settings": [{
+					"type": "group",
+					"label": {
+						"en": "OpenWeatherMap general settings",
+						"nl": "OpenWeatherMap algemene instellingen"
 					},
-					{
+					"children": [{
+							"id": "APIKey",
+							"type": "text",
+							"value": "abcdef0123456789abcdef0123456789",
+							"label": {
+								"en": "OpenWeatherMap API key:",
+								"nl": "OpenWeatherMap API sleutel:"
+							},
+							"hint": {
+								"en": "An API key can be obtained at http://openweathermap.org.",
+								"nl": "Een API sleutel kan op http://openweathermap.org verkregen worden."
+							}
+						},
+						{
+							"id": "GEOlocation",
+							"type": "label",
+							"value": "...pending first data...",
+							"label": {
+								"en": "Current location found by OpenWeatherMap:",
+								"nl": "Huidige door OpenWeatherMap gevonden locatie:"
+							},
+							"hint": {
+								"en": "Note: appears after first polling interval.",
+								"nl": "De locatie verschijnt zodra de eerste data binnen is."
+							}
+						}
+					]
+				},
+				{
+					"type": "group",
+					"label": {
+						"en": "Optional location settings",
+						"nl": "Optionele locatie instellingen"
+					},
+					"children": [{
+							"id": "GEOlocationCity",
+							"type": "text",
+							"value": "Paris,FR",
+							"label": {
+								"en": "City, countrycode (optional):",
+								"nl": "Stad, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by city/country, e.g. Paris,fr.",
+								"nl": "De locatie kan optioneel als stad/land opgegeven worden, bijv. Utrecht,nl."
+							}
+						},
+						{
+							"id": "GEOlocationZip",
+							"type": "text",
+							"value": "94040,us",
+							"label": {
+								"en": "Zip code, countrycode (optional):",
+								"nl": "Postcode, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by zip code/country, e.g. 94040,us.",
+								"nl": "De locatie kan optioneel als postcode/land opgegeven worden, bijv. 1234,NL."
+							}
+						}
+					]
+				},
+				{
+					"type": "group",
+					"label": {
+						"en": "Data source options: current or forecast",
+						"nl": "Brondata opties: actueel of voorspelling"
+					},
+					"children": [{
 						"id": "forecastInterval",
 						"type": "number",
 						"value": 0,
@@ -277,38 +1071,38 @@
 							"min": 0,
 							"max": 39
 						}
+					}]
+				}
+			],
+			"mobile": {
+				"components": [{
+						"id": "icon",
+						"capabilities": []
+					},
+					{
+						"id": "sensor",
+						"capabilities": [
+							"measure_temperature",
+							"measure_wind_combined",
+							"measure_humidity",
+							"measure_rain",
+							"measure_pressure",
+							"measure_cloudiness",
+							"description",
+							"date_txt"
+						],
+						"options": {
+							"icons": {
+								"measure_wind_combined": "./drivers/openweathermap/assets/images/wind_angle.svg",
+								"measure_wind_angle": "./drivers/openweathermap/assets/images/wind_angle.svg",
+								"measure_cloudiness": "./drivers/openweathermap/assets/images/clouds.svg",
+								"description": "./drivers/openweathermap/assets/images/description.png",
+								"date_txt": "./drivers/openweathermap/assets/images/description.png"
+							}
+						}
 					}
 				]
 			}
-			],
-		"mobile": {
-			"components": [{
-					"id": "icon",
-					"capabilities": []
-				},
-				{
-					"id": "sensor",
-					"capabilities": [
-						"measure_temperature",
-						"measure_wind_combined",
-						"measure_humidity",
-						"measure_rain",
-						"measure_pressure",
-						"measure_cloudiness",
-						"description",
-						"date_txt"
-					],
-					"options": {
-						"icons": {
-							"measure_wind_combined": "./drivers/openweathermap/assets/images/wind_angle.svg",
-							"measure_wind_angle": "./drivers/openweathermap/assets/images/wind_angle.svg",
-							"measure_cloudiness": "./drivers/openweathermap/assets/images/clouds.svg",
-							"description": "./drivers/openweathermap/assets/images/description.png",
-							"date_txt": "./drivers/openweathermap/assets/images/description.png"
-						}
-					}
-				}
-			]
 		}
-	}]
+	]
 }
