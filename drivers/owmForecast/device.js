@@ -4,7 +4,7 @@
 const Homey = require('homey');
 const weather = require('index.js');
 
-class owmCurrent extends Homey.Device {
+class owmForecast extends Homey.Device {
 
     onInit() {
         this.log('device init');
@@ -14,6 +14,7 @@ class owmCurrent extends Homey.Device {
         //console.dir(this.getSettings()); // for debugging
         let device = this; // We're in a Device instance
         let settings = this.getSettings();
+        let forecastInterval = this.getSetting('forecastInterval') || 0;
         let name = this.getName() + '_' + this.getData().id;
         let cronName = name.toLowerCase();
         let tokens = {};
@@ -23,6 +24,7 @@ class owmCurrent extends Homey.Device {
         settings["lon"] = Homey.ManagerGeolocation.getLongitude();
         settings["units"] = Homey.ManagerI18n.getUnits();
         settings["language"] = Homey.ManagerI18n.getLanguage();
+        settings["forecastInterval"] = forecastInterval;
 
         // updating settings object for settings dialogue
         this.setSettings({
@@ -30,6 +32,7 @@ class owmCurrent extends Homey.Device {
                 units: Homey.ManagerI18n.getUnits(),
                 lat: Homey.ManagerGeolocation.getLatitude(),
                 lon: Homey.ManagerGeolocation.getLongitude(),
+                forecastInterval: forecastInterval,
             })
             //.then(this.log)
             .catch(this.error)
@@ -37,15 +40,15 @@ class owmCurrent extends Homey.Device {
         Homey.ManagerCron.getTask(cronName)
             .then(task => {
                 this.log("The task exists: " + cronName);
-                task.on('run', () => this.pollOpenWeatherMapCurrent(settings));
+                task.on('run', () => this.pollOpenWeatherMapHourly(settings));
             })
             .catch(err => {
                 if (err.code == 404) {
                     this.log("The task has not been registered yet, registering task: " + cronName);
-                    Homey.ManagerCron.registerTask(cronName, "5-59/15 * * * *", settings)
+                    Homey.ManagerCron.registerTask(cronName, "12-59/30 * * * *", settings)
                         //Homey.ManagerCron.registerTask(cronName, "*/1 * * * * ", settings)
                         .then(task => {
-                            task.on('run', () => this.pollOpenWeatherMapCurrent(settings));
+                            task.on('run', () => this.pollOpenWeatherMapHourly(settings));
                         })
                         .catch(err => {
                             this.log(`problem with registering cronjob: ${err.message}`);
@@ -77,14 +80,11 @@ class owmCurrent extends Homey.Device {
         this._flowTriggerCloudinessChanged = new Homey.FlowCardTriggerDevice('CloudinessChanged')
             .register()
 
-        this._flowTriggerVisibilityChanged = new Homey.FlowCardTriggerDevice('VisibilityChanged')
-            .register()
-
         // Register conditions for flows
 
         this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
-                var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main) 
+                var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
                 return Promise.resolve(result);
             })
 
@@ -130,14 +130,8 @@ class owmCurrent extends Homey.Device {
                 return Promise.resolve(result);
             })
 
-        this.conditionVisibility = new Homey.FlowCardCondition('Visibility').register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_visibility') >= args.visibility) 
-                return Promise.resolve(result);
-            })
-
         //run once to get the first data
-        this.pollOpenWeatherMapCurrent(settings);
+        this.pollOpenWeatherMapHourly(settings);
 
     } // end onInit
 
@@ -160,93 +154,90 @@ class owmCurrent extends Homey.Device {
 
     } // end onDeleted
 
-    pollOpenWeatherMapCurrent(settings) {
+    pollOpenWeatherMapHourly(settings) {
 
-        weather.getURLCurrent(settings).then(url => {
+        weather.getURLHourly(settings).then(url => {
                 return weather.getWeatherData(url);
             })
             .then(data => {
                 let device = this;
-                //  this.log(settings);
+                let forecastInterval = this.getSetting('forecastInterval');
                 //  this.log(data);
                 this.log("Received OWM data");
 
-                var GEOlocation = data.name + ", " + data.sys.country;
+                var GEOlocation = data.name + ", " + data.city.country;
 
                 this.setSettings({
                         GEOlocation: GEOlocation,
                     })
                     //.then(this.log)
                     .catch(this.error);
-                var conditioncode = data.weather[0].id;
+
+                var conditioncode = data.list[forecastInterval].weather[0].id;
                 this.log("current condition: ")
                 this.log(weather.conditionToString(conditioncode));
 
-                var temp = data.main.temp;
-                var temp_min = data.main.temp_min;
-                var temp_max = data.main.temp_max;
-                var hum = data.main.humidity;
-                var pressure = data.main.pressure;
-                // return the rain in mm if present
-                if (data.precipitation) {
-                    var rain = data.precipitation.value;
-                } 
+                var temp = data.list[forecastInterval].main.temp
+                var temp_min = data.list[forecastInterval].main.temp_min
+                var temp_max = data.list[forecastInterval].main.temp_max
+                var pressure = data.list[forecastInterval].main.pressure
+                var hum = data.list[forecastInterval].main.humidity
+                var cloudiness = data.list[forecastInterval].clouds.all
+                var description = data.list[forecastInterval].weather[0].description
 
-                if (data.rain) {
-                    var rain3h = data.rain;
+                if (data.list[forecastInterval].rain['3h']) {
+                    var rain3h = data.list[forecastInterval].rain['3h'];
                     //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
                     var rain = rain3h / 3;
+                } else {
+                    var rain = 0;
                 }
-                if (data.wind.speed) {
+
+                if (data.list[forecastInterval].wind.deg) {
+                    var windangle = data.list[forecastInterval].wind.deg;
+                } else {
+                    var windangle = null;
+                }
+
+                if (data.list[forecastInterval].wind.speed) {
+                    var winddegcompass = weather.degToCompass(settings, windangle);
                     if (settings["units"] == "metric") {
                         // convert from m/s to km/h
-                        var windstrength = 3.6 * data.wind.speed;
+                        var windstrength = 3.6 * data.list[forecastInterval].wind.speed;
                     } else {
                         // windspeed in mph
-                        var windstrength = data.wind.speed;
+                        var windstrength = data.list[forecastInterval].wind.speed;
                     }
                 } else {
                     var windstrength = {};
                 }
 
-                if (data.wind.deg) {
-                    var windangle = data.wind.deg;
+                if (data.list[forecastInterval].wind.deg) {
+                    var windangle = data.list[forecastInterval].wind.deg;
                 } else {
                     var windangle = null;
                 }
-                var winddegcompass = weather.degToCompass(settings, windangle);
                 if (settings["units"] == "metric") {
                     // convert to beaufort and concatenate in a string with wind direction
                     var windspeedbeaufort = weather.beaufortFromKmh(windstrength);
-                    var windcombined = winddegcompass + " " + windspeedbeaufort;
+                    var windcombined = weather.degToCompass(settings, windangle) + " " + weather.beaufortFromKmh(windstrength)
                 } else {
                     var windspeedbeaufort = weather.beaufortFromMph(windstrength);
-                    var windcombined = winddegcompass + " " + windspeedbeaufort;
+                    var windcombined = weather.degToCompass(settings, windangle) + " " + weather.beaufortFromMph(windstrength)
                 }
-                var cloudiness = data.clouds.all;
-                var visibility = data.visibility;
-                var description = data.weather[0].description;
 
-                var date_txt = new Date(data.dt * 1e3).toISOString().slice(-24, -5);
+                var date_txt = new Date(data.list[forecastInterval].dt * 1e3).toISOString().slice(-24, -5);
                 date_txt = date_txt.replace('T', ' ');
-
-                var sunrise = new Date(data.sys.sunrise * 1e3).toISOString().slice(-13, -8);
-                //sunrise = sunrise.replace('T', ' ');
-
-                var sunset = new Date(data.sys.sunset * 1e3).toISOString().slice(-13, -8);
-                //sunset = sunset.replace('T', ' ');
 
                 this.log("Comparing variables before and after current polling interval");
 
                 if (this.getCapabilityValue('conditioncode') != conditioncode) {
                     this.setCapabilityValue('conditioncode', conditioncode);
                 }
-
                 if (this.getCapabilityValue('measure_temperature') != temp) {
                     this.setCapabilityValue('measure_temperature', temp);
                     // this.updatevar('measure_temperature',temp);
                 }
-
                 if (this.getCapabilityValue('measure_temp_min') != temp_min) {
                     this.log("temp_min has changed. Old min_temp: " + this.getCapabilityValue('measure_temperature_min') + " New min temp: " + temp_min);
                     let state = {
@@ -331,19 +322,6 @@ class owmCurrent extends Homey.Device {
                     //this.updatevar('measure_cloudiness', cloudiness);
                     this.setCapabilityValue('measure_cloudiness', cloudiness);
                 }
-                if (this.getCapabilityValue('measure_visibility') != visibility) {
-                    this.log("visibility has changed. Previous visibility: " + this.getCapabilityValue('measure_visibility') + " New visibility: " + visibility);
-                    let state = {
-                        "measure_visibility": visibility
-                    };
-                    let tokens = {
-                        "measure_visibility": visibility,
-                        "location": GEOlocation
-                    };
-                    this.triggerVisibilityChangedFlow(device, tokens, state);
-                    //this.updatevar('measure_visibility', visibility);
-                    this.setCapabilityValue('measure_visibility', visibility);
-                }
                 if (this.getCapabilityValue('description') != description) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
                     let state = {
@@ -356,12 +334,6 @@ class owmCurrent extends Homey.Device {
                     this.triggerWeatherChangedFlow(device, tokens, state);
                     //this.updatevar('description', description);
                     this.setCapabilityValue('description', description);
-                }
-                if (this.getCapabilityValue('sunrise') != sunrise) {
-                    this.setCapabilityValue('sunrise', sunrise);
-                }
-                if (this.getCapabilityValue('sunset') != sunset) {
-                    this.setCapabilityValue('sunset', sunset);
                 }
             })
             .catch(error => {
@@ -388,12 +360,17 @@ class owmCurrent extends Homey.Device {
                         settings.GEOlocationZip = newSettingsObj.GEOlocationZip;
                         break;
 
+                    case 'forecastInterval':
+                        this.log('forecastInterval changed to ' + newSettingsObj.forecastInterval);
+                        settings.forecastInterval = newSettingsObj.forecastInterval;
+                        break;
+
                     default:
                         this.log("Key not matched: " + i);
                         break;
                 }
             }
-            this.pollOpenWeatherMapCurrent(settings);
+            this.pollOpenWeatherMapHourly(settings);
             callback(null, true)
         } catch (error) {
             callback(error, null)
@@ -449,12 +426,6 @@ class owmCurrent extends Homey.Device {
             .then(this.log)
             .catch(this.error)
     }
-/*
-    async updatevar = function updatevar(capability, value) {
-        this.log("Value has changed. Old value " + capability + ":" + this.getCapabilityValue([capability]) + " New value: " + value);
-        await this.setCapabilityValue([capability], value);
-        this.log("this.getCapabilityValue(" + capability + "):");
-        this.log(this.getCapabilityValue([capability]));
-    } */
+
 }
-module.exports = owmCurrent;
+module.exports = owmForecast;

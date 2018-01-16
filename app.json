@@ -104,6 +104,42 @@
 				"en": "C"
 			}
 		},
+		"measure_temp_night": {
+			"type": "number",
+			"title": {
+				"en": "Temperature at night",
+				"nl": "Temperatuur 's nachts"
+			},
+			"getable": true,
+			"setable": false,
+			"units": {
+				"en": "C"
+			}
+		},
+		"measure_temp_evening": {
+			"type": "number",
+			"title": {
+				"en": "Temperature in the evening",
+				"nl": "Temperatuur 's avonds"
+			},
+			"getable": true,
+			"setable": false,
+			"units": {
+				"en": "C"
+			}
+		},
+		"measure_temp_morning": {
+			"type": "number",
+			"title": {
+				"en": "Temperature in the morning",
+				"nl": "Temperatuur 's ochtends"
+			},
+			"getable": true,
+			"setable": false,
+			"units": {
+				"en": "C"
+			}
+		},
 		"measure_wind_combined": {
 			"type": "string",
 			"title": {
@@ -187,7 +223,7 @@
 		"triggers": [{
 				"id": "WeatherChanged",
 				"title": {
-					"en": "The weather(forecast) has changed",
+					"en": "The weather has changed",
 					"nl": "Het weer is veranderd"
 				},
 				"hint": {
@@ -222,14 +258,14 @@
 				"args": [{
 					"name": "ChangedDescription",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
 			},
 			{
 				"id": "WindBeaufortChanged",
 				"title": {
-					"en": "The wind strength (Beaufort) has changed",
-					"nl": "De windkracht (Beaufort) is veranderd"
+					"en": "Wind strength (Beaufort) has changed",
+					"nl": "Windkracht (Beaufort) is veranderd"
 				},
 				"hint": {
 					"en": "Triggers when the strength of the wind (Beaufort) changes.",
@@ -263,14 +299,14 @@
 				"args": [{
 					"name": "ChangedWindspeedBeaufort",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
 			},
 			{
 				"id": "MintempChanged",
 				"title": {
-					"en": "The minimum temperature has changed",
-					"nl": "De minimum temperatuur is veranderd"
+					"en": "Min temperature has changed",
+					"nl": "Min temperatuur is veranderd"
 				},
 				"hint": {
 					"en": "Triggers when the minimum temperature changes.",
@@ -304,14 +340,14 @@
 				"args": [{
 					"name": "ChangedMinTemperature",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
 			},
 			{
 				"id": "MaxtempChanged",
 				"title": {
-					"en": "The maximum temperature has changed",
-					"nl": "De maximum temperatuur is veranderd"
+					"en": "Max temperature has changed",
+					"nl": "Max temperatuur is veranderd"
 				},
 				"hint": {
 					"en": "Triggers when the maximum temperature changes.",
@@ -345,14 +381,14 @@
 				"args": [{
 					"name": "ChangedMaxTemperature",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
 			},
 			{
 				"id": "CloudinessChanged",
 				"title": {
-					"en": "The cloudiness (%) has changed",
-					"nl": "De bewolking (%) is veranderd"
+					"en": "Cloudiness (%) has changed",
+					"nl": "Bewolking (%) is veranderd"
 				},
 				"hint": {
 					"en": "Triggers when the cloud cover changes.",
@@ -386,14 +422,14 @@
 				"args": [{
 					"name": "ChangedCloudiness",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
 			},
 			{
 				"id": "WindDirectionCompassChanged",
 				"title": {
-					"en": "The compass direction of the wind has changed",
-					"nl": "De kompasrichting van de wind is veranderd"
+					"en": "Compass direction wind has changed",
+					"nl": "Kompasrichting wind is veranderd"
 				},
 				"hint": {
 					"en": "Triggers when compass direction of wind changes.",
@@ -427,14 +463,14 @@
 				"args": [{
 					"name": "ChangedWindDirectionCompass",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
 			},
 			{
 				"id": "VisibilityChanged",
 				"title": {
-					"en": "The visibility has changed",
-					"nl": "Het zicht is veranderd"
+					"en": "Visibility has changed",
+					"nl": "Zicht is veranderd"
 				},
 				"hint": {
 					"en": "Triggers when visibility (meters) changes.",
@@ -468,15 +504,15 @@
 				"args": [{
 					"name": "ChangedMinTemperature",
 					"type": "device",
-					"filter": "driver_id=owmCurrent"
+					"filter": "driver_id=owmCurrent|owmLongterm"
 				}]
 			}
 		],
 		"conditions": [{
 				"id": "conditioncode",
 				"title": {
-					"en": "The overall weather !{{is|isn't}}",
-					"nl": "Het weer !{{is|is niet}}"
+					"en": "The weather !{{is|isn't}}:",
+					"nl": "Het weer !{{is|is niet}}:"
 				},
 				"hint": {
 					"en": "Description of the weather.",
@@ -485,7 +521,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					},
 					{
 						"name": "argument_main",
@@ -553,8 +589,8 @@
 			{
 				"id": "Temp",
 				"title": {
-					"en": "The temperature !{{is|isn't}} higher than",
-					"nl": "De temperatuur !{{is|is niet}} hoger dan"
+					"en": "Temperature !{{is|isn't}} higher than",
+					"nl": "Temperatuur !{{is|is niet}} hoger dan"
 				},
 				"hint": {
 					"en": "Temperature in degrees Celsius.",
@@ -563,7 +599,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					},
 					{
 						"name": "degrees",
@@ -574,8 +610,8 @@
 			{
 				"id": "Pressure",
 				"title": {
-					"en": "The pressure !{{is|isn't}} higher than",
-					"nl": "De luchtdruk !{{is|is niet}} hoger dan"
+					"en": "Pressure !{{is|isn't}} higher than",
+					"nl": "Luchtdruk !{{is|is niet}} hoger dan"
 				},
 				"hint": {
 					"en": "Pressure in millibar.",
@@ -584,11 +620,11 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					},
 					{
 						"name": "bar",
-						"filter": "driver_id=owmCurrent|owmForecast",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -596,8 +632,8 @@
 			{
 				"id": "Clouds",
 				"title": {
-					"en": "The cloudiness !{{is|isn't}} more than",
-					"nl": "De bewolking !{{is|is niet}} meer dan"
+					"en": "% Cloudiness !{{is|isn't}} more than",
+					"nl": "% Bewolking !{{is|is niet}} meer dan"
 				},
 				"hint": {
 					"en": "Percentage of cloud cover.",
@@ -606,11 +642,11 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					},
 					{
 						"name": "cloudiness",
-						"filter": "driver_id=owmCurrent|owmForecast",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -618,8 +654,8 @@
 			{
 				"id": "Humidity",
 				"title": {
-					"en": "The humidity !{{is|isn't}} higher than",
-					"nl": "De vochtigheid !{{is|is niet}} hoger dan"
+					"en": "% Humidity !{{is|isn't}} higher than",
+					"nl": "% Luchtvochtigheid !{{is|is niet}} hoger dan"
 				},
 				"hint": {
 					"en": "Percentage of moisture in air.",
@@ -628,11 +664,11 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					},
 					{
 						"name": "humidity",
-						"filter": "driver_id=owmCurrent|owmForecast",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -640,8 +676,8 @@
 			{
 				"id": "Windspeed",
 				"title": {
-					"en": "The windspeed (km/h) !{{is|isn't}} higher than",
-					"nl": "De windsnelheid (km/u) !{{is|is niet}} hoger dan"
+					"en": "Windspeed (km/h) !{{is|isn't}} higher than",
+					"nl": "Windsnelheid (km/u) !{{is|is niet}} hoger dan"
 				},
 				"hint": {
 					"en": "Speed of the wind in km/h.",
@@ -650,11 +686,11 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					},
 					{
 						"name": "windspeed",
-						"filter": "driver_id=owmCurrent|owmForecast",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -662,8 +698,8 @@
 			{
 				"id": "Windforce",
 				"title": {
-					"en": "The windforce (Beaufort) !{{is|isn't}} higher than",
-					"nl": "De windkracht (Beaufort) !{{is|is niet}} hoger dan"
+					"en": "Windforce (Beaufort) !{{is|isn't}} higher than",
+					"nl": "Windkracht (Beaufort) !{{is|is niet}} hoger dan"
 				},
 				"hint": {
 					"en": "Speed of the wind in Beaufort scale.",
@@ -672,26 +708,51 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					},
 					{
 						"name": "windforce",
-						"filter": "driver_id=owmCurrent|owmForecast",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
 			},
 			{
+				"id": "Visibility",
+				"title": {
+					"en": "Visibility !{{is|isn't}} more than",
+					"nl": "Zicht !{{is|is niet}} meer dan"
+				},
+				"hint": {
+					"en": "Visibility in meters",
+					"nl": "Zicht in meter"
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent"
+					},
+					{
+						"name": "visibility",
+						"filter": "driver_id=owmCurrent",
+						"type": "number"
+					}
+				]
+			}, {
 				"id": "Winddirection",
 				"title": {
-					"en": "The (compass) direction of the wind !{{is|isn't}}",
-					"nl": "De (kompas) richting van de wind !{{is|is niet}}"
+					"en": "Compass direction wind !{{is|isn't}}",
+					"nl": "Kompasrichting wind !{{is|is niet}}"
 				},
 				"hint": {
 					"en": "Compass direction of the wind",
 					"nl": "Kompasrichting van de wind"
 				},
 				"args": [{
+					"name": "device",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+				}, {
 					"name": "winddirection",
 					"type": "dropdown",
 					"values": [{
@@ -819,8 +880,8 @@
 				"nl": "Actueel weersbericht"
 			},
 			"images": {
-				"large": "/drivers/openweathermap/assets/images/large.png",
-				"small": "/drivers/openweathermap/assets/images/small.png"
+				"large": "/drivers/owmCurrent/assets/images/large.png",
+				"small": "/drivers/owmCurrent/assets/images/small.png"
 			},
 			"class": "sensor",
 			"capabilities": [
@@ -845,7 +906,8 @@
 			],
 			"capabilitiesOptions": {
 				"conditioncode": {
-					"preventInsights": true
+					"preventInsights": true,
+					"preventTag": true
 				}
 			},
 			"pair": [{
@@ -939,11 +1001,11 @@
 						],
 						"options": {
 							"icons": {
-								"measure_wind_combined": "./drivers/openweathermap/assets/images/wind_angle.svg",
-								"measure_wind_angle": "./drivers/openweathermap/assets/images/wind_angle.svg",
-								"measure_cloudiness": "./drivers/openweathermap/assets/images/clouds.svg",
-								"description": "./drivers/openweathermap/assets/images/description.png",
-								"date_txt": "./drivers/openweathermap/assets/images/description.png"
+								"measure_wind_combined": "./drivers/owmCurrent/assets/images/wind_angle.svg",
+								"measure_wind_angle": "./drivers/owmCurrent/assets/images/wind_angle.svg",
+								"measure_cloudiness": "./drivers/owmCurrent/assets/images/clouds.svg",
+								"description": "./drivers/owmCurrent/assets/images/description.png",
+								"date_txt": "./drivers/owmCurrent/assets/images/description.png"
 							}
 						}
 					}
@@ -957,8 +1019,8 @@
 				"nl": "Weersvoorspelling tot 5 dagen"
 			},
 			"images": {
-				"large": "/drivers/openweathermap/assets/images/large.png",
-				"small": "/drivers/openweathermap/assets/images/small.png"
+				"large": "/drivers/owmForecast/assets/images/large.png",
+				"small": "/drivers/owmForecast/assets/images/small.png"
 			},
 			"class": "sensor",
 			"capabilities": [
@@ -978,6 +1040,12 @@
 				"conditioncode",
 				"date_txt"
 			],
+			"capabilitiesOptions": {
+				"conditioncode": {
+					"preventInsights": true,
+					"preventTag": true
+				}
+			},
 			"pair": [{
 				"id": "pair"
 			}],
@@ -1093,11 +1161,174 @@
 						],
 						"options": {
 							"icons": {
-								"measure_wind_combined": "./drivers/openweathermap/assets/images/wind_angle.svg",
-								"measure_wind_angle": "./drivers/openweathermap/assets/images/wind_angle.svg",
-								"measure_cloudiness": "./drivers/openweathermap/assets/images/clouds.svg",
-								"description": "./drivers/openweathermap/assets/images/description.png",
-								"date_txt": "./drivers/openweathermap/assets/images/description.png"
+								"measure_wind_combined": "./drivers/owmForecast/assets/images/wind_angle.svg",
+								"measure_wind_angle": "./drivers/owmForecast/assets/images/wind_angle.svg",
+								"measure_cloudiness": "./drivers/owmForecast/assets/images/clouds.svg",
+								"description": "./drivers/owmForecast/assets/images/description.png",
+								"date_txt": "./drivers/owmForecast/assets/images/description.png"
+							}
+						}
+					}
+				]
+			}
+		},
+		{
+			"id": "owmLongterm",
+			"name": {
+				"en": "Daily forecasts up to 16 days",
+				"nl": "Dagelijkse Weersvoorspelling tot 16 dagen"
+			},
+			"images": {
+				"large": "/drivers/owmLongterm/assets/images/large.png",
+				"small": "/drivers/owmLongterm/assets/images/small.png"
+			},
+			"class": "sensor",
+			"capabilities": [
+				"measure_temperature",
+				"measure_temp_min",
+				"measure_temp_max",
+				"measure_temp_night",
+				"measure_temp_evening",
+				"measure_temp_morning",
+				"measure_humidity",
+				"measure_pressure",
+				"measure_rain",
+				"measure_wind_combined",
+				"measure_wind_strength",
+				"measure_wind_direction_string",
+				"measure_windstrength_beaufort",
+				"measure_wind_angle",
+				"measure_cloudiness",
+				"description",
+				"conditioncode",
+				"date_txt"
+			],
+			"capabilitiesOptions": {
+				"conditioncode": {
+					"preventInsights": true,
+					"preventTag": true
+				}
+			},
+			"pair": [{
+				"id": "pair"
+			}],
+			"settings": [{
+					"type": "group",
+					"label": {
+						"en": "OpenWeatherMap general settings",
+						"nl": "OpenWeatherMap algemene instellingen"
+					},
+					"children": [{
+							"id": "APIKey",
+							"type": "text",
+							"value": "abcdef0123456789abcdef0123456789",
+							"label": {
+								"en": "OpenWeatherMap API key:",
+								"nl": "OpenWeatherMap API sleutel:"
+							},
+							"hint": {
+								"en": "An API key can be obtained at http://openweathermap.org.",
+								"nl": "Een API sleutel kan op http://openweathermap.org verkregen worden."
+							}
+						},
+						{
+							"id": "GEOlocation",
+							"type": "label",
+							"value": "...pending first data...",
+							"label": {
+								"en": "Current location found by OpenWeatherMap:",
+								"nl": "Huidige door OpenWeatherMap gevonden locatie:"
+							},
+							"hint": {
+								"en": "Note: appears after first polling interval.",
+								"nl": "De locatie verschijnt zodra de eerste data binnen is."
+							}
+						}
+					]
+				},
+				{
+					"type": "group",
+					"label": {
+						"en": "Optional location settings",
+						"nl": "Optionele locatie instellingen"
+					},
+					"children": [{
+							"id": "GEOlocationCity",
+							"type": "text",
+							"value": "Paris,FR",
+							"label": {
+								"en": "City, countrycode (optional):",
+								"nl": "Stad, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by city/country, e.g. Paris,fr.",
+								"nl": "De locatie kan optioneel als stad/land opgegeven worden, bijv. Utrecht,nl."
+							}
+						},
+						{
+							"id": "GEOlocationZip",
+							"type": "text",
+							"value": "94040,us",
+							"label": {
+								"en": "Zip code, countrycode (optional):",
+								"nl": "Postcode, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by zip code/country, e.g. 94040,us.",
+								"nl": "De locatie kan optioneel als postcode/land opgegeven worden, bijv. 1234,NL."
+							}
+						}
+					]
+				},
+				{
+					"type": "group",
+					"label": {
+						"en": "Data source options: current or forecast",
+						"nl": "Brondata opties: actueel of voorspelling"
+					},
+					"children": [{
+						"id": "forecastInterval",
+						"type": "number",
+						"value": 0,
+						"label": {
+							"en": "Forecast, number of 3-hour intervals ahead:",
+							"nl": "Voorspelling, aantal 3-uur intervallen vooruit:"
+						},
+						"hint": {
+							"en": "You can choose the timeframe for the forecast data in three-hour intervals. Choose '8' for instance to get the forecast for the weather in 24 hours. Choose '0' for data in the current three-hour interval.",
+							"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling in intervallen van drie uur. Kies bijvoorbeeld '8' voor de voorspelling van het weer over 24 uur. Kies '0' voor data in het huidige interval van drie uur."
+						},
+						"attr": {
+							"min": 0,
+							"max": 15
+						}
+					}]
+				}
+			],
+			"mobile": {
+				"components": [{
+						"id": "icon",
+						"capabilities": []
+					},
+					{
+						"id": "sensor",
+						"capabilities": [
+							"measure_temperature",
+							"measure_wind_combined",
+							"measure_humidity",
+							"measure_rain",
+							"measure_pressure",
+							"measure_cloudiness",
+							"description",
+							"date_txt"
+						],
+						"options": {
+							"icons": {
+								"measure_wind_combined": "./drivers/owmLongterm/assets/images/wind_angle.svg",
+								"measure_wind_angle": "./drivers/owmLongterm/assets/images/wind_angle.svg",
+								"measure_cloudiness": "./drivers/owmLongterm/assets/images/clouds.svg",
+								"description": "./drivers/owmLongterm/assets/images/description.png",
+								"date_txt": "./drivers/owmLongterm/assets/images/description.png"
 							}
 						}
 					}
