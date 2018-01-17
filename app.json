@@ -18,6 +18,7 @@
 		"nl": [
 			"weer",
 			"vooruitzicht",
+			"weerbericht",
 			"klimaat",
 			"OWM"
 		]
@@ -236,6 +237,9 @@
 						"title": {
 							"en": "Weather description",
 							"nl": "Weersbeschrijving"
+						},
+						"example": {
+							"en": "mist"
 						}
 					},
 					{
@@ -244,6 +248,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -269,7 +276,8 @@
 						"title": {
 							"en": "Wind strength in Beaufort scale",
 							"nl": "Windkracht (Beaufort)"
-						}
+						},
+						"example": 5
 					},
 					{
 						"name": "location",
@@ -277,6 +285,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -302,7 +313,8 @@
 						"title": {
 							"en": "Minimum temperature",
 							"nl": "Minimum temperatuur"
-						}
+						},
+						"example": 5
 					},
 					{
 						"name": "location",
@@ -310,6 +322,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -335,7 +350,8 @@
 						"title": {
 							"en": "Maximum temperature",
 							"nl": "Maximum temperatuur"
-						}
+						},
+						"example": 5
 					},
 					{
 						"name": "location",
@@ -343,6 +359,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -368,7 +387,8 @@
 						"title": {
 							"en": "Morning temperature",
 							"nl": "Ochtend temperatuur"
-						}
+						},
+						"example": 5
 					},
 					{
 						"name": "location",
@@ -376,6 +396,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -384,7 +407,7 @@
 					"type": "device",
 					"filter": "driver_id=owmLongterm"
 				}]
-			}, 
+			},
 			{
 				"id": "EvetempChanged",
 				"title": {
@@ -401,7 +424,8 @@
 						"title": {
 							"en": "Evening temperature",
 							"nl": "Avond temperatuur"
-						}
+						},
+						"example": 5
 					},
 					{
 						"name": "location",
@@ -409,6 +433,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -434,7 +461,8 @@
 						"title": {
 							"en": "Night temperature",
 							"nl": "Nacht temperatuur"
-						}
+						},
+						"example": 5
 					},
 					{
 						"name": "location",
@@ -442,6 +470,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -467,7 +498,8 @@
 						"title": {
 							"en": "Cloudiness (%)",
 							"nl": "Bewolking (%)"
-						}
+						},
+						"example": 50
 					},
 					{
 						"name": "location",
@@ -475,6 +507,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -500,6 +535,9 @@
 						"title": {
 							"en": "Winddirection (compass)",
 							"nl": "Windrichting (kompas)"
+						},
+						"example": {
+							"en": "N"
 						}
 					},
 					{
@@ -508,6 +546,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
@@ -533,7 +574,8 @@
 						"title": {
 							"en": "Visibility in meters",
 							"nl": "Zicht in aantal meter"
-						}
+						},
+						"example": 700
 					},
 					{
 						"name": "location",
@@ -541,6 +583,9 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
 						}
 					}
 				],
