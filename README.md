@@ -27,11 +27,9 @@ The mobile interface looks as follows:
 
 The pairing view:
 
-<img src="https://drive.google.com/uc?id=1r_MclxSsvWH_LMkfDEbFgll73eKEGyTL" >
-
-Settings can be changed after pairing:
-
 <img src="https://drive.google.com/uc?id=1ySEJ4snD5MFySJYJ1d_3hQvQc2HwxYHN " >
+
+Settings can be changed after pairing.
 
 # Flow cards
 For nearly all parameters trigger and condition cards are included, see screenshot for most flowcards available for the current weather:
