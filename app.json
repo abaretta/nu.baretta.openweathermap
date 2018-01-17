@@ -385,6 +385,129 @@
 				}]
 			},
 			{
+				"id": "MorntempChanged",
+				"title": {
+					"en": "Morning temperature has changed",
+					"nl": "Ochtend temperatuur is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the morning temperature changes.",
+					"nl": "Triggert zodra de ochtend temperatuur veranderd."
+				},
+				"tokens": [{
+						"name": "measure_temperature_morn",
+						"type": "number",
+						"title": {
+							"en": "Morning temperature",
+							"nl": "Ochtend temperatuur"
+						},
+						"example": {
+							"en": "-2",
+							"nl": "-2"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedMornTemperature",
+					"type": "device",
+					"filter": "driver_id=owmLongterm"
+				}]
+			}, 
+			{
+				"id": "EvetempChanged",
+				"title": {
+					"en": "Evening temperature has changed",
+					"nl": "Avond temperatuur is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the evening temperature changes.",
+					"nl": "Triggert zodra de avond temperatuur veranderd."
+				},
+				"tokens": [{
+						"name": "measure_temperature_eve",
+						"type": "number",
+						"title": {
+							"en": "Evening temperature",
+							"nl": "Avond temperatuur"
+						},
+						"example": {
+							"en": "-2",
+							"nl": "-2"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedEveTemperature",
+					"type": "device",
+					"filter": "driver_id=owmLongterm"
+				}]
+			},
+			{
+				"id": "NighttempChanged",
+				"title": {
+					"en": "Night temperature has changed",
+					"nl": "Nacht temperatuur is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the night temperature changes.",
+					"nl": "Triggert zodra de nacht temperatuur veranderd."
+				},
+				"tokens": [{
+						"name": "measure_temperature_night",
+						"type": "number",
+						"title": {
+							"en": "Night temperature",
+							"nl": "Nacht temperatuur"
+						},
+						"example": {
+							"en": "-2",
+							"nl": "-2"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam, NL",
+							"nl": "Amsterdam, NL"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedNightTemperature",
+					"type": "device",
+					"filter": "driver_id=owmLongterm"
+				}]
+			},
+			{
 				"id": "CloudinessChanged",
 				"title": {
 					"en": "Cloudiness (%) has changed",
@@ -608,6 +731,110 @@
 				]
 			},
 			{
+				"id": "Tempmin",
+				"title": {
+					"en": "Min. temperature !{{is|isn't}} higher than",
+					"nl": "Min. temperatuur !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Minimum temperature in degrees Celsius.",
+					"nl": "Minimum temperatuur in graden Celsius."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmLongterm"
+					},
+					{
+						"name": "degrees",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Tempmax",
+				"title": {
+					"en": "Max. temperature !{{is|isn't}} higher than",
+					"nl": "Max. temperatuur !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Maximum temperature in degrees Celsius.",
+					"nl": "Maximum temperatuur in graden Celsius."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmLongterm"
+					},
+					{
+						"name": "degrees",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Tempmorn",
+				"title": {
+					"en": "Morning temperature !{{is|isn't}} higher than",
+					"nl": "Ochtend temperatuur !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Morning temperature in degrees Celsius.",
+					"nl": "Ochtend temperatuur in graden Celsius."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmLongterm"
+					},
+					{
+						"name": "degrees",
+						"type": "number"
+					}
+				]
+			}, {
+				"id": "Tempeve",
+				"title": {
+					"en": "Evening temperature !{{is|isn't}} higher than",
+					"nl": "Avond temperatuur !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Evening temperature in degrees Celsius.",
+					"nl": "Avond temperatuur in graden Celsius."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmLongterm"
+					},
+					{
+						"name": "degrees",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Tempnight",
+				"title": {
+					"en": "Night temperature !{{is|isn't}} higher than",
+					"nl": "Nacht temperatuur !{{is|is niet}} hoger dan"
+				},
+				"hint": {
+					"en": "Night temperature in degrees Celsius.",
+					"nl": "Nacht temperatuur in graden Celsius."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmLongterm"
+					},
+					{
+						"name": "degrees",
+						"type": "number"
+					}
+				]
+			},
+			{
 				"id": "Pressure",
 				"title": {
 					"en": "Pressure !{{is|isn't}} higher than",
@@ -624,7 +851,6 @@
 					},
 					{
 						"name": "bar",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -646,7 +872,6 @@
 					},
 					{
 						"name": "cloudiness",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -668,7 +893,6 @@
 					},
 					{
 						"name": "humidity",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -690,7 +914,6 @@
 					},
 					{
 						"name": "windspeed",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -712,7 +935,6 @@
 					},
 					{
 						"name": "windforce",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm",
 						"type": "number"
 					}
 				]
@@ -734,7 +956,6 @@
 					},
 					{
 						"name": "visibility",
-						"filter": "driver_id=owmCurrent",
 						"type": "number"
 					}
 				]
@@ -877,7 +1098,7 @@
 			"id": "owmCurrent",
 			"name": {
 				"en": "Current weather",
-				"nl": "Actueel weersbericht"
+				"nl": "Actueel weerbericht"
 			},
 			"images": {
 				"large": "/drivers/owmCurrent/assets/images/large.png",
@@ -1015,8 +1236,8 @@
 		{
 			"id": "owmForecast",
 			"name": {
-				"en": "Forecast up to 5 days",
-				"nl": "Weersvoorspelling tot 5 dagen"
+				"en": "Up to 5 days (3h intervals)",
+				"nl": "Tot 5 dagen (intervallen van 3 uur)"
 			},
 			"images": {
 				"large": "/drivers/owmForecast/assets/images/large.png",
@@ -1175,8 +1396,8 @@
 		{
 			"id": "owmLongterm",
 			"name": {
-				"en": "Daily forecasts up to 16 days",
-				"nl": "Dagelijkse Weersvoorspelling tot 16 dagen"
+				"en": "Up to 16 days (daily)",
+				"nl": "Tot 16 dagen (per dag)"
 			},
 			"images": {
 				"large": "/drivers/owmLongterm/assets/images/large.png",

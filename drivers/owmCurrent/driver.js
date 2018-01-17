@@ -14,7 +14,6 @@ class owmCurrentDriver extends Homey.Driver {
                     "APIKey": 'APIKey',
                     "GEOlocationCity": 'GEOlocationCity',
                     "GEOlocationZip": 'GEOlocationZip',
-                    "ForecastInterval": 'ForecastInterval'
                 }
             }
         ]

@@ -2,7 +2,7 @@
 // need Homey module, see SDK Guidelines
 const Homey = require('homey');
 
-class owmForecastDriver extends Homey.Driver {
+class owmLongtermDriver extends Homey.Driver {
 
     onPair(socket) {
 
@@ -33,4 +33,4 @@ class owmForecastDriver extends Homey.Driver {
     } // end onPair
 
 }
-module.exports = owmForecastDriver;
+module.exports = owmLongtermDriver;

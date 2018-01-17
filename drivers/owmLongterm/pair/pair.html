@@ -1,0 +1,143 @@
+<style type="text/css">
+  .input-wrap {
+    position: relative;
+  }
+  .fa {
+    position: absolute;
+    margin-left: 5px;
+    margin-top: 7px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+  }
+  .fa.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+</style>
+<p class="form-group">
+  <label for="name">Give your OpenWeatherMap sensor a name:
+  </label>
+  <span class="input-wrap">
+    <input type="text" id="name" placeholder="Naam" value="" />
+  </span>
+  <br/>
+  <label for="apikey">Enter the OpenWeatherMap API key:
+  </label>
+  <span class="input-wrap">
+    <input type="text" id="apiKey" placeholder="abcdef0123456789abcdef0123456789" value="" />
+  </span>
+  <br/>
+  <br/>
+  <label for="forecastInterval">Enter number of days ahead for the long-term forecast:
+  </label>
+  <span class="input-wrap">
+    <input type="number" id="forecastInterval" min="0" max="15" value=0 />
+    <br/>
+  </span>
+  <br/>
+  <br/>
+  <label for="geolocationcity">Optional: enter the location for the weather data, City/countrycode:
+  </label>
+  <span class="input-wrap">
+    <input type="text" id="geolocationcity" placeholder="Paris,FR" value="" />
+  </span>
+  <br/>
+  <label for="geolocationzip">...or (numeric) zipcode with countrycode:
+  </label>
+  <span class="input-wrap">
+    <input type="text" id="geolocationzip" placeholder="1234,NL" value="" />
+  </span>
+  <br/>
+  <label for="address">When left blank Homey's location will be used.
+  </label>
+  <br/>
+  <button class="button" id="validate">Save
+  </button>
+  <i class="solar-status solar-loading fa fa-circle-o-notch fa-spin">
+  </i>
+  <i class="solar-status solar-ok fa fa-check" style="color: #96ff00;">
+  </i>
+  <i class="solar-status solar-err fa fa-times" style="color: #ff6300;">
+  </i>
+</p>
+<p class="solar-err-msg" style="color: #ff6300;">
+</p>
+
+<script type="text/javascript">
+    $(function() {
+        $('#validate').click(function() {
+
+function getRadioVal(radioName) {
+  var rads = document.getElementsByName(radioName);
+
+  for(var rad in rads) {
+    if(rads[rad].checked)
+      return rads[rad].value;
+  }
+
+  return null;
+}
+
+            // variables
+            var id = Math.round(Math.random() * (100000 - 10000) + 10000);
+            var APIKey = document.getElementById('apiKey').value;
+            var name = document.getElementById('name').value;
+            var GEOlocationCity = document.getElementById('geolocationcity').value;
+            var GEOlocationZip = document.getElementById('geolocationzip').value;
+            var forecastInterval = Number(document.getElementById('forecastInterval').value);
+            // APIkey is required
+            if (APIKey == "") {
+                // Give error, required values
+                Homey.alert(__('pair.start.required'), 'error');
+                return;
+                // Homey.done() would close the pairing window, but we want to give the user the chance to correct and resubmit
+            }
+            $('.solar-status').removeClass('visible');
+            $('.solar-loading').addClass('visible');
+            Homey.emit('validate', {
+                id: id,
+                APIKey: APIKey,
+                GEOlocationCity: GEOlocationCity,
+                GEOlocationZip: GEOlocationZip,
+                forecastInterval: forecastInterval,
+            }, function(err, result) {
+                $('.solar-status').removeClass('visible');
+                if (!err) {
+                    $('.solar-ok').addClass('visible');
+                    $('.solar-err-msg').html('');
+                    var device_data = {
+                        data: {
+                            id: id
+                        },
+                        name: name,
+                        settings: {
+                            APIKey: APIKey,
+                            GEOlocationCity: GEOlocationCity,
+                            GEOlocationZip: GEOlocationZip,
+                            forecastInterval: forecastInterval
+                        }
+                    };
+                    Homey.addDevice({
+                        data: device_data.data,
+                        name: device_data.name,
+                        settings: device_data.settings,
+                    }, function(err, result) {
+                        if (err) return Homey.alert(err.message || err.toString());
+                        // Continue to back-end, pass along data
+                        // Homey.emit( 'get_devices', data_data );
+                        //                Homey.emit('add_device', device_data, function( err, result ){
+                        Homey.emit('get_devices', device_data, function(err, result) {
+                            if (err) return Homey.alert(err.message || err.toString());
+                            Homey.done();
+                        })
+                    })
+                } else {
+                    $('.solar-err').addClass('visible');
+                    $('.solar-err-msg').html(err.message || err.toString());
+                }
+            })
+        });
+    })
+</script>
+
