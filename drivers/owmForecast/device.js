@@ -165,7 +165,7 @@ class owmForecast extends Homey.Device {
                 //  this.log(data);
                 this.log("Received OWM data");
 
-                var GEOlocation = data.name + ", " + data.city.country;
+                var GEOlocation = data.city.name + ", " + data.city.country;
 
                 this.setSettings({
                         GEOlocation: GEOlocation,

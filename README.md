@@ -2,7 +2,17 @@
 
 This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. 
 
-Forecast data has been added to the app from the OpenWeatherMap 5-day view, refer to http://openweathermap.org/forecast5. During pairing you can choose the 3-hour interval you want to have weather data from. Interval 0 gives you data from the currently running 3-hour interval (should be close to the current weather), interval 8 gives data 24 hours ahead, etc.   
+# Current weather
+
+The 'current weather' data coms from the OWM current weather data, refer to http://openweathermap.org/current. It includes visibility, sunrise and sunset data which are not included in the forecast tables. Note that the max. and min. temperatures in the current data indicate the possible range in which the actual temperature is expected, it can be seen as a measure for the standard deviation of the current temperature.
+
+# Forecast up to 5 days
+
+The five day forecast data (refer to http://openweathermap.org/forecast5) includes forecasts in 3-hour intervals up to 5 days in the future. During pairing you can choose the 3-hour interval you want to have weather data from. Interval 0 gives you data from the currently running 3-hour interval (between one hour ago/two hours ahead) which should be close to the current weather. Interval 8 gives data 24 hours ahead, etc. In this dataset the maximum and minimum temperatures are the expected maximum and minimum temperature, as you would expect.
+
+# Long term weather
+
+The long term weather forecast gives data for up to 15 days in the future, in daily intervals (refer to http://openweathermap.org/forecast16). Included in the data is the daily, morning, evening and night temperature.
 
 The OpenWeatherMap polling is inspired by the 'openweather-apis', refer to https://github.com/CICCIOSGAMINO/openweather-apis. 
 
@@ -21,29 +31,12 @@ The pairing view:
 
 Settings can be changed after pairing:
 
-<img src="https://drive.google.com/uc?id=1sqyaFJEKcFdo9L-MFsyawKvWUlY3bhrn" >
+<img src="https://drive.google.com/uc?id=1ySEJ4snD5MFySJYJ1d_3hQvQc2HwxYHN " >
 
-# Features
-Current fully supported capabilities in flow (triggers) and the mobile interface:
+# Flow cards
+For nearly all parameters trigger and condition cards are included, see screenshot for most flowcards available for the current weather:
 
-- temperature
-- humidity
-- barometric pressure
-- wind speed
-- wind angle
-- rain
-
-Tracked in insights but not useable in flows yet:
-
-- minimum temperature
-- maximum temperature
-
-Only supported in the mobile interface:
-
-- weather description
-- visibility (only available in data for current weather conditions)
-- date (timestamp for API data)
-
+<img src="https://drive.google.com/uc?id=1EY31UQeJNCxVy34wmswthY81SVVjqJCT">
 
 # Requirements
 To use the app, you need to get a (free) OpenWeatherMap API key at http://openweathermap.org.
