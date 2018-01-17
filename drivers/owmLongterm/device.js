@@ -45,7 +45,7 @@ class owmForecast extends Homey.Device {
             .catch(err => {
                 if (err.code == 404) {
                     this.log("The task has not been registered yet, registering task: " + cronName);
-                    Homey.ManagerCron.registerTask(cronName, "12-59/5 * * * *", settings)
+                    Homey.ManagerCron.registerTask(cronName, "14 * * * *", settings)
                         //Homey.ManagerCron.registerTask(cronName, "*/1 * * * * ", settings)
                         .then(task => {
                             task.on('run', () => this.pollOpenWeatherMapDaily(settings));

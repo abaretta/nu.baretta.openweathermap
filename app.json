@@ -236,10 +236,6 @@
 						"title": {
 							"en": "Weather description",
 							"nl": "Weersbeschrijving"
-						},
-						"example": {
-							"en": "Clear sky",
-							"nl": "Onbewolkt"
 						}
 					},
 					{
@@ -248,10 +244,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -277,10 +269,6 @@
 						"title": {
 							"en": "Wind strength in Beaufort scale",
 							"nl": "Windkracht (Beaufort)"
-						},
-						"example": {
-							"en": "4",
-							"nl": "4"
 						}
 					},
 					{
@@ -289,10 +277,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -318,10 +302,6 @@
 						"title": {
 							"en": "Minimum temperature",
 							"nl": "Minimum temperatuur"
-						},
-						"example": {
-							"en": "-2",
-							"nl": "-2"
 						}
 					},
 					{
@@ -330,10 +310,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -359,10 +335,6 @@
 						"title": {
 							"en": "Maximum temperature",
 							"nl": "Maximum temperatuur"
-						},
-						"example": {
-							"en": "26",
-							"nl": "26"
 						}
 					},
 					{
@@ -371,10 +343,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -400,10 +368,6 @@
 						"title": {
 							"en": "Morning temperature",
 							"nl": "Ochtend temperatuur"
-						},
-						"example": {
-							"en": "-2",
-							"nl": "-2"
 						}
 					},
 					{
@@ -412,10 +376,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -441,10 +401,6 @@
 						"title": {
 							"en": "Evening temperature",
 							"nl": "Avond temperatuur"
-						},
-						"example": {
-							"en": "-2",
-							"nl": "-2"
 						}
 					},
 					{
@@ -453,10 +409,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -482,10 +434,6 @@
 						"title": {
 							"en": "Night temperature",
 							"nl": "Nacht temperatuur"
-						},
-						"example": {
-							"en": "-2",
-							"nl": "-2"
 						}
 					},
 					{
@@ -494,10 +442,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -523,10 +467,6 @@
 						"title": {
 							"en": "Cloudiness (%)",
 							"nl": "Bewolking (%)"
-						},
-						"example": {
-							"en": "65%",
-							"nl": "65%"
 						}
 					},
 					{
@@ -535,10 +475,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -564,10 +500,6 @@
 						"title": {
 							"en": "Winddirection (compass)",
 							"nl": "Windrichting (kompas)"
-						},
-						"example": {
-							"en": "NNW",
-							"nl": "NNW"
 						}
 					},
 					{
@@ -576,10 +508,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
@@ -605,10 +533,6 @@
 						"title": {
 							"en": "Visibility in meters",
 							"nl": "Zicht in aantal meter"
-						},
-						"example": {
-							"en": "1000",
-							"nl": "1000"
 						}
 					},
 					{
@@ -617,10 +541,6 @@
 						"title": {
 							"en": "Location",
 							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam, NL",
-							"nl": "Amsterdam, NL"
 						}
 					}
 				],
