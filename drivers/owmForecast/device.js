@@ -185,8 +185,13 @@ class owmForecast extends Homey.Device {
                 var cloudiness = data.list[forecastInterval].clouds.all
                 var description = data.list[forecastInterval].weather[0].description
 
-                if (data.list[forecastInterval].rain['3h']) {
+                if (typeof data.list[forecastInterval].rain !== 'undefined') {
                     var rain3h = data.list[forecastInterval].rain['3h'];
+                    //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
+                    var rain = rain3h / 3;
+                    // treat snow/rain as 'precipitation'... 
+                } else if (typeof data.list[forecastInterval].snow['3h'] !== 'undefined') {
+                    var rain3h = data.list[forecastInterval].snow['3h'];
                     //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
                     var rain = rain3h / 3;
                 } else {

@@ -28,7 +28,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"compatibility": ">=1.5.0",
 	"author": {
 		"name": "Anne Baretta",
@@ -1135,6 +1135,7 @@
 				},
 				{
 					"type": "group",
+					"collapsed": "true",
 					"label": {
 						"en": "Optional location settings",
 						"nl": "Optionele locatie instellingen"
