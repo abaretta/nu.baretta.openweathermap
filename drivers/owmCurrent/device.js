@@ -242,10 +242,12 @@ class owmCurrent extends Homey.Device {
                 var date_txt = new Date(data.dt * 1e3).toISOString().slice(-24, -5);
                 date_txt = date_txt.replace('T', ' ');
 
-                var sunrise = new Date(data.sys.sunrise * 1e3).toISOString().slice(-13, -8);
+                var sunrise = new Date(data.sys.sunrise * 1e3).toString().slice(-23, -18);
+                //var sunrise = new Date(data.sys.sunrise * 1e3).toISOString().slice(-13, -8);
                 //sunrise = sunrise.replace('T', ' ');
 
-                var sunset = new Date(data.sys.sunset * 1e3).toISOString().slice(-13, -8);
+                var sunset = new Date(data.sys.sunset * 1e3).toString().slice(-23, -18);
+                //var sunset = new Date(data.sys.sunset * 1e3).toISOString().slice(-13, -8);
                 //sunset = sunset.replace('T', ' ');
 
                 this.log("Comparing variables before and after current polling interval");
