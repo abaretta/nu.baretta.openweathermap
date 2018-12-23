@@ -32,10 +32,10 @@ The pairing view:
 Settings can be changed after pairing. By default Homey's location is used, optionally a different location can be entered, either by name (city and countrycode, e.g. 'Paris,FR'), or by entering a zip code. 
 
 Both methods can be tested by querying the OpenWeathMap site directly. For testing a location by location, enter the following (fill in your own <city,country> combination as well as the API key):
-[https://api.openweathermap.org/data/2.5/weather?q=<city,countrycode>&APPID=<API key>]
+`https://api.openweathermap.org/data/2.5/weather?q=<city,countrycode>&APPID=<API key>`
 
 For testing a zip code, enter the following in a browser (fill in your <zipcode,country> combination as well as the API key):
-[https://api.openweathermap.org/data/2.5/weather?zip=<zipcode,country>&APPID=<API key>]
+`https://api.openweathermap.org/data/2.5/weather?zip=<zipcode,country>&APPID=<API key>`
 
 # Flow cards
 For nearly all parameters trigger and condition cards are included, see screenshot for most flowcards available for the current weather:
