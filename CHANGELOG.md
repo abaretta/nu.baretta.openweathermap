@@ -8,3 +8,4 @@
 
 **Version 0.0.12**
 - Fixed encoding of special characters in city names (encodeURIComponent).
+- Switched to http-min library for http requests.
