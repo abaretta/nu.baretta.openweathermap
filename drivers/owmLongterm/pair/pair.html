@@ -16,20 +16,20 @@
   }
 </style>
 <p class="form-group">
-  <label for="name">Give your OpenWeatherMap sensor a name:
+  <label for="name"><span data-i18n="pair.start.name"></span>
   </label>
   <span class="input-wrap">
     <input type="text" id="name" placeholder="Naam" value="" />
   </span>
   <br/>
-  <label for="apikey">Enter the OpenWeatherMap API key:
+  <label for="apikey"><span data-i18n="pair.start.apiKey"></span>
   </label>
   <span class="input-wrap">
     <input type="text" id="apiKey" placeholder="abcdef0123456789abcdef0123456789" value="" />
   </span>
   <br/>
   <br/>
-  <label for="forecastInterval">Enter number of days ahead for the long-term forecast:
+  <label for="forecastInterval"><span data-i18n="pair.start.forecastIntervalDays"></span>
   </label>
   <span class="input-wrap">
     <input type="number" id="forecastInterval" min="0" max="15" value=0 />
@@ -37,22 +37,22 @@
   </span>
   <br/>
   <br/>
-  <label for="geolocationcity">Optional: enter the location for the weather data, City/countrycode:
+  <label for="geolocationcity"><span data-i18n="pair.start.optional"></span>
   </label>
   <span class="input-wrap">
     <input type="text" id="geolocationcity" placeholder="Paris,FR" value="" />
   </span>
   <br/>
-  <label for="geolocationzip">...or (numeric) zipcode with countrycode:
+  <label for="geolocationzip"><span data-i18n="pair.start.zipcode"></span>
   </label>
   <span class="input-wrap">
     <input type="text" id="geolocationzip" placeholder="1234,NL" value="" />
   </span>
   <br/>
-  <label for="address">When left blank Homey's location will be used.
+  <label for="address"><span data-i18n="pair.start.autolocation"></span>
   </label>
   <br/>
-  <button class="button" id="validate">Save
+  <button class="button" id="validate"><span data-i18n="pair.start.saveSettings"></span>
   </button>
   <i class="solar-status solar-loading fa fa-circle-o-notch fa-spin">
   </i>

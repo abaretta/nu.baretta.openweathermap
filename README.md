@@ -27,7 +27,7 @@ The mobile interface looks as follows:
 
 The pairing view:
 
-<img src="https://drive.google.com/uc?id=1ySEJ4snD5MFySJYJ1d_3hQvQc2HwxYHN " >
+<img src="https://drive.google.com/uc?id=1ySEJ4snD5MFySJYJ1d_3hQvQc2HwxYHN " width="500" height="400">
 
 Settings can be changed after pairing. By default Homey's location is used, optionally a different location can be entered, either by name (city and countrycode, e.g. 'Paris,FR'), or by entering a zip code. 
 

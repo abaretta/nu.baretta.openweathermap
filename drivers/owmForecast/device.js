@@ -8,17 +8,10 @@ class owmForecast extends Homey.Device {
 
     onInit() {
         this.log('device init');
-        //console.dir("getData: "); // for debugging
-        //console.dir(this.getData()); // for debugging
-        //console.dir("getSettings: "); // for debugging
-        //console.dir(this.getSettings()); // for debugging
-        let device = this; // We're in a Device instance
         let settings = this.getSettings();
         let forecastInterval = this.getSetting('forecastInterval') || 0;
         let name = this.getName() + '_' + this.getData().id;
         let cronName = name.toLowerCase();
-        let tokens = {};
-        let state = {};
 
         settings["lat"] = Homey.ManagerGeolocation.getLatitude();
         settings["lon"] = Homey.ManagerGeolocation.getLongitude();
@@ -34,7 +27,6 @@ class owmForecast extends Homey.Device {
                 lon: Homey.ManagerGeolocation.getLongitude(),
                 forecastInterval: forecastInterval,
             })
-            //.then(this.log)
             .catch(this.error)
 
         Homey.ManagerCron.getTask(cronName)
@@ -46,7 +38,6 @@ class owmForecast extends Homey.Device {
                 if (err.code == 404) {
                     this.log("The task has not been registered yet, registering task: " + cronName);
                     Homey.ManagerCron.registerTask(cronName, "12-59/30 * * * *", settings)
-                        //Homey.ManagerCron.registerTask(cronName, "*/1 * * * * ", settings)
                         .then(task => {
                             task.on('run', () => this.pollOpenWeatherMapHourly(settings));
                         })
@@ -59,9 +50,7 @@ class owmForecast extends Homey.Device {
             });
 
         // Flows
-        /*        this._flowTriggerConditioncodeChanged = new Homey.FlowCardTriggerDevice('conditioncode')
-                    .register()
-        */
+
         this._flowTriggerWeatherChanged = new Homey.FlowCardTriggerDevice('WeatherChanged')
             .register()
 
@@ -162,7 +151,6 @@ class owmForecast extends Homey.Device {
             .then(data => {
                 let device = this;
                 let forecastInterval = this.getSetting('forecastInterval');
-                //  this.log(data);
                 this.log("Received OWM data");
 
                 var GEOlocation = data.city.name + ", " + data.city.country;
@@ -170,7 +158,6 @@ class owmForecast extends Homey.Device {
                 this.setSettings({
                         GEOlocation: GEOlocation,
                     })
-                    //.then(this.log)
                     .catch(this.error);
 
                 var conditioncode = data.list[forecastInterval].weather[0].id;
@@ -187,12 +174,10 @@ class owmForecast extends Homey.Device {
 
                 if (typeof data.list[forecastInterval].rain !== 'undefined') {
                     var rain3h = data.list[forecastInterval].rain['3h'];
-                    //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
                     var rain = rain3h / 3;
                     // treat snow/rain as 'precipitation'... 
                 } else if (typeof data.list[forecastInterval].snow['3h'] !== 'undefined') {
                     var rain3h = data.list[forecastInterval].snow['3h'];
-                    //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
                     var rain = rain3h / 3;
                 } else {
                     var rain = 0;
@@ -241,7 +226,6 @@ class owmForecast extends Homey.Device {
                 }
                 if (this.getCapabilityValue('measure_temperature') != temp) {
                     this.setCapabilityValue('measure_temperature', temp);
-                    // this.updatevar('measure_temperature',temp);
                 }
                 if (this.getCapabilityValue('measure_temp_min') != temp_min) {
                     this.log("temp_min has changed. Old min_temp: " + this.getCapabilityValue('measure_temperature_min') + " New min temp: " + temp_min);
@@ -253,7 +237,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerMinTempChangedFlow(device, tokens, state);
-                    // this.updatevar('measure_temp_min',temp_min);
                     this.setCapabilityValue('measure_temp_min', temp_min);
                 }
                 if (this.getCapabilityValue('measure_temp_max') != temp_max) {
@@ -267,7 +250,6 @@ class owmForecast extends Homey.Device {
                     };
                     this.triggerMaxTempChangedFlow(device, tokens, state);
                     this.setCapabilityValue('measure_temp_max', temp_max);
-                    // this.updatevar('measure_temp_max', temp_max);
                 }
                 if (this.getCapabilityValue('date_txt') != date_txt) {
                     this.setCapabilityValue('date_txt', date_txt);
@@ -299,7 +281,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerWindBeaufortChangedFlow(device, tokens, state);
-                    //this.updatevar('measure_windstrength_beaufort', windspeedbeaufort);
                     this.setCapabilityValue('measure_windstrength_beaufort', windspeedbeaufort);
                 }
                 if (this.getCapabilityValue('measure_wind_direction_string') != winddegcompass) {
@@ -311,7 +292,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerWindDirectionCompassChangedFlow(device, tokens, state);
-                    //this.updatevar('measure_wind_direction_string', winddegcompass);
                     this.setCapabilityValue('measure_wind_direction_string', winddegcompass);
                 }
                 if (this.getCapabilityValue('measure_cloudiness') != cloudiness) {
@@ -324,7 +304,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerCloudinessChangedFlow(device, tokens, state);
-                    //this.updatevar('measure_cloudiness', cloudiness);
                     this.setCapabilityValue('measure_cloudiness', cloudiness);
                 }
                 if (this.getCapabilityValue('description') != description) {
@@ -337,7 +316,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerWeatherChangedFlow(device, tokens, state);
-                    //this.updatevar('description', description);
                     this.setCapabilityValue('description', description);
                 }
             })

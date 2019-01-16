@@ -3,66 +3,20 @@
 		"start": {
       "title": "Setup OpenWeatherMap",
       "intro": "Enter your API key and a name.",
-			"error": "An error has occurred.",
+      "error": "An error has occurred.",
+      "apiKey": "Enter the OpenWeatherMap API key:",
       "required": "API key is a required value.",
+      "optional": "Optional: enter the location for the weather data, City/countrycode:",
+      "zipcode": "...or (numeric) zipcode with countrycode:",
+      "autolocation": "When left blank Homey's location will be used.",
       "updatefrequency": "Enter the update frequency:",
+      "forecastInterval3h": "Number of 3-hour forecast intervals ahead of current time for forecast:",
+      "forecastIntervalDays": "Number of days ahead for the long-term forecast:",
       "geolocation": "Use Homey's location:",
       "unit": "Use imperial units:",
       "language": "Select language:",
-      "deviceName": "Device name:",
+      "name": "Give your OpenWeatherMap sensor a name:",
       "saveSettings": "Save settings"
 		}
-  },
- "settings" : {
-    "app" : {
-      "title" : "OpenWeatherMap settings",
-      
-      "wunderground" : {
-        "wunderground_title" : "OpenWeatherMap settings",
-        "key" : "API key",
-        "update_frequency" : "Update every (min)",
-        "updateFrequency_explanation" : "Current weather is updated every 10 minutes, forecasts every hour."
-      },
-      
-      "generic" : {
-        "units_title" : "Generic",
-        "units_auto" : "Automatic",
-        "units_label" : "Units",
-        "units_metric" : "Metric",
-        "units_imperial" : "Imperial",
-        "unitChange_explanation": "If the units are changed, all current Insights logs will be deleted!",
-        "notifications_label" : "Notifications",
-        "notifications_text" : "Send notifications to notification center when error occur",
-        "user_id_text" : "Unique user ID",
-        "user_id_explanation" : "This ID can be used by the developer for anonymous bug tracking for this app"
-      },
-      
-      "location" : {
-        "location" : "Location",
-        "autolocation" : "Use Homey's location",
-        "manualLocation_label" : "Manual location",
-        "manualLocation_explanation" : "Use the fields below to specify an location for the weather data.",
-        "city" : "City (or empty when using station ID)",
-        "country" : "Country (or station ID)"
-      },
-      
-      "button" : {
-        "save" : "Save",
-        "test" : "Test"
-      },
-      
-       "log" : {
-        "title" : "Test log:"
-      },
-      
-       "messages" : {
-         "testing" : "Testing, please wait...",
-         "unable_get_location" : "Unable to get Homey's location, please try again or specify a location manually.",
-         "settings_success_tested" : "Settings successfully tested. Please use the save button to save your settings",
-         "settings_saved" : "Settings saved",
-         "settings_noSettingsChanged" : "No setting has been changed",
-         "settings_unexpectedError" : "Unexpected error occurred. Please try again"
-       }
-    }
   }
 }
