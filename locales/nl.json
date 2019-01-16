@@ -1,22 +1,22 @@
 {
-	"pair": {
-		"start": {
-      "title": "Setup OpenWeatherMap",
-      "intro": "Voer de OpenWeatherMap API key in en een naam:",
-      "error": "An error has occurred.",
-      "apiKey": "Voer de OpenWeatherMap API key in:",
-      "required": "API key is een vereist veld",
-      "optional": "Optioneel: voer de locatie in voor de weer informatie, stad/landencode",
-      "zipcode": "...of (numerieke) postcode met landencode:",
-      "autolocation": "Indien leeg zal Homey's locatie gebruikt worden.",
-      "updatefrequency": "Voer de update frequentie in:",
-      "forecastInterval3h": "Termijn weersverwachting (aantal 3-uur intervallen vooruit in de tijd):",
-      "forecastIntervalDays": "Termijn weersverwachting (aantal dagen vooruit):",
-      "geolocation": "Gebruik Homey's locatie:",
-      "unit": "Selecteer voor imperiale eenheden ipv. metrisch:",
-      "language": "Selecteer taal:",
-      "name": "Geef je OpenWeatherMap sensor een naam:",
-      "saveSettings": "Instellingen opslaan"
-		}
-  }
+   "pair": {
+      "start": {
+         "title": "Setup OpenWeatherMap",
+         "intro": "Voer de OpenWeatherMap API key in en een naam:",
+         "error": "An error has occurred.",
+         "apiKey": "Voer de OpenWeatherMap API key in:",
+         "required": "API key is een vereist veld",
+         "optional": "Optioneel: voer de locatie in voor de weer informatie, stad/landencode",
+         "zipcode": "...of (numerieke) postcode met landencode:",
+         "autolocation": "Indien leeg zal Homey's locatie gebruikt worden.",
+         "updatefrequency": "Voer de update frequentie in:",
+         "forecastInterval3h": "Termijn weersverwachting (aantal 3-uur intervallen vooruit in de tijd):",
+         "forecastIntervalDays": "Termijn weersverwachting (aantal dagen vooruit):",
+         "geolocation": "Gebruik Homey's locatie:",
+         "unit": "Selecteer voor imperiale eenheden ipv. metrisch:",
+         "language": "Selecteer taal:",
+         "name": "Geef je OpenWeatherMap sensor een naam:",
+         "saveSettings": "Instellingen opslaan"
+      }
+   }
 }

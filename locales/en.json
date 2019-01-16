@@ -1,22 +1,22 @@
 {
-	"pair": {
-		"start": {
-      "title": "Setup OpenWeatherMap",
-      "intro": "Enter your API key and a name.",
-      "error": "An error has occurred.",
-      "apiKey": "Enter the OpenWeatherMap API key:",
-      "required": "API key is a required value.",
-      "optional": "Optional: enter the location for the weather data, City/countrycode:",
-      "zipcode": "...or (numeric) zipcode with countrycode:",
-      "autolocation": "When left blank Homey's location will be used.",
-      "updatefrequency": "Enter the update frequency:",
-      "forecastInterval3h": "Number of 3-hour forecast intervals ahead of current time for forecast:",
-      "forecastIntervalDays": "Number of days ahead for the long-term forecast:",
-      "geolocation": "Use Homey's location:",
-      "unit": "Use imperial units:",
-      "language": "Select language:",
-      "name": "Give your OpenWeatherMap sensor a name:",
-      "saveSettings": "Save settings"
-		}
-  }
+   "pair": {
+      "start": {
+         "title": "Setup OpenWeatherMap",
+         "intro": "Enter your API key and a name.",
+         "error": "An error has occurred.",
+         "apiKey": "Enter the OpenWeatherMap API key:",
+         "required": "API key is a required value.",
+         "optional": "Optional: enter the location for the weather data, City/countrycode:",
+         "zipcode": "...or (numeric) zipcode with countrycode:",
+         "autolocation": "When left blank Homey's location will be used.",
+         "updatefrequency": "Enter the update frequency:",
+         "forecastInterval3h": "Number of 3-hour forecast intervals ahead of current time for forecast:",
+         "forecastIntervalDays": "Number of days ahead for the long-term forecast:",
+         "geolocation": "Use Homey's location:",
+         "unit": "Use imperial units:",
+         "language": "Select language:",
+         "name": "Give your OpenWeatherMap sensor a name:",
+         "saveSettings": "Save settings"
+      }
+   }
 }
