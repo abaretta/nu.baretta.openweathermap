@@ -6,7 +6,7 @@ const weather = require('index.js');
 
 class owmForecast extends Homey.Device {
 
-    onInit() {
+    async onInit() {
         this.log('device init');
         let settings = this.getSettings();
         let forecastInterval = this.getSetting('forecastInterval') || 0;
@@ -29,25 +29,21 @@ class owmForecast extends Homey.Device {
             })
             .catch(this.error)
 
-        Homey.ManagerCron.getTask(cronName)
-            .then(task => {
-                this.log("The task exists: " + cronName);
+        try {
+            var task = await Homey.ManagerCron.getTask(cronName);
+            task.on('run', () => this.pollOpenWeatherMapDaily(settings));
+        } catch (err) {
+            if (err.code !== 404) {
+                return this.log(`other cron error: ${err.message}`);
+            }
+            this.log("The task has not been registered yet, registering task: " + cronName);
+            try {
+                task = await Homey.ManagerCron.registerTask(cronName, "5-59/15 * * * *", settings)
                 task.on('run', () => this.pollOpenWeatherMapDaily(settings));
-            })
-            .catch(err => {
-                if (err.code == 404) {
-                    this.log("The task has not been registered yet, registering task: " + cronName);
-                    Homey.ManagerCron.registerTask(cronName, "14 * * * *", settings)
-                        .then(task => {
-                            task.on('run', () => this.pollOpenWeatherMapDaily(settings));
-                        })
-                        .catch(err => {
-                            this.log(`problem with registering cronjob: ${err.message}`);
-                        });
-                } else {
-                    this.log(`other cron error: ${err.message}`);
-                }
-            });
+            } catch (err) {
+                return this.log(`problem with registering cronjob: ${err.message}`);
+            }
+        }
 
         // Flows
 
@@ -94,31 +90,31 @@ class owmForecast extends Homey.Device {
 
         this._conditionTempmin = new Homey.FlowCardCondition("Tempmin").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temp_min') >= args.degrees);
+                var result = (this.getCapabilityValue('measure_temperature.min') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempmax = new Homey.FlowCardCondition("Tempmax").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temp_max') >= args.degrees);
+                var result = (this.getCapabilityValue('measure_temperature.max') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempeve = new Homey.FlowCardCondition("Tempeve").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temp_evening') >= args.degrees);
+                var result = (this.getCapabilityValue('measure_temperature.evening') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempmorn = new Homey.FlowCardCondition("Tempmorn").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temp_morning') >= args.degrees);
+                var result = (this.getCapabilityValue('measure_temperature.morning') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempnight = new Homey.FlowCardCondition("Tempnight").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temp_night') >= args.degrees);
+                var result = (this.getCapabilityValue('measure_temperature.night') >= args.degrees);
                 return Promise.resolve(result);
             })
 
@@ -255,91 +251,92 @@ class owmForecast extends Homey.Device {
                 date_txt = date_txt.replace('T', ' ');
 
                 this.log("Comparing variables before and after current polling interval");
+                // update each interval, even if unchanged.
 
-                if (this.getCapabilityValue('conditioncode') != conditioncode) {
-                    this.setCapabilityValue('conditioncode', conditioncode);
-                }
-                if (this.getCapabilityValue('measure_temperature') != temp) {
-                    this.setCapabilityValue('measure_temperature', temp);
-                }
-                if (this.getCapabilityValue('measure_temp_min') != temp_min) {
-                    this.log("temp_min has changed. Old min_temp: " + this.getCapabilityValue('measure_temperature_min') + " New min temp: " + temp_min);
+                const capabilitySet = {
+                    'conditioncode': conditioncode,
+                    'measure_temperature': temp,
+                    'measure_temperature.min': temp_min,
+                    'measure_temperature.max': temp_max,
+                    'measure_temperature.morning': temp_morn,
+                    'measure_temperature.evening': temp_eve,
+                    'measure_temperature.night': temp_night,
+                    'date_txt': date_txt,
+                    'measure_humidity': hum,
+                    'measure_pressure': pressure,
+                    'measure_rain': rain,
+                    'measure_wind_combined': windcombined,
+                    'measure_wind_strength': windstrength,
+                    'measure_wind_angle': windangle,
+                    'measure_windstrength_beaufort': windspeedbeaufort,
+                    'measure_wind_direction_string': winddegcompass,
+                    'measure_cloudiness': cloudiness,
+                    'description': description
+                };
+
+                this.getCapabilities().forEach(capability => {
+                    //this.log("Capability: " + capability + ":" + capabilitySet[capability]);
+                    if (capabilitySet[capability] != undefined) {
+                        this.setCapabilityValue(capability, capabilitySet[capability])
+                            .catch(err => this.log(err));
+                    } else {
+                        this.log("Capability undefined: " + capability)
+                    }
+                });
+
+                if (this.getCapabilityValue('measure_temperature.min') != temp_min) {
+                    this.log("temp_min has changed. Old min_temp: " + this.getCapabilityValue('measure_temperature.min') + " New min temp: " + temp_min);
                     let state = {
-                        "measure_temp_min": temp_min
+                        "measure_temperature.min": temp_min
                     };
                     let tokens = {
-                        "measure_temp_min": temp_min,
+                        "measure_temperature.min": temp_min,
                         "location": GEOlocation
                     };
                     this.triggerMinTempChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_temp_min', temp_min);
                 }
-                if (this.getCapabilityValue('measure_temp_max') != temp_max) {
-                    this.log("temp_max has changed. Old max_temp: " + this.getCapabilityValue('measure_temperature_max') + " New max temp: " + temp_max);
+                if (this.getCapabilityValue('measure_temperature.max') != temp_max) {
+                    this.log("temp_max has changed. Old max_temp: " + this.getCapabilityValue('measure_temperature.max') + " New max temp: " + temp_max);
                     let state = {
-                        "measure_temperature_max": temp_max
+                        "measure_temperature.max": temp_max
                     };
                     let tokens = {
-                        "measure_temperature_max": temp_max,
+                        "measure_temperature.max": temp_max,
                         "location": GEOlocation
                     };
                     this.triggerMaxTempChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_temp_max', temp_max);
                 }
-                if (this.getCapabilityValue('measure_temp_morning') != temp_morn) {
+                if (this.getCapabilityValue('measure_temperature.morning') != temp_morn) {
                     let state = {
-                        "measure_temp_morning": temp_morn
+                        "measure_temperature.morning": temp_morn
                     };
                     let tokens = {
-                        "measure_temp_morning": temp_morn,
+                        "measure_temperature.morning": temp_morn,
                         "location": GEOlocation
                     };
                     this.triggerMornTempChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_temp_morning', temp_morn);
                 }
-                if (this.getCapabilityValue('measure_temp_evening') != temp_eve) {
+                if (this.getCapabilityValue('measure_temperature.evening') != temp_eve) {
                     let state = {
-                        "measure_temp_evening": temp_eve
+                        "measure_temperature.evening": temp_eve
                     };
                     let tokens = {
-                        "measure_temp_evening": temp_eve,
+                        "measure_temperature.evening": temp_eve,
                         "location": GEOlocation
                     };
                     this.triggerEveTempChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_temp_evening', temp_eve);
                 }
-                if (this.getCapabilityValue('measure_temp_night') != temp_night) {
+                if (this.getCapabilityValue('measure_temperature.night') != temp_night) {
                     let state = {
-                        "measure_temp_night": temp_night
+                        "measure_temperature.night": temp_night
                     };
                     let tokens = {
-                        "measure_temp_night": temp_night,
+                        "measure_temperature.night": temp_night,
                         "location": GEOlocation
                     };
                     this.triggerNightTempChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_temp_night', temp_night);
                 }
-                if (this.getCapabilityValue('date_txt') != date_txt) {
-                    this.setCapabilityValue('date_txt', date_txt);
-                }
-                if (this.getCapabilityValue('measure_humidity') != hum) {
-                    this.setCapabilityValue('measure_humidity', hum);
-                }
-                if (this.getCapabilityValue('measure_pressure') != pressure) {
-                    this.setCapabilityValue('measure_pressure', pressure);
-                }
-                if (this.getCapabilityValue('measure_rain') != rain) {
-                    this.setCapabilityValue('measure_rain', rain);
-                }
-                if (this.getCapabilityValue('measure_wind_combined') != windcombined) {
-                    this.setCapabilityValue('measure_wind_combined', windcombined);
-                }
-                if (this.getCapabilityValue('measure_wind_strength') != windstrength) {
-                    this.setCapabilityValue('measure_wind_strength', windstrength);
-                }
-                if (this.getCapabilityValue('measure_wind_angle') != windangle) {
-                    this.setCapabilityValue('measure_wind_angle', windangle);
-                }
+
                 if (this.getCapabilityValue('measure_windstrength_beaufort') != windspeedbeaufort) {
                     let state = {
                         "measure_windstrength_beaufort": windspeedbeaufort
@@ -349,7 +346,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerWindBeaufortChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_windstrength_beaufort', windspeedbeaufort);
                 }
                 if (this.getCapabilityValue('measure_wind_direction_string') != winddegcompass) {
                     let state = {
@@ -360,7 +356,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerWindDirectionCompassChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_wind_direction_string', winddegcompass);
                 }
                 if (this.getCapabilityValue('measure_cloudiness') != cloudiness) {
                     this.log("cloudiness has changed. Previous cloudiness: " + this.getCapabilityValue('measure_cloudiness') + " New cloudiness: " + cloudiness);
@@ -372,7 +367,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerCloudinessChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('measure_cloudiness', cloudiness);
                 }
                 if (this.getCapabilityValue('description') != description) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
@@ -384,7 +378,6 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerWeatherChangedFlow(device, tokens, state);
-                    this.setCapabilityValue('description', description);
                 }
             })
             .catch(error => {
@@ -487,13 +480,6 @@ class owmForecast extends Homey.Device {
 
     triggerCloudinessChangedFlow(device, tokens, state) {
         this._flowTriggerCloudinessChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerVisibilityChangedFlow(device, tokens, state) {
-        this._flowTriggerVisibilityChanged
             .trigger(device, tokens, state)
             .then(this.log)
             .catch(this.error)

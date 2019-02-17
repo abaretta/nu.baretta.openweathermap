@@ -28,9 +28,9 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.13",
+	"version": "0.0.14",
 	"compatibility": ">=1.5.0",
-        "homeyCommunityTopicId" : 1048,
+	"homeyCommunityTopicId": 1048,
 	"author": {
 		"name": "Anne Baretta",
 		"email": "dev@baretta.nu"
@@ -58,6 +58,8 @@
 				"en": "Visibility",
 				"nl": "Zicht"
 			},
+			"uiComponent": "sensor",
+			"icon": "/assets/images/visibility.svg",
 			"getable": true,
 			"setable": false,
 			"units": {
@@ -75,6 +77,8 @@
 			},
 			"getable": true,
 			"setable": false,
+			"uiComponent": "sensor",
+			"icon": "/assets/images/clouds.svg",
 			"units": {
 				"en": "%"
 			},
@@ -82,62 +86,87 @@
 			"max": 100,
 			"step": 1
 		},
-		"measure_temp_min": {
+		"measure_temperature.min": {
 			"type": "number",
+			"label": {
+				"en": "Minimum",
+				"nl": "Minimum"
+			},
 			"title": {
 				"en": "Minimum temperature",
 				"nl": "Minimum temperatuur"
 			},
 			"getable": true,
 			"setable": false,
+			"uiComponent": "sensor",
 			"units": {
 				"en": "C"
 			}
 		},
-		"measure_temp_max": {
+		"measure_temperature.max": {
 			"type": "number",
+			"label": {
+				"en": "Maximum",
+				"nl": "Maximum"
+			},
 			"title": {
 				"en": "Maximum temperature",
 				"nl": "Maximum temperatuur"
 			},
 			"getable": true,
 			"setable": false,
+			"uiComponent": "sensor",
 			"units": {
 				"en": "C"
 			}
 		},
-		"measure_temp_night": {
+		"measure_temperature.night": {
 			"type": "number",
+			"label": {
+				"en": "Night",
+				"nl": "Nacht"
+			},
 			"title": {
 				"en": "Temperature at night",
 				"nl": "Temperatuur 's nachts"
 			},
 			"getable": true,
 			"setable": false,
+			"uiComponent": "sensor",
 			"units": {
 				"en": "C"
 			}
 		},
-		"measure_temp_evening": {
+		"measure_temperature.evening": {
 			"type": "number",
+			"label": {
+				"en": "Evening",
+				"nl": "Avond"
+			},
 			"title": {
 				"en": "Temperature in the evening",
 				"nl": "Temperatuur 's avonds"
 			},
 			"getable": true,
 			"setable": false,
+			"uiComponent": "sensor",
 			"units": {
 				"en": "C"
 			}
 		},
-		"measure_temp_morning": {
+		"measure_temperature.morning": {
 			"type": "number",
+			"label": {
+				"en": "Morning",
+				"nl": "Ochtend"
+			},
 			"title": {
 				"en": "Temperature in the morning",
 				"nl": "Temperatuur 's ochtends"
 			},
 			"getable": true,
 			"setable": false,
+			"uiComponent": "sensor",
 			"units": {
 				"en": "C"
 			}
@@ -148,6 +177,8 @@
 				"en": "Wind speed and direction",
 				"nl": "Windkracht en richting"
 			},
+			"uiComponent": "sensor",
+			"icon": "/assets/images/wind_angle.svg",
 			"getable": true,
 			"setable": false
 		},
@@ -157,6 +188,7 @@
 				"en": "Wind direction (compass)",
 				"nl": "Windrichting (kompas)"
 			},
+			"uiComponent": null,
 			"getable": true,
 			"setable": false
 		},
@@ -166,6 +198,7 @@
 				"en": "Wind speed in Beaufort scale",
 				"nl": "Windkracht in Beaufort schaal"
 			},
+			"uiComponent": null,
 			"getable": true,
 			"setable": false,
 			"units": {
@@ -181,6 +214,8 @@
 				"en": "Description",
 				"nl": "Beschrijving"
 			},
+			"uiComponent": "sensor",
+			"icon": "/assets/images/text.svg",
 			"getable": true,
 			"setable": false
 		},
@@ -190,6 +225,7 @@
 				"en": "OWM condition code",
 				"nl": "OWM conditie code"
 			},
+			"uiComponent": null,
 			"getable": true,
 			"setable": false
 		},
@@ -199,6 +235,7 @@
 				"en": "Date",
 				"nl": "Datum"
 			},
+			"uiComponent": null,
 			"getable": true,
 			"setable": false
 		},
@@ -208,6 +245,8 @@
 				"en": "Sunrise",
 				"nl": "Zonsopgang"
 			},
+			"uiComponent": "sensor",
+			"icon": "/assets/images/sunrise.svg",
 			"getable": true,
 			"setable": false
 		},
@@ -217,6 +256,8 @@
 				"en": "Sunset",
 				"nl": "Zonsondergang"
 			},
+			"uiComponent": "sensor",
+			"icon": "/assets/images/sunset.svg",
 			"getable": true,
 			"setable": false
 		}
@@ -1073,8 +1114,6 @@
 			"class": "sensor",
 			"capabilities": [
 				"measure_temperature",
-				"measure_temp_min",
-				"measure_temp_max",
 				"measure_humidity",
 				"measure_pressure",
 				"measure_rain",
@@ -1213,8 +1252,8 @@
 			"class": "sensor",
 			"capabilities": [
 				"measure_temperature",
-				"measure_temp_min",
-				"measure_temp_max",
+				"measure_temperature.min",
+				"measure_temperature.max",
 				"measure_humidity",
 				"measure_pressure",
 				"measure_rain",
@@ -1373,11 +1412,11 @@
 			"class": "sensor",
 			"capabilities": [
 				"measure_temperature",
-				"measure_temp_min",
-				"measure_temp_max",
-				"measure_temp_night",
-				"measure_temp_evening",
-				"measure_temp_morning",
+				"measure_temperature.min",
+				"measure_temperature.max",
+				"measure_temperature.night",
+				"measure_temperature.evening",
+				"measure_temperature.morning",
 				"measure_humidity",
 				"measure_pressure",
 				"measure_rain",
@@ -1395,6 +1434,36 @@
 				"conditioncode": {
 					"preventInsights": true,
 					"preventTag": true
+				},
+				"measure_temperature.min": {
+					"title": {
+						"en": "Minimum",
+						"nl": "Minimum"
+					}
+				},
+				"measure_temperature.max": {
+					"title": {
+						"en": "Maximum",
+						"nl": "Maximum"
+					}
+				},
+				"measure_temperature.morning": {
+					"title": {
+						"en": "Morning",
+						"nl": "Ochtend"
+					}
+				},
+				"measure_temperature.evening": {
+					"title": {
+						"en": "Evening",
+						"nl": "Avond"
+					}
+				},
+				"measure_temperature.night": {
+					"title": {
+						"en": "Night",
+						"nl": "Nacht"
+					}
 				}
 			},
 			"pair": [{

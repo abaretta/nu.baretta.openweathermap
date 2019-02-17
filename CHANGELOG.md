@@ -1,5 +1,9 @@
 # Changelog
 
+**Version 0.0.14**
+- Sorted out icons for Homey V2 UI.
+- Removed duplicate capabilities from UI.
+
 **Version 0.0.13**
 - Sorted out internationalization.
 - Added size attributes to 'pairing' picture which wasn't displayed in App store.
