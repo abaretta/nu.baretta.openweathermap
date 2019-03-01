@@ -3,6 +3,7 @@
 
 const Homey = require('homey');
 const weather = require('index.js');
+const intervalCurrent = 10;
 
 class owmCurrent extends Homey.Device {
 
@@ -10,7 +11,6 @@ class owmCurrent extends Homey.Device {
         this.log('device init');
         let settings = this.getSettings();
         let name = this.getName() + '_' + this.getData().id;
-        let cronName = name.toLowerCase();
 
         settings["lat"] = Homey.ManagerGeolocation.getLatitude();
         settings["lon"] = Homey.ManagerGeolocation.getLongitude();
@@ -25,22 +25,6 @@ class owmCurrent extends Homey.Device {
                 lon: Homey.ManagerGeolocation.getLongitude(),
             })
             .catch(this.error)
-
-        try {
-            var task = await Homey.ManagerCron.getTask(cronName);
-            task.on('run', () => this.pollOpenWeatherMapCurrent(settings));
-        } catch (err) {
-            if (err.code !== 404) {
-                return this.log(`other cron error: ${err.message}`);
-            }
-            this.log("The task has not been registered yet, registering task: " + cronName);
-            try {
-                task = await Homey.ManagerCron.registerTask(cronName, "5-59/15 * * * *", settings)
-                task.on('run', () => this.pollOpenWeatherMapCurrent(settings));
-            } catch (err) {
-                return this.log(`problem with registering cronjob: ${err.message}`);
-            }
-        }
 
         // Flows
 
@@ -122,13 +106,12 @@ class owmCurrent extends Homey.Device {
             })
 
         //run once to get the first data
-        this.pollOpenWeatherMapCurrent(settings);
+        this.pollWeatherCurrent(settings);
 
     } // end onInit
 
     onAdded() {
         let id = this.getData().id;
-        //let settings = this.getSettings();
         this.log('device added: ', id);
 
     } // end onAdded
@@ -136,16 +119,19 @@ class owmCurrent extends Homey.Device {
     onDeleted() {
 
         let id = this.getData().id;
-        let name = this.getName() + '_' + this.getData().id;
-        let cronName = name.toLowerCase();
-        this.log('Unregistering cron:', cronName);
-        Homey.ManagerCron.unregisterTask(cronName, function (err, success) {});
-        // Use this when messing around with the code:
-        // Homey.ManagerCron.unregisterAllTasks(function (err, success) {});
-
+        clearInterval(this.pollingIntervalCurrent);
         this.log('device deleted:', id);
 
     } // end onDeleted
+
+    pollWeatherCurrent(settings) {
+        //run once, then at interval
+        var pollminutes = 10;
+
+        this.pollingintervalcurrent = weather.setIntervalImmediately(_ => {
+            this.pollOpenWeatherMapCurrent(settings)
+        }, 60000 * pollminutes);
+    }
 
     pollOpenWeatherMapCurrent(settings) {
 
@@ -167,21 +153,22 @@ class owmCurrent extends Homey.Device {
                 this.log(weather.conditionToString(conditioncode));
 
                 var temp = data.main.temp;
-                //var temp_min = data.main.temp_min;
-                //var temp_max = data.main.temp_max;
                 var hum = data.main.humidity;
                 var pressure = data.main.pressure;
-                // return the rain in mm if present
+                // return the rain in mm if present, or precipitation
                 if (data.precipitation) {
                     var rain = data.precipitation.value;
                 }
 
                 if (data.rain != undefined) {
-                    var rain3h = data.rain;
-                    //  smartJSON.rain = Math.round(rain3h['3h'] / 3);
-                    var rain = rain3h / 3;
-                } else {
-                    var rain = 0;
+                    if (data.rain['3h'] != undefined) {
+                        var rain = data.rain['3h'] / 3;
+                    }
+                    if (data.rain['1h'] != undefined) {
+                        var rain = data.rain['1h'];
+                    } else {
+                        var rain = 0;
+                    }
                 }
                 if (data.wind.speed) {
                     if (settings["units"] == "metric") {
@@ -336,7 +323,8 @@ class owmCurrent extends Homey.Device {
                         break;
                 }
             }
-            this.pollOpenWeatherMapCurrent(settings);
+            clearInterval(this.pollingintervalcurrent);
+            this.pollWeatherCurrent(settings);
             callback(null, true)
         } catch (error) {
             callback(error, null)

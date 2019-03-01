@@ -10,8 +10,6 @@ class owmForecast extends Homey.Device {
         this.log('device init');
         let settings = this.getSettings();
         let forecastInterval = this.getSetting('forecastInterval') || 0;
-        let name = this.getName() + '_' + this.getData().id;
-        let cronName = name.toLowerCase();
 
         settings["lat"] = Homey.ManagerGeolocation.getLatitude();
         settings["lon"] = Homey.ManagerGeolocation.getLongitude();
@@ -28,22 +26,6 @@ class owmForecast extends Homey.Device {
                 forecastInterval: forecastInterval,
             })
             .catch(this.error)
-
-        try {
-            var task = await Homey.ManagerCron.getTask(cronName);
-            task.on('run', () => this.pollOpenWeatherMapHourly(settings));
-        } catch (err) {
-            if (err.code !== 404) {
-                return this.log(`other cron error: ${err.message}`);
-            }
-            this.log("The task has not been registered yet, registering task: " + cronName);
-            try {
-                task = await Homey.ManagerCron.registerTask(cronName, "5-59/15 * * * *", settings)
-                task.on('run', () => this.pollOpenWeatherMapHourly(settings));
-            } catch (err) {
-                return this.log(`problem with registering cronjob: ${err.message}`);
-            }
-        }
 
         // Flows
 
@@ -115,9 +97,8 @@ class owmForecast extends Homey.Device {
                 return Promise.resolve(result);
             })
 
-        //run once to get the first data
-        this.pollOpenWeatherMapHourly(settings);
-
+        // start polling
+        this.pollWeatherHourly(settings);
     } // end onInit
 
     onAdded() {
@@ -129,15 +110,21 @@ class owmForecast extends Homey.Device {
     onDeleted() {
 
         let id = this.getData().id;
-        let name = this.getName() + '_' + this.getData().id;
-        let cronName = name.toLowerCase();
-        this.log('Unregistering cron:', cronName);
-        Homey.ManagerCron.unregisterTask(cronName, function (err, success) {});
-        // Homey.ManagerCron.unregisterAllTasks(function (err, success) {});
-
+        clearInterval(this.pollingintervalHourly);
         this.log('device deleted:', id);
 
     } // end onDeleted
+
+    pollWeatherHourly(settings) {
+        //run once, then at interval
+        this.log(typeof(this.pollingintervalHourly));
+
+        var pollminutes = 15;
+
+        this.pollingintervalHourly = weather.setIntervalImmediately(_ => {
+            this.pollOpenWeatherMapHourly(settings)
+        }, 60000 * pollminutes);
+    }
 
     pollOpenWeatherMapHourly(settings) {
 
@@ -347,7 +334,8 @@ class owmForecast extends Homey.Device {
                         break;
                 }
             }
-            this.pollOpenWeatherMapHourly(settings);
+            clearInterval(this.pollingintervalHourly);
+            this.pollWeatherHourly(settings);
             callback(null, true)
         } catch (error) {
             callback(error, null)

@@ -192,6 +192,16 @@
 			"getable": true,
 			"setable": false
 		},
+		"measure_wind_angle": {
+			"type": "number",
+			"title": {
+				"en": "Wind direction",
+				"nl": "Windrichting"
+			},
+			"uiComponent": null,
+			"getable": true,
+			"setable": false
+		},
 		"measure_windstrength_beaufort": {
 			"type": "number",
 			"title": {

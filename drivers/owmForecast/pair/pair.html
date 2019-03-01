@@ -2,6 +2,7 @@
   .input-wrap {
     position: relative;
   }
+
   .fa {
     position: absolute;
     margin-left: 5px;
@@ -10,6 +11,7 @@
     visibility: hidden;
     transition: all 0.3s;
   }
+
   .fa.visible {
     opacity: 1;
     visibility: visible;
@@ -21,37 +23,37 @@
   <span class="input-wrap">
     <input type="text" id="name" placeholder="Naam" value="" />
   </span>
-  <br/>
+  <br />
   <label for="apikey"><span data-i18n="pair.start.apiKey"></span>
   </label>
   <span class="input-wrap">
     <input type="text" id="apiKey" placeholder="abcdef0123456789abcdef0123456789" value="" />
   </span>
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="forecastInterval"><span data-i18n="pair.start.forecastInterval3h"></span>
   </label>
   <span class="input-wrap">
     <input type="number" id="forecastInterval" min="0" max="39" value=0 />
-    <br/>
+    <br />
   </span>
-  <br/>
-  <br/>
+  <br />
+  <br />
   <label for="geolocationcity"><span data-i18n="pair.start.optional"></span>
   </label>
   <span class="input-wrap">
     <input type="text" id="geolocationcity" placeholder="Paris,FR" value="" />
   </span>
-  <br/>
+  <br />
   <label for="geolocationzip"><span data-i18n="pair.start.zipcode"></span>
   </label>
   <span class="input-wrap">
     <input type="text" id="geolocationzip" placeholder="1234,NL" value="" />
   </span>
-  <br/>
+  <br />
   <label for="address"><span data-i18n="pair.start.autolocation"></span>
   </label>
-  <br/>
+  <br />
   <button class="button" id="validate"><span data-i18n="pair.start.saveSettings"></span>
   </button>
   <i class="solar-status solar-loading fa fa-circle-o-notch fa-spin">
@@ -65,79 +67,79 @@
 </p>
 
 <script type="text/javascript">
-    $(function() {
-        $('#validate').click(function() {
+  $(function () {
+    $('#validate').click(function () {
 
-function getRadioVal(radioName) {
-  var rads = document.getElementsByName(radioName);
+      function getRadioVal(radioName) {
+        var rads = document.getElementsByName(radioName);
 
-  for(var rad in rads) {
-    if(rads[rad].checked)
-      return rads[rad].value;
-  }
+        for (var rad in rads) {
+          if (rads[rad].checked)
+            return rads[rad].value;
+        }
 
-  return null;
-}
+        return null;
+      }
 
-            // variables
-            var id = Math.round(Math.random() * (100000 - 10000) + 10000);
-            var APIKey = document.getElementById('apiKey').value;
-            var name = document.getElementById('name').value;
-            var GEOlocationCity = document.getElementById('geolocationcity').value;
-            var GEOlocationZip = document.getElementById('geolocationzip').value;
-            var forecastInterval = Number(document.getElementById('forecastInterval').value);
-            // APIkey is required
-            if (APIKey == "") {
-                // Give error, required values
-                Homey.alert(__('pair.start.required'), 'error');
-                return;
-                // Homey.done() would close the pairing window, but we want to give the user the chance to correct and resubmit
+      // variables
+      //var id = Math.round(Math.random() * (100000 - 10000) + 10000);
+      var id = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1) + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+      var APIKey = document.getElementById('apiKey').value;
+      var name = document.getElementById('name').value;
+      var GEOlocationCity = document.getElementById('geolocationcity').value;
+      var GEOlocationZip = document.getElementById('geolocationzip').value;
+      var forecastInterval = Number(document.getElementById('forecastInterval').value);
+      // APIkey is required
+      if (APIKey == "") {
+        // Give error, required values
+        Homey.alert(__('pair.start.required'), 'error');
+        return;
+        // Homey.done() would close the pairing window, but we want to give the user the chance to correct and resubmit
+      }
+      $('.solar-status').removeClass('visible');
+      $('.solar-loading').addClass('visible');
+      Homey.emit('validate', {
+        id: id,
+        APIKey: APIKey,
+        GEOlocationCity: GEOlocationCity,
+        GEOlocationZip: GEOlocationZip,
+        forecastInterval: forecastInterval,
+      }, function (err, result) {
+        $('.solar-status').removeClass('visible');
+        if (!err) {
+          $('.solar-ok').addClass('visible');
+          $('.solar-err-msg').html('');
+          var device_data = {
+            data: {
+              id: id
+            },
+            name: name,
+            settings: {
+              APIKey: APIKey,
+              GEOlocationCity: GEOlocationCity,
+              GEOlocationZip: GEOlocationZip,
+              forecastInterval: forecastInterval
             }
-            $('.solar-status').removeClass('visible');
-            $('.solar-loading').addClass('visible');
-            Homey.emit('validate', {
-                id: id,
-                APIKey: APIKey,
-                GEOlocationCity: GEOlocationCity,
-                GEOlocationZip: GEOlocationZip,
-                forecastInterval: forecastInterval,
-            }, function(err, result) {
-                $('.solar-status').removeClass('visible');
-                if (!err) {
-                    $('.solar-ok').addClass('visible');
-                    $('.solar-err-msg').html('');
-                    var device_data = {
-                        data: {
-                            id: id
-                        },
-                        name: name,
-                        settings: {
-                            APIKey: APIKey,
-                            GEOlocationCity: GEOlocationCity,
-                            GEOlocationZip: GEOlocationZip,
-                            forecastInterval: forecastInterval
-                        }
-                    };
-                    Homey.addDevice({
-                        data: device_data.data,
-                        name: device_data.name,
-                        settings: device_data.settings,
-                    }, function(err, result) {
-                        if (err) return Homey.alert(err.message || err.toString());
-                        // Continue to back-end, pass along data
-                        // Homey.emit( 'get_devices', data_data );
-                        //                Homey.emit('add_device', device_data, function( err, result ){
-                        Homey.emit('get_devices', device_data, function(err, result) {
-                            if (err) return Homey.alert(err.message || err.toString());
-                            Homey.done();
-                        })
-                    })
-                } else {
-                    $('.solar-err').addClass('visible');
-                    $('.solar-err-msg').html(err.message || err.toString());
-                }
+          };
+          Homey.addDevice({
+            data: device_data.data,
+            name: device_data.name,
+            settings: device_data.settings,
+          }, function (err, result) {
+            if (err) return Homey.alert(err.message || err.toString());
+            // Continue to back-end, pass along data
+            // Homey.emit( 'get_devices', data_data );
+            //                Homey.emit('add_device', device_data, function( err, result ){
+            Homey.emit('get_devices', device_data, function (err, result) {
+              if (err) return Homey.alert(err.message || err.toString());
+              Homey.done();
             })
-        });
-    })
+          })
+        } else {
+          $('.solar-err').addClass('visible');
+          $('.solar-err-msg').html(err.message || err.toString());
+        }
+      })
+    });
+  })
 </script>
-
