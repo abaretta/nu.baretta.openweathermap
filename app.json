@@ -28,7 +28,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.14",
+	"version": "0.0.15",
 	"compatibility": ">=1.5.0",
 	"homeyCommunityTopicId": 1048,
 	"author": {
@@ -360,7 +360,7 @@
 					"nl": "Triggert zodra de minimum temperatuur veranderd."
 				},
 				"tokens": [{
-						"name": "measure_temperature_min",
+						"name": "measure_temperature.min",
 						"type": "number",
 						"title": {
 							"en": "Minimum temperature",
@@ -397,7 +397,7 @@
 					"nl": "Triggert zodra de maximum temperatuur veranderd."
 				},
 				"tokens": [{
-						"name": "measure_temperature_max",
+						"name": "measure_temperature.max",
 						"type": "number",
 						"title": {
 							"en": "Maximum temperature",
@@ -1281,6 +1281,18 @@
 				"conditioncode": {
 					"preventInsights": true,
 					"preventTag": true
+				},
+				"measure_temperature.min": {
+					"title": {
+						"en": "Minimum",
+						"nl": "Minimum"
+					}
+				},
+				"measure_temperature.max": {
+					"title": {
+						"en": "Maximum",
+						"nl": "Maximum"
+					}
 				}
 			},
 			"pair": [{

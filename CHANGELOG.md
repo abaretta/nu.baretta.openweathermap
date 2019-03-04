@@ -1,5 +1,9 @@
 # Changelog
 
+**Version 0.0.15**
+- Fixed min- and max temp triggers 
+- Sorted out 'Minimum' and 'Maximum' temperature description for 5-day  
+
 **Version 0.0.14**
 - Sorted out icons for Homey V2 UI.
 - Removed duplicate capabilities from UI.
