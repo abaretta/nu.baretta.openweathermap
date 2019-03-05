@@ -434,7 +434,7 @@
 					"nl": "Triggert zodra de ochtend temperatuur veranderd."
 				},
 				"tokens": [{
-						"name": "measure_temperature_morn",
+						"name": "measure_temperature.morning",
 						"type": "number",
 						"title": {
 							"en": "Morning temperature",
@@ -471,7 +471,7 @@
 					"nl": "Triggert zodra de avond temperatuur veranderd."
 				},
 				"tokens": [{
-						"name": "measure_temperature_eve",
+						"name": "measure_temperature.evening",
 						"type": "number",
 						"title": {
 							"en": "Evening temperature",
@@ -508,7 +508,7 @@
 					"nl": "Triggert zodra de nacht temperatuur veranderd."
 				},
 				"tokens": [{
-						"name": "measure_temperature_night",
+						"name": "measure_temperature.night",
 						"type": "number",
 						"title": {
 							"en": "Night temperature",
