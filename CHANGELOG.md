@@ -2,8 +2,6 @@
 
 **Version 0.0.16**
 - Fixed typo in settings
-- Corrected range for 5-day interval from 1 to 40 
-- Corrected range for 16-day interval from 1 to 16 
 
 **Version 0.0.15**
 - Fixed min/max/evening/morning/night temp triggers 

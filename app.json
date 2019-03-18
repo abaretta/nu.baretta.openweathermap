@@ -1385,8 +1385,8 @@
 							"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling in intervallen van drie uur. Kies bijvoorbeeld '8' voor de voorspelling van het weer over 24 uur. Kies '0' voor data in het huidige interval van drie uur."
 						},
 						"attr": {
-							"min": 1,
-							"max": 40 
+							"min": 0,
+							"max": 39 
 						}
 					}]
 				}
@@ -1578,8 +1578,8 @@
 							"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling van vandaag tot 16 dagen vooruit. Kies bijvoorbeeld '7' voor de voorspelling van het weer over een week. Kies '1' voor de voorpelling voor morgen."
 						},
 						"attr": {
-							"min": 1,
-							"max": 16
+							"min": 0,
+							"max": 15
 						}
 					}]
 				}
