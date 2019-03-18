@@ -1,7 +1,12 @@
 # Changelog
 
+**Version 0.0.16**
+- Fixed typo in settings
+- Corrected range for 5-day interval from 1 to 40 
+- Corrected range for 16-day interval from 1 to 16 
+
 **Version 0.0.15**
-- Fixed min- and max temp triggers 
+- Fixed min/max/evening/morning/night temp triggers 
 - Sorted out 'Minimum' and 'Maximum' temperature description for 5-day  
 
 **Version 0.0.14**

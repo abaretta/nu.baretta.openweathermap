@@ -28,7 +28,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.15",
+	"version": "0.0.16",
 	"compatibility": ">=1.5.0",
 	"homeyCommunityTopicId": 1048,
 	"author": {
@@ -1385,8 +1385,8 @@
 							"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling in intervallen van drie uur. Kies bijvoorbeeld '8' voor de voorspelling van het weer over 24 uur. Kies '0' voor data in het huidige interval van drie uur."
 						},
 						"attr": {
-							"min": 0,
-							"max": 39
+							"min": 1,
+							"max": 40 
 						}
 					}]
 				}
@@ -1568,18 +1568,18 @@
 					"children": [{
 						"id": "forecastInterval",
 						"type": "number",
-						"value": 0,
+						"value": 1,
 						"label": {
-							"en": "Forecast, number of 3-hour intervals ahead:",
-							"nl": "Voorspelling, aantal 3-uur intervallen vooruit:"
+							"en": "Forecast, number of days ahead:",
+							"nl": "Voorspelling, aantal dagen vooruit:"
 						},
 						"hint": {
-							"en": "You can choose the timeframe for the forecast data in three-hour intervals. Choose '8' for instance to get the forecast for the weather in 24 hours. Choose '0' for data in the current three-hour interval.",
-							"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling in intervallen van drie uur. Kies bijvoorbeeld '8' voor de voorspelling van het weer over 24 uur. Kies '0' voor data in het huidige interval van drie uur."
+							"en": "You can choose the timeframe for the forecast data in  intervals. Choose '7' for instance to get the forecast for the weather on this day next week. Choose '0' for today's data, or '1' for the forecast tomorrow.",
+							"nl": "U kunt het tijdvenster kiezen voor de weersvoorspelling van vandaag tot 16 dagen vooruit. Kies bijvoorbeeld '7' voor de voorspelling van het weer over een week. Kies '1' voor de voorpelling voor morgen."
 						},
 						"attr": {
-							"min": 0,
-							"max": 15
+							"min": 1,
+							"max": 16
 						}
 					}]
 				}
