@@ -28,8 +28,8 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.16",
-	"compatibility": ">=1.5.0",
+	"version": "0.0.18",
+	"compatibility": ">=2.0.0",
 	"homeyCommunityTopicId": 1048,
 	"author": {
 		"name": "Anne Baretta",

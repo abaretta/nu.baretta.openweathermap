@@ -200,12 +200,14 @@ class owmCurrent extends Homey.Device {
                 var visibility = data.visibility;
                 var description = data.weather[0].description;
 
-                var date_txt = new Date(data.dt * 1e3).toISOString().slice(-24, -5);
+                var date_txt = new Date(data.dt * 1e3).toString().slice(-24, -5);
                 date_txt = date_txt.replace('T', ' ');
 
-                var sunrise = new Date(data.sys.sunrise * 1e3).toString().slice(-23, -18);
+                var sunr = new Date(data.sys.sunrise * 1e3);
+                var sunrise = sunr.getHours() + ":" + sunr.getMinutes();
 
-                var sunset = new Date(data.sys.sunset * 1e3).toString().slice(-23, -18);
+                var suns = new Date(data.sys.sunset * 1e3);
+                var sunset = suns.getHours() + ":" + suns.getMinutes();
 
                 this.log("Comparing variables before and after current polling interval");
 

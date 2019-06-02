@@ -1,5 +1,11 @@
 # Changelog
 
+**Version 0.0.18**
+- Sunset/sunrise format sorted out in the owmCurrent driver.
+
+**Version 0.0.17**
+- Special V1 compatible alpha version, available on request.
+
 **Version 0.0.16**
 - Fixed typo in settings
 

@@ -1,6 +1,6 @@
 # OpenWeatherMap-app for Homey
 
-This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. 
+This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. Note that the current version is no longer backward compatible with Homey V1. For V1 users an alpha version is able on request.
 
 # Current weather
 
@@ -18,18 +18,8 @@ The OpenWeatherMap polling is inspired by the 'openweather-apis', refer to https
 
 Please use the forum for questions and comments related to the app: https://forum.athom.com/discussion/4225/.
 
-# Screenshots
-The mobile interface looks as follows:
-
-<img src="https://drive.google.com/uc?id=1Ns1SEdjUOFKDwErjlksOl9HkWFK36zRv" width="500" height="400">
-<img src="https://drive.google.com/uc?id=1Q4YnBOGltirnj6uILvRH2-ph8BoCSCkA" width="500" height="400">
-<img src="https://drive.google.com/uc?id=1NwVUnUOZWukPqsuItX67Wskljd1_7sHV" width="500" height="400">
-
-The pairing view:
-
-<img src="https://drive.google.com/uc?id=1ySEJ4snD5MFySJYJ1d_3hQvQc2HwxYHN " width="500" height="400">
-
-Settings can be changed after pairing. By default Homey's location is used, optionally a different location can be entered, either by name (city and countrycode, e.g. 'Paris,FR'), or by entering a zip code. 
+# Pairing
+Settings can be changed after pairing. By default Homey's location is used, optionally a different location can be entered, either by name (city and countrycode, e.g. 'Paris,FR'), or by entering a zip code.
 
 Both methods can be tested by querying the OpenWeathMap site directly. For testing a location by location, enter the following (fill in your own <city,country> combination as well as the API key):
 `https://api.openweathermap.org/data/2.5/weather?q=<city,countrycode>&APPID=<API key>`
@@ -38,9 +28,9 @@ For testing a zip code, enter the following in a browser (fill in your <zipcode,
 `https://api.openweathermap.org/data/2.5/weather?zip=<zipcode,country>&APPID=<API key>`
 
 # Flow cards
-For nearly all parameters trigger and condition cards are included, see screenshot for most flowcards available for the current weather:
+For nearly all parameters trigger and condition cards are included, see screenshot for most flowcards available for the current weather (V1):
 
 <img src="https://drive.google.com/uc?id=1EY31UQeJNCxVy34wmswthY81SVVjqJCT">
 
 # Requirements
-To use the app, you need to get a (free) OpenWeatherMap API key at http://openweathermap.org.
+To use the app, you need to get a (free) OpenWeatherMap API key at http://openweathermap.org. A single API key is sufficient for adding dozens of locations in the app.. 
