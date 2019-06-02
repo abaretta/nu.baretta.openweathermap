@@ -33,4 +33,4 @@ For nearly all parameters trigger and condition cards are included, see screensh
 <img src="https://drive.google.com/uc?id=1EY31UQeJNCxVy34wmswthY81SVVjqJCT">
 
 # Requirements
-To use the app, you need to get a (free) OpenWeatherMap API key at http://openweathermap.org. A single API key is sufficient for adding dozens of locations in the app.. 
+To use the app, you need to get a (free) OpenWeatherMap API key at http://openweathermap.org. A single API key is sufficient for adding dozens of locations in the app.
