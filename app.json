@@ -28,7 +28,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.18",
+	"version": "0.0.19",
 	"compatibility": ">=2.0.0",
 	"homeyCommunityTopicId": 1048,
 	"author": {
