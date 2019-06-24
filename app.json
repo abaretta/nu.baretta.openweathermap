@@ -230,7 +230,7 @@
 			"setable": false
 		},
 		"conditioncode": {
-			"type": "number",
+			"type": "string",
 			"title": {
 				"en": "OWM condition code",
 				"nl": "OWM conditie code"

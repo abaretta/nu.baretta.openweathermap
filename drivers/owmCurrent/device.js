@@ -53,7 +53,8 @@ class owmCurrent extends Homey.Device {
 
         this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
-                var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
+                //var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
+                var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
                 return Promise.resolve(result);
             })
 
@@ -148,9 +149,11 @@ class owmCurrent extends Homey.Device {
                         GEOlocation: GEOlocation,
                     })
                     .catch(this.error);
-                var conditioncode = data.weather[0].id;
+                //var conditioncode = data.weather[0].id;
+                var conditioncode = data.weather[0].main;
                 this.log("current condition: ")
-                this.log(weather.conditionToString(conditioncode));
+                this.log("Main conditioncode: " + data.weather[0].main);
+                //this.log(weather.conditionToString(conditioncode));
 
                 var temp = data.main.temp;
                 var hum = data.main.humidity;
@@ -169,7 +172,10 @@ class owmCurrent extends Homey.Device {
                     } else {
                         var rain = 0;
                     }
+                } else {
+                    var rain = 0;
                 }
+
                 if (data.wind.speed) {
                     if (settings["units"] == "metric") {
                         // convert from m/s to km/h

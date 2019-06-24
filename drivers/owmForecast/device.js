@@ -51,7 +51,8 @@ class owmForecast extends Homey.Device {
 
         this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
-                var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
+                //var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
+                var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
                 return Promise.resolve(result);
             })
 
@@ -117,7 +118,7 @@ class owmForecast extends Homey.Device {
 
     pollWeatherHourly(settings) {
         //run once, then at interval
-        this.log(typeof(this.pollingintervalHourly));
+        this.log(typeof (this.pollingintervalHourly));
 
         var pollminutes = 15;
 
@@ -143,9 +144,11 @@ class owmForecast extends Homey.Device {
                     })
                     .catch(this.error);
 
-                var conditioncode = data.list[forecastInterval].weather[0].id;
+                //var conditioncode = data.list[forecastInterval].weather[0].id;
+                var conditioncode = data.list[forecastInterval].weather[0].main;
                 this.log("current condition: ")
-                this.log(weather.conditionToString(conditioncode));
+                //this.log(weather.conditionToString(conditioncode));
+                this.log(conditioncode);
 
                 var temp = data.list[forecastInterval].main.temp
                 var temp_min = data.list[forecastInterval].main.temp_min
@@ -156,12 +159,20 @@ class owmForecast extends Homey.Device {
                 var description = data.list[forecastInterval].weather[0].description
 
                 if (data.list[forecastInterval].rain != undefined) {
-                    var rain3h = data.list[forecastInterval].rain['3h'];
-                    var rain = rain3h / 3;
-                    // treat snow/rain as 'precipitation'... 
-                } else if (data.list[forecastInterval].snow != undefined) {
-                    var rain3h = data.list[forecastInterval].snow['3h'];
-                    var rain = rain3h / 3;
+                    if (data.list[forecastInterval].rain['3h'] != undefined) {
+                        var rain = data.list[forecastInterval].rain['3h'] / 3;
+                    }
+                    if (data.list[forecastInterval].rain['1h'] != undefined) {
+                        var rain = data.list[forecastInterval].rain['1h'];
+                    } else {
+                        var rain = 0;
+                    }
+                } else {
+                    var rain = 0;
+                }
+                // treat snow/rain as 'precipitation' for now... Review.
+                if (data.list[forecastInterval].snow != undefined) {
+                    var rain = data.list[forecastInterval].snow['3h'] / 3;
                 } else {
                     var rain = 0;
                 }
