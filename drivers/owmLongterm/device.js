@@ -202,13 +202,18 @@ class owmForecast extends Homey.Device {
                 var description = data.list[forecastInterval].weather[0].description
 
                 if (data.list[forecastInterval].rain != undefined) {
-                    if (data.list[forecastInterval].rain['3h'] != undefined) {
-                        var rain = data.list[forecastInterval].rain['3h'] / 3;
+                    if (typeof (data.list[forecastInterval].rain) === "number") {
+                        this.log("Typeof rain: " + typeof (data.list[forecastInterval].rain));
+                        var rain = data.list[forecastInterval].rain
                     }
-                    if (data.list[forecastInterval].rain['1h'] != undefined) {
-                        var rain = data.list[forecastInterval].rain['1h'];
-                    } else {
-                        var rain = 0;
+                    else if(typeof (data.list[forecastInterval].rain) === "object") {
+                        this.log("Typeof rain: " + typeof (data.list[forecastInterval].rain));
+                        if (data.list[forecastInterval].rain['3h'] != undefined) {
+                            var rain = data.list[forecastInterval].rain['3h'] / 3;
+                        }
+                        if (data.list[forecastInterval].rain['1h'] != undefined) {
+                            var rain = data.list[forecastInterval].rain['1h'];
+                        }
                     }
                 } else {
                     var rain = 0;

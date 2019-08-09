@@ -53,8 +53,9 @@ class owmCurrent extends Homey.Device {
 
         this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
-                //var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
                 var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
+                this.log ("getCapabilityValue conditioncode: " + this.getCapabilityValue('conditioncode'));
+                this.log("Weather condition argument: " + args.argument_main );
                 return Promise.resolve(result);
             })
 
@@ -149,11 +150,8 @@ class owmCurrent extends Homey.Device {
                         GEOlocation: GEOlocation,
                     })
                     .catch(this.error);
-                //var conditioncode = data.weather[0].id;
                 var conditioncode = data.weather[0].main;
-                this.log("current condition: ")
                 this.log("Main conditioncode: " + data.weather[0].main);
-                //this.log(weather.conditionToString(conditioncode));
 
                 var temp = data.main.temp;
                 var hum = data.main.humidity;
@@ -164,13 +162,18 @@ class owmCurrent extends Homey.Device {
                 }
 
                 if (data.rain != undefined) {
-                    if (data.rain['3h'] != undefined) {
-                        var rain = data.rain['3h'] / 3;
+                    if (typeof (data.rain) === "number") {
+                        this.log("Typeof rain:" + typeof (data.rain));
+                        var rain = data.rain
                     }
-                    if (data.rain['1h'] != undefined) {
-                        var rain = data.rain['1h'];
-                    } else {
-                        var rain = 0;
+                    else if(typeof (data.rain) === "object") {
+                        this.log("Typeof rain:" + typeof (data.rain));
+                        if (data.rain['3h'] != undefined) {
+                            var rain = data.rain['3h'] / 3;
+                        }
+                        if (data.rain['1h'] != undefined) {
+                            var rain = data.rain['1h'];
+                        }
                     }
                 } else {
                     var rain = 0;
@@ -239,7 +242,7 @@ class owmCurrent extends Homey.Device {
                 };
 
                 this.getCapabilities().forEach(capability => {
-                    //this.log("Capability: " + capability + ":" + capabilitySet[capability]);
+                    this.log("Capability: " + capability + ":" + capabilitySet[capability]);
                     if (capabilitySet[capability] != undefined) {
                         this.setCapabilityValue(capability, capabilitySet[capability])
                             .catch(err => this.log(err));
@@ -248,6 +251,10 @@ class owmCurrent extends Homey.Device {
                     }
                 });
 
+                if (this.getCapabilityValue('conditioncode') != conditioncode) {
+                    this.log("Conditioncode has changed. Previous condition: " + this.getCapabilityValue('conditioncode') + " New conditioncode: " + conditioncode);
+                    this.setCapabilityValue('conditioncode', conditioncode);
+                }
                 if (this.getCapabilityValue('measure_windstrength_beaufort') != windspeedbeaufort) {
                     let state = {
                         "measure_windstrength_beaufort": windspeedbeaufort
