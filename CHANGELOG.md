@@ -1,5 +1,11 @@
 # Changelog
 
+**Version 0.0.20**
+- Added type checks to rain parameter which can be either an object or a number (or occassionally null...).
+
+**Version 0.0.19**
+- Attempt to fix null/0 values for rain parameter.
+
 **Version 0.0.18**
 - Sunset/sunrise format sorted out in the owmCurrent driver.
 
