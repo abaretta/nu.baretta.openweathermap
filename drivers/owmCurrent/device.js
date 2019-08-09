@@ -54,8 +54,8 @@ class owmCurrent extends Homey.Device {
         this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
                 var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
-                this.log ("getCapabilityValue conditioncode: " + this.getCapabilityValue('conditioncode'));
-                this.log("Weather condition argument: " + args.argument_main );
+                this.log("getCapabilityValue conditioncode: " + this.getCapabilityValue('conditioncode'));
+                this.log("Weather condition argument: " + args.argument_main);
                 return Promise.resolve(result);
             })
 
@@ -165,14 +165,16 @@ class owmCurrent extends Homey.Device {
                     if (typeof (data.rain) === "number") {
                         this.log("Typeof rain:" + typeof (data.rain));
                         var rain = data.rain
-                    }
-                    else if(typeof (data.rain) === "object") {
+                    } else if (typeof (data.rain) === "object") {
                         this.log("Typeof rain:" + typeof (data.rain));
                         if (data.rain['3h'] != undefined) {
                             var rain = data.rain['3h'] / 3;
                         }
                         if (data.rain['1h'] != undefined) {
                             var rain = data.rain['1h'];
+                            // Sometimes OWM returns an empty object
+                        } else {
+                            var rain = 0;
                         }
                     }
                 } else {

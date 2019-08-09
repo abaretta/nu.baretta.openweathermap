@@ -212,10 +212,7 @@ class owmForecast extends Homey.Device {
                         }
                         if (data.list[forecastInterval].rain['1h'] != undefined) {
                             var rain = data.list[forecastInterval].rain['1h'];
-                        }
-                        // Sometimes OWM returns an empty object
-                        if (data.rain['1h'] != undefined) {
-                            var rain = data.rain['1h'];
+                            // Sometimes OWM returns an empty object
                         } else {
                             var rain = 0;
                         }
