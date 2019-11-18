@@ -1,5 +1,9 @@
 # Changelog
 
+**Version 0.0.21**
+- Fixed issue with condition flowcard trigger
+- Added snow measurement
+
 **Version 0.0.20**
 - Added type checks to rain parameter which can be either an object or a number (or occassionally null...).
 

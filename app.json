@@ -10,16 +10,25 @@
 	},
 	"tags": {
 		"en": [
+			"OpenWeatherMap",
 			"weather",
 			"forecast",
 			"climate",
+			"rain",
+			"wind",
+			"precipitation",
 			"OWM"
 		],
 		"nl": [
+			"OpenWeatherMap",
 			"weer",
+			"voorspelling",
 			"vooruitzicht",
 			"weerbericht",
 			"klimaat",
+			"regen",
+			"wind",
+			"neerslag",
 			"OWM"
 		]
 	},
@@ -28,7 +37,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.20",
+	"version": "0.0.21",
 	"compatibility": ">=2.0.0",
 	"homeyCommunityTopicId": 1048,
 	"author": {
@@ -47,7 +56,7 @@
 	"contributing": {
 		"donate": {
 			"paypal": {
-				"username": "abaretta@gmail.com"
+				"username": "abaretta"
 			}
 		}
 	},
@@ -218,7 +227,24 @@
 			"max": 12,
 			"step": 1
 		},
-		"description": {
+		"measure_snow": {
+			"type": "number",
+			"title": {
+				"en": "Snow",
+				"nl": "Sneeuw"
+			},
+			"uiComponent": "sensor",
+			"icon": "/assets/images/snow.svg",
+			"getable": true,
+			"setable": false,
+			"units": {
+				"en": "mm"
+			},
+			"min": 0,
+			"max": 10000,
+			"step": 1
+		},
+			"description": {
 			"type": "string",
 			"title": {
 				"en": "Description",
@@ -383,7 +409,7 @@
 				"args": [{
 					"name": "ChangedMinTemperature",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmForecast|owmLongterm"
 				}]
 			},
 			{
@@ -420,7 +446,7 @@
 				"args": [{
 					"name": "ChangedMaxTemperature",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmForecast|owmLongterm"
 				}]
 			},
 			{
@@ -642,9 +668,46 @@
 					}
 				],
 				"args": [{
-					"name": "ChangedMinTemperature",
+					"name": "VisibilityChanged",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmLongterm"
+					"filter": "driver_id=owmCurrent"
+				}]
+			},
+			{
+				"id": "SnowChanged",
+				"title": {
+					"en": "Snow precipitation has changed",
+					"nl": "Sneeuw neerslag veranderd"
+				},
+				"hint": {
+					"en": "Triggers when snow precipitation changes.",
+					"nl": "Triggert zodra de sneeuw neerslag veranderd."
+				},
+				"tokens": [{
+						"name": "measure_snow",
+						"type": "number",
+						"title": {
+							"en": "Snow precipitation in millimeters",
+							"nl": "Sneeuw neerslag in millimeters"
+						},
+						"example": 10
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
+						}
+					}
+				],
+				"args": [{
+					"name": "SnowChanged",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
 			}
 		],
@@ -760,7 +823,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmLongterm"
+						"filter": "driver_id=owmLongterm"
 					},
 					{
 						"name": "degrees",
@@ -781,7 +844,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmLongterm"
+						"filter": "driver_id=owmLongterm"
 					},
 					{
 						"name": "degrees",
@@ -976,6 +1039,27 @@
 						"type": "number"
 					}
 				]
+			},
+			{
+				"id": "Snow",
+				"title": {
+					"en": "Snow precipitation !{{is|isn't}} more than",
+					"nl": "Sneeuw neerslag !{{is|is niet}} meer dan"
+				},
+				"hint": {
+					"en": "Snow precipitation in millimeters",
+					"nl": "Sneeuw neerslag in millimeters"
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					},
+					{
+						"name": "snow",
+						"type": "number"
+					}
+				]
 			}, {
 				"id": "Winddirection",
 				"title": {
@@ -1127,6 +1211,7 @@
 				"measure_humidity",
 				"measure_pressure",
 				"measure_rain",
+				"measure_snow",
 				"measure_wind_combined",
 				"measure_wind_strength",
 				"measure_wind_direction_string",
@@ -1233,6 +1318,7 @@
 							"measure_rain",
 							"measure_pressure",
 							"measure_cloudiness",
+							"measure_snow",
 							"description",
 							"date_txt"
 						],
@@ -1241,6 +1327,7 @@
 								"measure_wind_combined": "./drivers/owmCurrent/assets/images/wind_angle.svg",
 								"measure_wind_angle": "./drivers/owmCurrent/assets/images/wind_angle.svg",
 								"measure_cloudiness": "./drivers/owmCurrent/assets/images/clouds.svg",
+								"measure_snow": "./drivers/owmCurrent/assets/images/snow.svg",
 								"description": "./drivers/owmCurrent/assets/images/description.png",
 								"date_txt": "./drivers/owmCurrent/assets/images/description.png"
 							}
@@ -1267,6 +1354,7 @@
 				"measure_humidity",
 				"measure_pressure",
 				"measure_rain",
+				"measure_snow",
 				"measure_wind_combined",
 				"measure_wind_strength",
 				"measure_wind_direction_string",
@@ -1403,6 +1491,7 @@
 							"measure_wind_combined",
 							"measure_humidity",
 							"measure_rain",
+							"measure_snow",
 							"measure_pressure",
 							"measure_cloudiness",
 							"description",
@@ -1413,6 +1502,7 @@
 								"measure_wind_combined": "./drivers/owmForecast/assets/images/wind_angle.svg",
 								"measure_wind_angle": "./drivers/owmForecast/assets/images/wind_angle.svg",
 								"measure_cloudiness": "./drivers/owmForecast/assets/images/clouds.svg",
+								"measure_snow": "./drivers/owmForecast/assets/images/snow.svg",
 								"description": "./drivers/owmForecast/assets/images/description.png",
 								"date_txt": "./drivers/owmForecast/assets/images/description.png"
 							}
@@ -1442,6 +1532,7 @@
 				"measure_humidity",
 				"measure_pressure",
 				"measure_rain",
+				"measure_snow",
 				"measure_wind_combined",
 				"measure_wind_strength",
 				"measure_wind_direction_string",
@@ -1596,6 +1687,7 @@
 							"measure_wind_combined",
 							"measure_humidity",
 							"measure_rain",
+							"measure_snow",
 							"measure_pressure",
 							"measure_cloudiness",
 							"description",
@@ -1606,6 +1698,7 @@
 								"measure_wind_combined": "./drivers/owmLongterm/assets/images/wind_angle.svg",
 								"measure_wind_angle": "./drivers/owmLongterm/assets/images/wind_angle.svg",
 								"measure_cloudiness": "./drivers/owmLongterm/assets/images/clouds.svg",
+								"measure_snow": "./drivers/owmLongterm/assets/images/snow.svg",
 								"description": "./drivers/owmLongterm/assets/images/description.png",
 								"date_txt": "./drivers/owmLongterm/assets/images/description.png"
 							}

@@ -47,9 +47,12 @@ class owmForecast extends Homey.Device {
         this._flowTriggerCloudinessChanged = new Homey.FlowCardTriggerDevice('CloudinessChanged')
             .register()
 
+        this._flowTriggerSnowChanged = new Homey.FlowCardTriggerDevice('SnowChanged')
+            .register()
+
         // Register conditions for flows
 
-        this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
+        this._weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
                 var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
                 return Promise.resolve(result);
@@ -97,6 +100,12 @@ class owmForecast extends Homey.Device {
                 return Promise.resolve(result);
             })
 
+        this._conditionSnow = new Homey.FlowCardCondition("Snow").register()
+            .registerRunListener((args, state) => {
+                var result = (this.getCapabilityValue('measure_snow') == args.snow);
+                return Promise.resolve(result);
+            })
+
         // start polling
         this.pollWeatherHourly(settings);
     } // end onInit
@@ -126,9 +135,9 @@ class owmForecast extends Homey.Device {
         }, 60000 * pollminutes);
     }
 
-    pollOpenWeatherMapHourly(settings) {
+    async pollOpenWeatherMapHourly(settings) {
 
-        weather.getURLHourly(settings).then(url => {
+        await weather.getURLHourly(settings).then(url => {
                 return weather.getWeatherData(url);
             })
             .then(data => {
@@ -147,19 +156,34 @@ class owmForecast extends Homey.Device {
                 this.log(conditioncode);
 
                 var temp = data.list[forecastInterval].main.temp
-                var temp_min = data.list[forecastInterval].main.temp_min
-                var temp_max = data.list[forecastInterval].main.temp_max
                 var pressure = data.list[forecastInterval].main.pressure
                 var hum = data.list[forecastInterval].main.humidity
                 var cloudiness = data.list[forecastInterval].clouds.all
                 var description = data.list[forecastInterval].weather[0].description
 
+                if (data.list[forecastInterval].snow != undefined) {
+                    if (typeof (data.list[forecastInterval].snow) === "number") {
+                        var snow = data.list[forecastInterval].snow
+                    } else if (typeof (data.list[forecastInterval].snow) === "object") {
+                        if (data.list[forecastInterval].snow['3h'] != undefined) {
+                            var snow = data.list[forecastInterval].snow['3h'] / 3;
+                        }
+                        if (data.list[forecastInterval].snow['1h'] != undefined) {
+                            var snow = data.list[forecastInterval].snow['1h'];
+                        }
+                        // Sometimes OWM returns an empty snow object
+                        if (Object.keys(data.list[forecastInterval].snow).length == 0) {
+                            var snow = 0;
+                        }
+                    }
+                } else {
+                    var snow = 0;
+                }
+
                 if (data.list[forecastInterval].rain != undefined) {
                     if (typeof (data.list[forecastInterval].rain) === "number") {
-                        this.log("Typeof rain: " + typeof (data.list[forecastInterval].rain));
                         var rain = data.list[forecastInterval].rain
                     } else if (typeof (data.list[forecastInterval].rain) === "object") {
-                        this.log("Typeof rain: " + typeof (data.list[forecastInterval].rain));
                         if (data.list[forecastInterval].rain['3h'] != undefined) {
                             var rain = data.list[forecastInterval].rain['3h'] / 3;
                         }
@@ -168,19 +192,12 @@ class owmForecast extends Homey.Device {
                         }
                         // Sometimes OWM returns an empty rain object
                         if (Object.keys(data.list[forecastInterval].rain).length == 0) {
-                            this.log("Rain object length: " + Object.keys(data.list[forecastInterval].rain).length)
                             var rain = 0;
                         }
                     }
                 } else {
                     var rain = 0;
                 }
-                // treat snow/rain as 'precipitation' for now... Review.
-                // if (data.list[forecastInterval].snow != undefined) {
-                //     var rain = data.list[forecastInterval].snow['3h'] / 3;
-                // } else {
-                //     var rain = 0;
-                // }
 
                 if (data.list[forecastInterval].wind.deg) {
                     var windangle = data.list[forecastInterval].wind.deg;
@@ -225,12 +242,11 @@ class owmForecast extends Homey.Device {
                 const capabilitySet = {
                     'conditioncode': conditioncode,
                     'measure_temperature': temp,
-                    'measure_temperature.min': temp_min,
-                    'measure_temperature.max': temp_max,
                     'date_txt': date_txt,
                     'measure_humidity': hum,
                     'measure_pressure': pressure,
                     'measure_rain': rain,
+                    'measure_snow': snow,
                     'measure_wind_combined': windcombined,
                     'measure_wind_strength': windstrength,
                     'measure_wind_angle': windangle,
@@ -241,7 +257,7 @@ class owmForecast extends Homey.Device {
                 };
 
                 this.getCapabilities().forEach(capability => {
-                    //this.log("Capability: " + capability + ":" + capabilitySet[capability]);
+                    this.log("Capability: " + capability + ":" + capabilitySet[capability]);
                     if (capabilitySet[capability] != undefined) {
                         this.setCapabilityValue(capability, capabilitySet[capability])
                             .catch(err => this.log(err));
@@ -249,29 +265,6 @@ class owmForecast extends Homey.Device {
                         this.log("Capability undefined: " + capability)
                     }
                 });
-
-                if (this.getCapabilityValue('measure_temperature.min') != temp_min) {
-                    this.log("temp_min has changed. Old min_temp: " + this.getCapabilityValue('measure_temperature.min') + " New min temp: " + temp_min);
-                    let state = {
-                        "measure_temperature.min": temp_min
-                    };
-                    let tokens = {
-                        "measure_temperature.min": temp_min,
-                        "location": GEOlocation
-                    };
-                    this.triggerMinTempChangedFlow(device, tokens, state);
-                }
-                if (this.getCapabilityValue('measure_temperature.max') != temp_max) {
-                    this.log("temp_max has changed. Old max_temp: " + this.getCapabilityValue('measure_temperature.max') + " New max temp: " + temp_max);
-                    let state = {
-                        "measure_temperature.max": temp_max
-                    };
-                    let tokens = {
-                        "measure_temperature.max": temp_max,
-                        "location": GEOlocation
-                    };
-                    this.triggerMaxTempChangedFlow(device, tokens, state);
-                }
 
                 if (this.getCapabilityValue('measure_windstrength_beaufort') != windspeedbeaufort) {
                     let state = {
@@ -303,6 +296,17 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerCloudinessChangedFlow(device, tokens, state);
+                }
+                if (this.getCapabilityValue('measure_snow') != snow) {
+                    this.log("snow has changed. Previous snow: " + this.getCapabilityValue('measure_snow') + " New snow: " + snow);
+                    let state = {
+                        "measure_snow": snow
+                    };
+                    let tokens = {
+                        "measure_snow": snow,
+                        "location": GEOlocation
+                    };
+                    this.triggerSnowChangedFlow(device, tokens, state);
                 }
                 if (this.getCapabilityValue('description') != description) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
@@ -401,5 +405,11 @@ class owmForecast extends Homey.Device {
             .catch(this.error)
     }
 
+    triggerSnowChangedFlow(device, tokens, state) {
+        this._flowTriggerSnowChanged
+            .trigger(device, tokens, state)
+            .then(this.log)
+            .catch(this.error)
+    }
 }
 module.exports = owmForecast;

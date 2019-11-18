@@ -31,12 +31,6 @@ class owmCurrent extends Homey.Device {
         this._flowTriggerWeatherChanged = new Homey.FlowCardTriggerDevice('WeatherChanged')
             .register()
 
-        this._flowTriggerMinTempChanged = new Homey.FlowCardTriggerDevice('MintempChanged')
-            .register()
-
-        this._flowTriggerMaxTempChanged = new Homey.FlowCardTriggerDevice('MaxtempChanged')
-            .register()
-
         this._flowTriggerWindBeaufortChanged = new Homey.FlowCardTriggerDevice('WindBeaufortChanged')
             .register()
 
@@ -49,9 +43,12 @@ class owmCurrent extends Homey.Device {
         this._flowTriggerVisibilityChanged = new Homey.FlowCardTriggerDevice('VisibilityChanged')
             .register()
 
+        this._flowTriggerSnowChanged = new Homey.FlowCardTriggerDevice('SnowChanged')
+            .register()
+
         // Register conditions for flows
 
-        this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
+        this._weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
                 var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
                 this.log("getCapabilityValue conditioncode: " + this.getCapabilityValue('conditioncode'));
@@ -101,9 +98,15 @@ class owmCurrent extends Homey.Device {
                 return Promise.resolve(result);
             })
 
-        this.conditionVisibility = new Homey.FlowCardCondition('Visibility').register()
+        this._conditionVisibility = new Homey.FlowCardCondition('Visibility').register()
             .registerRunListener((args, state) => {
                 var result = (this.getCapabilityValue('measure_visibility') >= args.visibility)
+                return Promise.resolve(result);
+            })
+
+        this._conditionSnow = new Homey.FlowCardCondition('Snow').register()
+            .registerRunListener((args, state) => {
+                var result = (this.getCapabilityValue('measure_snow') >= args.snow)
                 return Promise.resolve(result);
             })
 
@@ -135,9 +138,9 @@ class owmCurrent extends Homey.Device {
         }, 60000 * pollminutes);
     }
 
-    pollOpenWeatherMapCurrent(settings) {
+    async pollOpenWeatherMapCurrent(settings) {
 
-        weather.getURLCurrent(settings).then(url => {
+        await weather.getURLCurrent(settings).then(url => {
                 return weather.getWeatherData(url);
             })
             .then(data => {
@@ -161,12 +164,29 @@ class owmCurrent extends Homey.Device {
                     var rain = data.precipitation.value;
                 }
 
+                if (data.snow != undefined) {
+                    if (typeof (data.snow) === "number") {
+                        var snow = data.snow
+                    } else if (typeof (data.snow) === "object") {
+                        if (data.snow['3h'] != undefined) {
+                            var snow = data.snow['3h'] / 3;
+                        }
+                        if (data.snow['1h'] != undefined) {
+                            var snow = data.snow['1h'];
+                        }
+                        // Sometimes OWM returns an empty snow object
+                        if (Object.keys(data.snow).length == 0) {
+                            var snow = 0;
+                        }
+                    }
+                } else {
+                    var snow = 0;
+                }
+
                 if (data.rain != undefined) {
                     if (typeof (data.rain) === "number") {
-                        this.log("Typeof rain:" + typeof (data.rain));
                         var rain = data.rain
                     } else if (typeof (data.rain) === "object") {
-                        this.log("Typeof rain:" + typeof (data.rain));
                         if (data.rain['3h'] != undefined) {
                             var rain = data.rain['3h'] / 3;
                         }
@@ -175,7 +195,6 @@ class owmCurrent extends Homey.Device {
                         }
                         // Sometimes OWM returns an empty rain object
                         if (Object.keys(data.rain).length == 0) {
-                            this.log("Rain object length: " + Object.keys(data.rain).length)
                             var rain = 0;
                         }
                     }
@@ -233,6 +252,7 @@ class owmCurrent extends Homey.Device {
                     'measure_humidity': hum,
                     'measure_pressure': pressure,
                     'measure_rain': rain,
+                    'measure_snow': snow,
                     'measure_wind_combined': windcombined,
                     'measure_wind_strength': windstrength,
                     'measure_wind_angle': windangle,
@@ -301,6 +321,17 @@ class owmCurrent extends Homey.Device {
                     };
                     this.triggerVisibilityChangedFlow(device, tokens, state);
                 }
+                if (this.getCapabilityValue('measure_snow') != snow) {
+                    this.log("snow has changed. Previous snow: " + this.getCapabilityValue('measure_snow') + " New visibility: " + visibility);
+                    let state = {
+                        "measure_visibility": snow
+                    };
+                    let tokens = {
+                        "measure_visibility": snow,
+                        "location": GEOlocation
+                    };
+                    this.triggerSnowChangedFlow(device, tokens, state);
+                }
                 if (this.getCapabilityValue('description') != description) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
                     let state = {
@@ -358,20 +389,6 @@ class owmCurrent extends Homey.Device {
             .catch(this.error)
     }
 
-    triggerMinTempChangedFlow(device, tokens, state) {
-        this._flowTriggerMinTempChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerMaxTempChangedFlow(device, tokens, state) {
-        this._flowTriggerMaxTempChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
     triggerWindBeaufortChangedFlow(device, tokens, state) {
         this._flowTriggerWindBeaufortChanged
             .trigger(device, tokens, state)
@@ -395,6 +412,13 @@ class owmCurrent extends Homey.Device {
 
     triggerVisibilityChangedFlow(device, tokens, state) {
         this._flowTriggerVisibilityChanged
+            .trigger(device, tokens, state)
+            .then(this.log)
+            .catch(this.error)
+    }
+
+    triggerSnowChangedFlow(device, tokens, state) {
+        this._flowTriggerSnowChanged
             .trigger(device, tokens, state)
             .then(this.log)
             .catch(this.error)

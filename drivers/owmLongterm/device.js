@@ -4,7 +4,7 @@
 const Homey = require('homey');
 const weather = require('index.js');
 
-class owmForecast extends Homey.Device {
+class owmLongterm extends Homey.Device {
 
     async onInit() {
         this.log('device init');
@@ -56,9 +56,12 @@ class owmForecast extends Homey.Device {
         this._flowTriggerCloudinessChanged = new Homey.FlowCardTriggerDevice('CloudinessChanged')
             .register()
 
+        this._flowTriggerSnowChanged = new Homey.FlowCardTriggerDevice('SnowChanged')
+            .register()
+
         // Register conditions for flows
 
-        this.weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
+        this._weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
             .registerRunListener((args, state) => {
                 //var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
                 var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
@@ -137,6 +140,12 @@ class owmForecast extends Homey.Device {
                 return Promise.resolve(result);
             })
 
+        this._conditionSnow = new Homey.FlowCardCondition("Snow").register()
+            .registerRunListener((args, state) => {
+                var result = (this.getCapabilityValue('measure_snow') == args.snow);
+                return Promise.resolve(result);
+            })
+
         // start polling
         this.pollWeatherDaily(settings);
 
@@ -203,10 +212,8 @@ class owmForecast extends Homey.Device {
 
                 if (data.list[forecastInterval].rain != undefined) {
                     if (typeof (data.list[forecastInterval].rain) === "number") {
-                        this.log("Typeof rain: " + typeof (data.list[forecastInterval].rain));
                         var rain = data.list[forecastInterval].rain
                     } else if (typeof (data.list[forecastInterval].rain) === "object") {
-                        this.log("Typeof rain: " + typeof (data.list[forecastInterval].rain));
                         if (data.list[forecastInterval].rain['3h'] != undefined) {
                             var rain = data.list[forecastInterval].rain['3h'] / 3;
                         }
@@ -215,12 +222,30 @@ class owmForecast extends Homey.Device {
                         }
                         // Sometimes OWM returns an empty rain object
                         if (Object.keys(data.list[forecastInterval].rain).length == 0) {
-                            this.log("Rain object length: " + Object.keys(data.list[forecastInterval].rain).length)
                             var rain = 0;
                         }
                     }
                 } else {
                     var rain = 0;
+                }
+
+                if (data.list[forecastInterval].snow != undefined) {
+                    if (typeof (data.list[forecastInterval].snow) === "number") {
+                        var snow = data.list[forecastInterval].snow
+                    } else if (typeof (data.list[forecastInterval].snow) === "object") {
+                        if (data.list[forecastInterval].snow['3h'] != undefined) {
+                            var snow = data.list[forecastInterval].snow['3h'] / 3;
+                        }
+                        if (data.list[forecastInterval].snow['1h'] != undefined) {
+                            var snow = data.list[forecastInterval].snow['1h'];
+                        }
+                        // Sometimes OWM returns an empty rain object
+                        if (Object.keys(data.list[forecastInterval].snow).length == 0) {
+                            var snow = 0;
+                        }
+                    }
+                } else {
+                    var snow = 0;
                 }
 
                 if (data.list[forecastInterval].deg) {
@@ -269,6 +294,7 @@ class owmForecast extends Homey.Device {
                     'measure_humidity': hum,
                     'measure_pressure': pressure,
                     'measure_rain': rain,
+                    'measure_snow': snow,
                     'measure_wind_combined': windcombined,
                     'measure_wind_strength': windstrength,
                     'measure_wind_angle': windangle,
@@ -340,7 +366,6 @@ class owmForecast extends Homey.Device {
                     };
                     this.triggerNightTempChangedFlow(device, tokens, state);
                 }
-
                 if (this.getCapabilityValue('measure_windstrength_beaufort') != windspeedbeaufort) {
                     let state = {
                         "measure_windstrength_beaufort": windspeedbeaufort
@@ -360,6 +385,17 @@ class owmForecast extends Homey.Device {
                         "location": GEOlocation
                     };
                     this.triggerWindDirectionCompassChangedFlow(device, tokens, state);
+                }
+                if (this.getCapabilityValue('measure_snow') != snow) {
+                    this.log("snow has changed. Previous snow: " + this.getCapabilityValue('measure_snow') + " New snow: " + snow);
+                    let state = {
+                        "measure_snow": snow
+                    };
+                    let tokens = {
+                        "measure_snow": snow,
+                        "location": GEOlocation
+                    };
+                    this.triggerSnowChangedFlow(device, tokens, state);
                 }
                 if (this.getCapabilityValue('measure_cloudiness') != cloudiness) {
                     this.log("cloudiness has changed. Previous cloudiness: " + this.getCapabilityValue('measure_cloudiness') + " New cloudiness: " + cloudiness);
@@ -490,5 +526,11 @@ class owmForecast extends Homey.Device {
             .catch(this.error)
     }
 
+    triggerSnowChangedFlow(device, tokens, state) {
+        this._flowTriggerSnowChanged
+            .trigger(device, tokens, state)
+            .then(this.log)
+            .catch(this.error)
+    }
 }
-module.exports = owmForecast;
+module.exports = owmLongterm;
