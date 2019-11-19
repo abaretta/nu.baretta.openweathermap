@@ -28,6 +28,8 @@ class owmLongterm extends Homey.Device {
             .catch(this.error)
 
         // Flows
+        this._flowTriggerConditionChanged = new Homey.FlowCardTriggerDevice('ConditionChanged')
+            .register()
 
         this._flowTriggerWeatherChanged = new Homey.FlowCardTriggerDevice('WeatherChanged')
             .register()
@@ -408,6 +410,17 @@ class owmLongterm extends Homey.Device {
                     };
                     this.triggerCloudinessChangedFlow(device, tokens, state);
                 }
+                if (this.getCapabilityValue('condition') != condition) {
+                    this.log("condition has changed. Previous condition: " + this.getCapabilityValue('condition') + " New condition: " + condition);
+                    let state = {
+                        "condition": condition
+                    };
+                    let tokens = {
+                        "condition": condition,
+                        "location": GEOlocation
+                    };
+                    this.triggerConditionChangedFlow(device, tokens, state);
+                } 
                 if (this.getCapabilityValue('description') != description) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
                     let state = {
@@ -463,6 +476,13 @@ class owmLongterm extends Homey.Device {
     }
 
     // flow triggers
+    triggerConditionChangedFlow(device, tokens, state) {
+        this._flowTriggerConditionChanged
+            .trigger(device, tokens, state)
+            .then(this.log)
+            .catch(this.error)
+    }
+
     triggerWeatherChangedFlow(device, tokens, state) {
         this._flowTriggerWeatherChanged
             .trigger(device, tokens, state)

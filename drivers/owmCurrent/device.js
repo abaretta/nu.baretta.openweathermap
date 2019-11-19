@@ -27,6 +27,8 @@ class owmCurrent extends Homey.Device {
             .catch(this.error)
 
         // Flows
+        this._flowTriggerConditionChanged = new Homey.FlowCardTriggerDevice('ConditionChanged')
+            .register()
 
         this._flowTriggerWeatherChanged = new Homey.FlowCardTriggerDevice('WeatherChanged')
             .register()
@@ -115,7 +117,7 @@ class owmCurrent extends Homey.Device {
 
     } // end onInit
 
-    onAdded() {
+   onAdded() {
         let id = this.getData().id;
         this.log('device added: ', id);
 
@@ -332,6 +334,17 @@ class owmCurrent extends Homey.Device {
                     };
                     this.triggerSnowChangedFlow(device, tokens, state);
                 }
+                if (this.getCapabilityValue('condition') != condition) {
+                    this.log("weathercondition has changed. Previous condition: " + this.getCapabilityValue('condition') + " New description: " + condition);
+                    let state = {
+                        "condition": condition
+                    };
+                    let tokens = {
+                        "condition": condition,
+                        "location": GEOlocation
+                    };
+                    this.triggerConditionChangedFlow(device, tokens, state);
+                }
                 if (this.getCapabilityValue('description') != description) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
                     let state = {
@@ -382,6 +395,13 @@ class owmCurrent extends Homey.Device {
     }
 
     // flow triggers
+    triggerConditionChangedFlow(device, tokens, state) {
+        this._flowTriggerConditionChanged
+            .trigger(device, tokens, state)
+            .then(this.log)
+            .catch(this.error)
+    }
+
     triggerWeatherChangedFlow(device, tokens, state) {
         this._flowTriggerWeatherChanged
             .trigger(device, tokens, state)

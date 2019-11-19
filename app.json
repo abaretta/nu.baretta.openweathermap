@@ -37,7 +37,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.21",
+	"version": "0.0.22",
 	"compatibility": ">=2.0.0",
 	"homeyCommunityTopicId": 1048,
 	"author": {
@@ -300,6 +300,45 @@
 	},
 	"flow": {
 		"triggers": [{
+				"id": "ConditionChanged",
+				"title": {
+					"en": "The weatherconditions have changed",
+					"nl": "De weersomstandigheden zijn veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the condition of the weather changes.",
+					"nl": "Triggert zodra de weersomstandigheden veranderen."
+				},
+				"tokens": [{
+						"name": "condition",
+						"type": "string",
+						"title": {
+							"en": "Weather condition",
+							"nl": "Weersomstandigheid"
+						},
+						"example": {
+							"en": "Misty",
+							"nl": "Mistig"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedCondition",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+				}]
+			},{
 				"id": "WeatherChanged",
 				"title": {
 					"en": "The weather has changed",
