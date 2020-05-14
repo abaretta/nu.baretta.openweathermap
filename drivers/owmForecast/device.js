@@ -34,12 +34,6 @@ class owmForecast extends Homey.Device {
         this._flowTriggerWeatherChanged = new Homey.FlowCardTriggerDevice('WeatherChanged')
             .register()
 
-        this._flowTriggerMinTempChanged = new Homey.FlowCardTriggerDevice('MintempChanged')
-            .register()
-
-        this._flowTriggerMaxTempChanged = new Homey.FlowCardTriggerDevice('MaxtempChanged')
-            .register()
-
         this._flowTriggerWindBeaufortChanged = new Homey.FlowCardTriggerDevice('WindBeaufortChanged')
             .register()
 
@@ -54,62 +48,62 @@ class owmForecast extends Homey.Device {
 
         // Register conditions for flows
 
-        this._weatherCondition = new Homey.FlowCardCondition('conditioncode').register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
+        this._weatherCondition = new Homey.FlowCardCondition('Conditioncode').register()
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('conditioncode') == args.argument_main)
                 return Promise.resolve(result);
             })
 
         this._conditionTemp = new Homey.FlowCardCondition("Temp").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temperature') >= args.degrees);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_temperature') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionPressure = new Homey.FlowCardCondition("Pressure").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_pressure') >= args.bar);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_pressure') >= args.bar);
                 return Promise.resolve(result);
             })
 
         this._conditionClouds = new Homey.FlowCardCondition("Clouds").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_cloudiness') >= args.cloudiness);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_cloudiness') >= args.cloudiness);
                 return Promise.resolve(result);
             })
 
         this._conditionHumidity = new Homey.FlowCardCondition("Humidity").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_humidity') >= args.humidity);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_humidity') >= args.humidity);
                 return Promise.resolve(result);
             })
 
         this._conditionWindspeed = new Homey.FlowCardCondition("Windspeed").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_wind_strength') >= args.windspeed);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_wind_strength') >= args.windspeed);
                 return Promise.resolve(result);
             })
 
         this._conditionWindforce = new Homey.FlowCardCondition("Windforce").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_windstrength_beaufort') >= args.windforce);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_windstrength_beaufort') >= args.windforce);
                 return Promise.resolve(result);
             })
 
         this._conditionWinddirection = new Homey.FlowCardCondition("Winddirection").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_wind_direction_string') == args.winddirection);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_wind_direction_string') == args.winddirection);
                 return Promise.resolve(result);
             })
 
         this._conditionSnow = new Homey.FlowCardCondition("Snow").register()
-            .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_snow') == args.snow);
+            .registerRunListener(async (args, state) => {
+                var result = (await this.getCapabilityValue('measure_snow') == args.snow);
                 return Promise.resolve(result);
             })
 
         // start polling
-        this.pollWeatherHourly(settings);
+        await this.pollWeatherHourly(settings);
     } // end onInit
 
     onAdded() {
@@ -137,9 +131,9 @@ class owmForecast extends Homey.Device {
         }, 60000 * pollminutes);
     }
 
-    async pollOpenWeatherMapHourly(settings) {
+    pollOpenWeatherMapHourly(settings) {
 
-        await weather.getURLHourly(settings).then(url => {
+        weather.getURLHourly(settings).then(url => {
                 return weather.getWeatherData(url);
             })
             .then(data => {
@@ -211,7 +205,7 @@ class owmForecast extends Homey.Device {
                     var winddegcompass = weather.degToCompass(settings, windangle);
                     if (settings["units"] == "metric") {
                         // convert from m/s to km/h
-                        var windstrength = 3.6 * data.list[forecastInterval].wind.speed;
+                        var windstrength = Math.round(3.6 * data.list[forecastInterval].wind.speed);
                     } else {
                         // windspeed in mph
                         var windstrength = data.list[forecastInterval].wind.speed;
@@ -238,6 +232,71 @@ class owmForecast extends Homey.Device {
                 date_txt = date_txt.replace('T', ' ');
 
                 this.log("Comparing variables before and after current polling interval");
+
+                if (this.getCapabilityValue('measure_windstrength_beaufort') != windspeedbeaufort) {
+                    let state = {
+                        "measure_windstrength_beaufort": windspeedbeaufort
+                    };
+                    let tokens = {
+                        "measure_windstrength_beaufort": windspeedbeaufort,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerWindBeaufortChanged.trigger(device, tokens).catch(this.error)
+                }
+                if (this.getCapabilityValue('measure_wind_direction_string') != winddegcompass) {
+                    let state = {
+                        "measure_wind_direction_string": winddegcompass
+                    };
+                    let tokens = {
+                        "measure_wind_direction_string": winddegcompass,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerWindDirectionCompassChanged.trigger(device, tokens).catch(this.error)
+                }
+                if (this.getCapabilityValue('measure_cloudiness') != cloudiness) {
+                    this.log("cloudiness has changed. Previous cloudiness: " + this.getCapabilityValue('measure_cloudiness') + " New cloudiness: " + cloudiness);
+                    let state = {
+                        "measure_cloudiness": cloudiness
+                    };
+                    let tokens = {
+                        "measure_cloudiness": cloudiness,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerCloudinessChanged.trigger(device, tokens).catch(this.error)
+                }
+                if (this.getCapabilityValue('measure_snow') != snow) {
+                    this.log("snow has changed. Previous snow: " + this.getCapabilityValue('measure_snow') + " New snow: " + snow);
+                    let state = {
+                        "measure_snow": snow
+                    };
+                    let tokens = {
+                        "measure_snow": snow,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerSnowChanged.trigger(device, tokens).catch(this.error)
+                }
+                if (this.getCapabilityValue('conditioncode') != conditioncode) {
+                    this.log("conditioncode has changed. Previous conditioncode: " + this.getCapabilityValue('conditioncode') + " New conditioncode: " + conditioncode);
+                    let state = {
+                        "conditioncode": conditioncode
+                    };
+                    let tokens = {
+                        "conditioncode": conditioncode,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerConditionChanged.trigger(device, tokens).catch(this.error)
+                }
+                if (this.getCapabilityValue('description') != description) {
+                    this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
+                    let state = {
+                        "description": description
+                    };
+                    let tokens = {
+                        "description": description,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerWeatherChanged.trigger(device, tokens).catch(this.error)
+                }
 
                 // update each interval, even if unchanged.
 
@@ -267,71 +326,6 @@ class owmForecast extends Homey.Device {
                         this.log("Capability undefined: " + capability)
                     }
                 });
-
-                if (this.getCapabilityValue('measure_windstrength_beaufort') != windspeedbeaufort) {
-                    let state = {
-                        "measure_windstrength_beaufort": windspeedbeaufort
-                    };
-                    let tokens = {
-                        "measure_windstrength_beaufort": windspeedbeaufort,
-                        "location": GEOlocation
-                    };
-                    this.triggerWindBeaufortChangedFlow(device, tokens, state);
-                }
-                if (this.getCapabilityValue('measure_wind_direction_string') != winddegcompass) {
-                    let state = {
-                        "measure_wind_direction_string": winddegcompass
-                    };
-                    let tokens = {
-                        "measure_wind_direction_string": winddegcompass,
-                        "location": GEOlocation
-                    };
-                    this.triggerWindDirectionCompassChangedFlow(device, tokens, state);
-                }
-                if (this.getCapabilityValue('measure_cloudiness') != cloudiness) {
-                    this.log("cloudiness has changed. Previous cloudiness: " + this.getCapabilityValue('measure_cloudiness') + " New cloudiness: " + cloudiness);
-                    let state = {
-                        "measure_cloudiness": cloudiness
-                    };
-                    let tokens = {
-                        "measure_cloudiness": cloudiness,
-                        "location": GEOlocation
-                    };
-                    this.triggerCloudinessChangedFlow(device, tokens, state);
-                }
-                if (this.getCapabilityValue('measure_snow') != snow) {
-                    this.log("snow has changed. Previous snow: " + this.getCapabilityValue('measure_snow') + " New snow: " + snow);
-                    let state = {
-                        "measure_snow": snow
-                    };
-                    let tokens = {
-                        "measure_snow": snow,
-                        "location": GEOlocation
-                    };
-                    this.triggerSnowChangedFlow(device, tokens, state);
-                }
-                if (this.getCapabilityValue('condition') != condition) {
-                    this.log("condition has changed. Previous condition: " + this.getCapabilityValue('condition') + " New condition: " + condition);
-                    let state = {
-                        "condition": condition
-                    };
-                    let tokens = {
-                        "condition": condition,
-                        "location": GEOlocation
-                    };
-                    this.triggerConditionChangedFlow(device, tokens, state);
-                } 
-                if (this.getCapabilityValue('description') != description) {
-                    this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
-                    let state = {
-                        "description": description
-                    };
-                    let tokens = {
-                        "description": description,
-                        "location": GEOlocation
-                    };
-                    this.triggerWeatherChangedFlow(device, tokens, state);
-                }
             })
             .catch(error => {
                 this.log(error);
@@ -373,63 +367,6 @@ class owmForecast extends Homey.Device {
         } catch (error) {
             callback(error, null)
         }
-    }
-
-    // flow triggers
-    triggerConditionChangedFlow(device, tokens, state) {
-        this._flowTriggerConditionChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerWeatherChangedFlow(device, tokens, state) {
-        this._flowTriggerWeatherChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerMinTempChangedFlow(device, tokens, state) {
-        this._flowTriggerMinTempChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerMaxTempChangedFlow(device, tokens, state) {
-        this._flowTriggerMaxTempChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerWindBeaufortChangedFlow(device, tokens, state) {
-        this._flowTriggerWindBeaufortChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerWindDirectionCompassChangedFlow(device, tokens, state) {
-        this._flowTriggerWindDirectionCompassChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerCloudinessChangedFlow(device, tokens, state) {
-        this._flowTriggerCloudinessChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
-    }
-
-    triggerSnowChangedFlow(device, tokens, state) {
-        this._flowTriggerSnowChanged
-            .trigger(device, tokens, state)
-            .then(this.log)
-            .catch(this.error)
     }
 }
 module.exports = owmForecast;

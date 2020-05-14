@@ -244,7 +244,7 @@
 			"max": 10000,
 			"step": 1
 		},
-			"description": {
+		"description": {
 			"type": "string",
 			"title": {
 				"en": "Description",
@@ -310,15 +310,15 @@
 					"nl": "Triggert zodra de weersomstandigheden veranderen."
 				},
 				"tokens": [{
-						"name": "condition",
+						"name": "conditioncode",
 						"type": "string",
 						"title": {
 							"en": "Weather condition",
 							"nl": "Weersomstandigheid"
 						},
 						"example": {
-							"en": "Misty",
-							"nl": "Mistig"
+							"en": "Mist",
+							"nl": "Mist"
 						}
 					},
 					{
@@ -338,7 +338,7 @@
 					"type": "device",
 					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 				}]
-			},{
+			}, {
 				"id": "WeatherChanged",
 				"title": {
 					"en": "The weather has changed",
@@ -356,7 +356,7 @@
 							"nl": "Weersbeschrijving"
 						},
 						"example": {
-							"en": "mist"
+							"en": "Mist"
 						}
 					},
 					{
@@ -448,7 +448,7 @@
 				"args": [{
 					"name": "ChangedMinTemperature",
 					"type": "device",
-					"filter": "driver_id=owmForecast|owmLongterm"
+					"filter": "driver_id=owmLongterm"
 				}]
 			},
 			{
@@ -485,7 +485,7 @@
 				"args": [{
 					"name": "ChangedMaxTemperature",
 					"type": "device",
-					"filter": "driver_id=owmForecast|owmLongterm"
+					"filter": "driver_id=owmLongterm"
 				}]
 			},
 			{
@@ -751,7 +751,7 @@
 			}
 		],
 		"conditions": [{
-				"id": "conditioncode",
+				"id": "Conditioncode",
 				"title": {
 					"en": "The weather !{{is|isn't}}:",
 					"nl": "Het weer !{{is|is niet}}:"
@@ -761,11 +761,6 @@
 					"nl": "Beschrijving van het weer."
 				},
 				"args": [{
-						"name": "device",
-						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
-					},
-					{
 						"name": "argument_main",
 						"type": "dropdown",
 						"values": [{
@@ -797,7 +792,7 @@
 								}
 							},
 							{
-								"id": "Misty",
+								"id": "Mist",
 								"label": {
 									"en": "Misty",
 									"nl": "Mistig"
@@ -825,6 +820,11 @@
 								}
 							}
 						]
+					},
+					{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
 					}
 				]
 			},
@@ -1388,8 +1388,6 @@
 			"class": "sensor",
 			"capabilities": [
 				"measure_temperature",
-				"measure_temperature.min",
-				"measure_temperature.max",
 				"measure_humidity",
 				"measure_pressure",
 				"measure_rain",
@@ -1513,7 +1511,7 @@
 						},
 						"attr": {
 							"min": 0,
-							"max": 39 
+							"max": 39
 						}
 					}]
 				}
