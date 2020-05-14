@@ -37,7 +37,7 @@
 		"small": "./assets/images/small.png"
 	},
 	"category": "internet",
-	"version": "0.0.22",
+	"version": "0.0.23",
 	"compatibility": ">=2.0.0",
 	"homeyCommunityTopicId": 1048,
 	"author": {
@@ -77,6 +77,21 @@
 			"min": 0,
 			"max": 20000,
 			"step": 1
+		},
+		"measure_ultraviolet": {
+			"type": "number",
+			"title": {
+				"en": "UV index",
+				"nl": "UV index"
+			},
+			"getable": true,
+			"setable": false,
+			"uiComponent": "sensor",
+			"units": {
+				"en": ""
+			},
+			"min": 0,
+			"max": 45
 		},
 		"measure_cloudiness": {
 			"type": "number",
@@ -265,16 +280,6 @@
 			"getable": true,
 			"setable": false
 		},
-		"date_txt": {
-			"type": "string",
-			"title": {
-				"en": "Date",
-				"nl": "Datum"
-			},
-			"uiComponent": null,
-			"getable": true,
-			"setable": false
-		},
 		"sunrise": {
 			"type": "string",
 			"title": {
@@ -336,7 +341,7 @@
 				"args": [{
 					"name": "ChangedCondition",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 				}]
 			}, {
 				"id": "WeatherChanged",
@@ -374,7 +379,7 @@
 				"args": [{
 					"name": "ChangedDescription",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 				}]
 			},
 			{
@@ -411,7 +416,7 @@
 				"args": [{
 					"name": "ChangedWindspeedBeaufort",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 				}]
 			},
 			{
@@ -600,6 +605,42 @@
 				}]
 			},
 			{
+				"id": "UltravioletChanged",
+				"title": {
+					"en": "UV index has changed",
+					"nl": "UV index is veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the UV index changes.",
+					"nl": "Triggert zodra de UV index veranderd."
+				},
+				"tokens": [{
+						"name": "measure_ultraviolet",
+						"type": "number",
+						"title": {
+							"en": "UV index",
+							"nl": "UV index"
+						},
+						"example": 6.42
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedUltraviolet",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
+				}]
+			}, {
 				"id": "CloudinessChanged",
 				"title": {
 					"en": "Cloudiness (%) has changed",
@@ -633,7 +674,7 @@
 				"args": [{
 					"name": "ChangedCloudiness",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 				}]
 			},
 			{
@@ -672,7 +713,7 @@
 				"args": [{
 					"name": "ChangedWindDirectionCompass",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 				}]
 			},
 			{
@@ -709,7 +750,7 @@
 				"args": [{
 					"name": "VisibilityChanged",
 					"type": "device",
-					"filter": "driver_id=owmCurrent"
+					"filter": "driver_id=owmCurrent|owmOnecallCurrent"
 				}]
 			},
 			{
@@ -746,7 +787,7 @@
 				"args": [{
 					"name": "SnowChanged",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 				}]
 			}
 		],
@@ -824,7 +865,7 @@
 					{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					}
 				]
 			},
@@ -841,7 +882,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					},
 					{
 						"name": "degrees",
@@ -966,10 +1007,31 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					},
 					{
 						"name": "bar",
+						"type": "number"
+					}
+				]
+			},
+			{
+				"id": "Ultraviolet",
+				"title": {
+					"en": "UV index !{{is|isn't}} more than",
+					"nl": "UV index !{{is|is niet}} meer dan"
+				},
+				"hint": {
+					"en": "UV index.",
+					"nl": "UV index."
+				},
+				"args": [{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
+					},
+					{
+						"name": "uvi",
 						"type": "number"
 					}
 				]
@@ -987,7 +1049,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					},
 					{
 						"name": "cloudiness",
@@ -1008,7 +1070,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					},
 					{
 						"name": "humidity",
@@ -1029,7 +1091,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					},
 					{
 						"name": "windspeed",
@@ -1050,7 +1112,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					},
 					{
 						"name": "windforce",
@@ -1071,7 +1133,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent"
+						"filter": "driver_id=owmCurrent|owmOnecallCurrent"
 					},
 					{
 						"name": "visibility",
@@ -1092,7 +1154,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 					},
 					{
 						"name": "snow",
@@ -1112,7 +1174,7 @@
 				"args": [{
 					"name": "device",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm"
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
 				}, {
 					"name": "winddirection",
 					"type": "dropdown",
@@ -1235,10 +1297,10 @@
 		]
 	},
 	"drivers": [{
-			"id": "owmCurrent",
+			"id": "owmOnecallCurrent",
 			"name": {
-				"en": "Current weather",
-				"nl": "Actueel weerbericht"
+				"en": "Current weather - OneAPI",
+				"nl": "Actueel weerbericht - OneAPI"
 			},
 			"images": {
 				"large": "/drivers/owmCurrent/assets/images/large.png",
@@ -1256,11 +1318,11 @@
 				"measure_wind_direction_string",
 				"measure_windstrength_beaufort",
 				"measure_wind_angle",
+				"measure_ultraviolet",
 				"measure_cloudiness",
 				"measure_visibility",
 				"description",
 				"conditioncode",
-				"date_txt",
 				"sunrise",
 				"sunset"
 			],
@@ -1358,8 +1420,7 @@
 							"measure_pressure",
 							"measure_cloudiness",
 							"measure_snow",
-							"description",
-							"date_txt"
+							"description"
 						],
 						"options": {
 							"icons": {
@@ -1367,8 +1428,144 @@
 								"measure_wind_angle": "./drivers/owmCurrent/assets/images/wind_angle.svg",
 								"measure_cloudiness": "./drivers/owmCurrent/assets/images/clouds.svg",
 								"measure_snow": "./drivers/owmCurrent/assets/images/snow.svg",
-								"description": "./drivers/owmCurrent/assets/images/description.png",
-								"date_txt": "./drivers/owmCurrent/assets/images/description.png"
+								"description": "./drivers/owmCurrent/assets/images/description.png"
+							}
+						}
+					}
+				]
+			}
+		}, {
+			"id": "owmCurrent",
+			"name": {
+				"en": "Current weather",
+				"nl": "Actueel weerbericht"
+			},
+			"images": {
+				"large": "/drivers/owmCurrent/assets/images/large.png",
+				"small": "/drivers/owmCurrent/assets/images/small.png"
+			},
+			"class": "sensor",
+			"capabilities": [
+				"measure_temperature",
+				"measure_humidity",
+				"measure_pressure",
+				"measure_rain",
+				"measure_snow",
+				"measure_wind_combined",
+				"measure_wind_strength",
+				"measure_wind_direction_string",
+				"measure_windstrength_beaufort",
+				"measure_wind_angle",
+				"measure_cloudiness",
+				"measure_visibility",
+				"description",
+				"conditioncode",
+				"sunrise",
+				"sunset"
+			],
+			"capabilitiesOptions": {
+				"conditioncode": {
+					"preventInsights": true,
+					"preventTag": true
+				}
+			},
+			"pair": [{
+				"id": "pair"
+			}],
+			"settings": [{
+					"type": "group",
+					"label": {
+						"en": "OpenWeatherMap general settings",
+						"nl": "OpenWeatherMap algemene instellingen"
+					},
+					"children": [{
+							"id": "APIKey",
+							"type": "text",
+							"value": "abcdef0123456789abcdef0123456789",
+							"label": {
+								"en": "OpenWeatherMap API key:",
+								"nl": "OpenWeatherMap API sleutel:"
+							},
+							"hint": {
+								"en": "An API key can be obtained at http://openweathermap.org.",
+								"nl": "Een API sleutel kan op http://openweathermap.org verkregen worden."
+							}
+						},
+						{
+							"id": "GEOlocation",
+							"type": "label",
+							"value": "...pending first data...",
+							"label": {
+								"en": "Current location found by OpenWeatherMap:",
+								"nl": "Huidige door OpenWeatherMap gevonden locatie:"
+							},
+							"hint": {
+								"en": "Note: appears after first polling interval.",
+								"nl": "De locatie verschijnt zodra de eerste data binnen is."
+							}
+						}
+					]
+				},
+				{
+					"type": "group",
+					"collapsed": "true",
+					"label": {
+						"en": "Optional location settings",
+						"nl": "Optionele locatie instellingen"
+					},
+					"children": [{
+							"id": "GEOlocationCity",
+							"type": "text",
+							"value": "Paris,FR",
+							"label": {
+								"en": "City, countrycode (optional):",
+								"nl": "Stad, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by city/country, e.g. Paris,fr.",
+								"nl": "De locatie kan optioneel als stad/land opgegeven worden, bijv. Utrecht,nl."
+							}
+						},
+						{
+							"id": "GEOlocationZip",
+							"type": "text",
+							"value": "94040,us",
+							"label": {
+								"en": "Zip code, countrycode (optional):",
+								"nl": "Postcode, landencode (optioneel):"
+							},
+							"hint": {
+								"en": "Optionally the location can be entered by zip code/country, e.g. 94040,us.",
+								"nl": "De locatie kan optioneel als postcode/land opgegeven worden, bijv. 1234,NL."
+							}
+						}
+					]
+				}
+			],
+			"mobile": {
+				"components": [{
+						"id": "icon",
+						"capabilities": []
+					},
+					{
+						"id": "sensor",
+						"capabilities": [
+							"measure_temperature",
+							"measure_wind_combined",
+							"measure_humidity",
+							"measure_rain",
+							"measure_pressure",
+							"measure_cloudiness",
+							"measure_snow",
+							"description"
+						],
+						"options": {
+							"icons": {
+								"measure_wind_combined": "./drivers/owmCurrent/assets/images/wind_angle.svg",
+								"measure_wind_angle": "./drivers/owmCurrent/assets/images/wind_angle.svg",
+								"measure_cloudiness": "./drivers/owmCurrent/assets/images/clouds.svg",
+								"measure_snow": "./drivers/owmCurrent/assets/images/snow.svg",
+								"description": "./drivers/owmCurrent/assets/images/description.png"
 							}
 						}
 					}
@@ -1399,8 +1596,7 @@
 				"measure_wind_angle",
 				"measure_cloudiness",
 				"description",
-				"conditioncode",
-				"date_txt"
+				"conditioncode"
 			],
 			"capabilitiesOptions": {
 				"conditioncode": {
@@ -1531,8 +1727,7 @@
 							"measure_snow",
 							"measure_pressure",
 							"measure_cloudiness",
-							"description",
-							"date_txt"
+							"description"
 						],
 						"options": {
 							"icons": {
@@ -1540,8 +1735,7 @@
 								"measure_wind_angle": "./drivers/owmForecast/assets/images/wind_angle.svg",
 								"measure_cloudiness": "./drivers/owmForecast/assets/images/clouds.svg",
 								"measure_snow": "./drivers/owmForecast/assets/images/snow.svg",
-								"description": "./drivers/owmForecast/assets/images/description.png",
-								"date_txt": "./drivers/owmForecast/assets/images/description.png"
+								"description": "./drivers/owmForecast/assets/images/description.png"
 							}
 						}
 					}
@@ -1577,8 +1771,7 @@
 				"measure_wind_angle",
 				"measure_cloudiness",
 				"description",
-				"conditioncode",
-				"date_txt"
+				"conditioncode"
 			],
 			"capabilitiesOptions": {
 				"conditioncode": {
@@ -1727,8 +1920,7 @@
 							"measure_snow",
 							"measure_pressure",
 							"measure_cloudiness",
-							"description",
-							"date_txt"
+							"description"
 						],
 						"options": {
 							"icons": {
@@ -1736,8 +1928,7 @@
 								"measure_wind_angle": "./drivers/owmLongterm/assets/images/wind_angle.svg",
 								"measure_cloudiness": "./drivers/owmLongterm/assets/images/clouds.svg",
 								"measure_snow": "./drivers/owmLongterm/assets/images/snow.svg",
-								"description": "./drivers/owmLongterm/assets/images/description.png",
-								"date_txt": "./drivers/owmLongterm/assets/images/description.png"
+								"description": "./drivers/owmLongterm/assets/images/description.png"
 							}
 						}
 					}

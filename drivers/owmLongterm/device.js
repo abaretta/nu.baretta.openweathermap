@@ -278,9 +278,6 @@ class owmLongterm extends Homey.Device {
                     var windcombined = weather.degToCompass(settings, windangle) + " " + weather.beaufortFromMph(windstrength)
                 }
 
-                var date_txt = new Date(data.list[forecastInterval].dt * 1e3).toISOString().slice(-24, -5);
-                date_txt = date_txt.replace('T', ' ');
-
                 this.log("Comparing variables before and after current polling interval");
                 // update each interval, even if unchanged.
 
@@ -412,7 +409,6 @@ class owmLongterm extends Homey.Device {
                     'measure_temperature.morning': temp_morn,
                     'measure_temperature.evening': temp_eve,
                     'measure_temperature.night': temp_night,
-                    'date_txt': date_txt,
                     'measure_humidity': hum,
                     'measure_pressure': pressure,
                     'measure_rain': rain,

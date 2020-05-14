@@ -1,7 +1,9 @@
 # Changelog
 
-**Version 0.0.21**
+**Version 0.0.22**
 - Fixed issue with condition flowcard trigger
+
+**Version 0.0.21**
 - Added snow measurement
 
 **Version 0.0.20**

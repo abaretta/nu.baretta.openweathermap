@@ -35,6 +35,8 @@ class owmCurrent extends Homey.Device {
 
         this._flowTriggerWindDirectionCompassChanged = new Homey.FlowCardTriggerDevice('WindDirectionCompassChanged').register()
 
+        //this._flowTriggerWindAngleChanged = new Homey.FlowCardTriggerDevice('WindAngleChanged').register()
+
         this._flowTriggerCloudinessChanged = new Homey.FlowCardTriggerDevice('CloudinessChanged').register()
 
         this._flowTriggerVisibilityChanged = new Homey.FlowCardTriggerDevice('VisibilityChanged').register()
@@ -78,6 +80,7 @@ class owmCurrent extends Homey.Device {
         this._conditionWindspeed = new Homey.FlowCardCondition("Windspeed").register()
             .registerRunListener(async (args, state) => {
                 var result = (await this.getCapabilityValue('measure_wind_strength') >= args.windspeed);
+                this.log("Windspeed condition argument: " + args.windspeed);
                 return Promise.resolve(result);
             })
 
@@ -227,9 +230,6 @@ class owmCurrent extends Homey.Device {
                 var visibility = data.visibility;
                 var description = data.weather[0].description;
 
-                var date_txt = new Date(data.dt * 1e3).toString().slice(-24, -5);
-                date_txt = date_txt.replace('T', ' ');
-
                 var sunr = new Date(data.sys.sunrise * 1e3);
                 var sunrise = sunr.getHours() + ":" + (sunr.getMinutes() < 10 ? '0' : '') + sunr.getMinutes();
 
@@ -262,6 +262,17 @@ class owmCurrent extends Homey.Device {
                     this._flowTriggerWindDirectionCompassChanged.trigger(device, tokens).catch(this.error)
                     //this.setCapabilityValue('measure_wind_direction_string', winddegcompass).catch(this.error);
                 }
+//                if (this.getCapabilityValue('measure_wind_angle') !== windangle && windangle !== undefined) {
+//                    let state = {
+//                        "measure_wind_angle": windangle
+//                    };
+//                    let tokens = {
+//                        "measure_wind_angle": windangle,
+//                        "location": GEOlocation
+//                    };
+//                    this._flowTriggerWindAngleChanged.trigger(device, tokens).catch(this.error)
+//                    //this.setCapabilityValue('measure_wind_angle', winddegcompass).catch(this.error);
+//                }
                 if (this.getCapabilityValue('measure_cloudiness') !== cloudiness && cloudiness !== undefined) {
                     this.log("cloudiness has changed. Previous cloudiness: " + this.getCapabilityValue('measure_cloudiness') + " New cloudiness: " + cloudiness);
                     let state = {
@@ -328,7 +339,6 @@ class owmCurrent extends Homey.Device {
                 const capabilitySet = {
                     'conditioncode': conditioncode,
                     'measure_temperature': temp,
-                    'date_txt': date_txt,
                     'measure_humidity': hum,
                     'measure_pressure': pressure,
                     'measure_rain': rain,

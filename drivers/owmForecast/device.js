@@ -214,11 +214,6 @@ class owmForecast extends Homey.Device {
                     var windstrength = {};
                 }
 
-                if (data.list[forecastInterval].wind.deg) {
-                    var windangle = data.list[forecastInterval].wind.deg;
-                } else {
-                    var windangle = null;
-                }
                 if (settings["units"] == "metric") {
                     // convert to beaufort and concatenate in a string with wind direction
                     var windspeedbeaufort = weather.beaufortFromKmh(windstrength);
@@ -227,9 +222,6 @@ class owmForecast extends Homey.Device {
                     var windspeedbeaufort = weather.beaufortFromMph(windstrength);
                     var windcombined = weather.degToCompass(settings, windangle) + " " + weather.beaufortFromMph(windstrength)
                 }
-
-                var date_txt = new Date(data.list[forecastInterval].dt * 1e3).toISOString().slice(-24, -5);
-                date_txt = date_txt.replace('T', ' ');
 
                 this.log("Comparing variables before and after current polling interval");
 
@@ -303,7 +295,6 @@ class owmForecast extends Homey.Device {
                 const capabilitySet = {
                     'conditioncode': conditioncode,
                     'measure_temperature': temp,
-                    'date_txt': date_txt,
                     'measure_humidity': hum,
                     'measure_pressure': pressure,
                     'measure_rain': rain,
