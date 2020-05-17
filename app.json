@@ -78,21 +78,6 @@
 			"max": 20000,
 			"step": 1
 		},
-		"measure_ultraviolet": {
-			"type": "number",
-			"title": {
-				"en": "UV index",
-				"nl": "UV index"
-			},
-			"getable": true,
-			"setable": false,
-			"uiComponent": "sensor",
-			"units": {
-				"en": ""
-			},
-			"min": 0,
-			"max": 45
-		},
 		"measure_cloudiness": {
 			"type": "number",
 			"title": {
@@ -271,14 +256,71 @@
 			"setable": false
 		},
 		"conditioncode": {
-			"type": "string",
+			"type": "enum",
 			"title": {
 				"en": "OWM condition code",
 				"nl": "OWM conditie code"
 			},
 			"uiComponent": null,
 			"getable": true,
-			"setable": false
+			"setable": false,
+			"values": [{
+					"id": "Clouds",
+					"title": {
+						"en": "Cloudy",
+						"nl": "Bewolkt"
+					}
+				},
+				{
+					"id": "Rain",
+					"title": {
+						"en": "Rainy",
+						"nl": "Regenachtig"
+					}
+				},
+				{
+					"id": "Clear",
+					"title": {
+						"en": "Clear",
+						"nl": "Helder"
+					}
+				},
+				{
+					"id": "Drizzle",
+					"title": {
+						"en": "Drizzly",
+						"nl": "Miezerig"
+					}
+				},
+				{
+					"id": "Mist",
+					"title": {
+						"en": "Misty",
+						"nl": "Mistig"
+					}
+				},
+				{
+					"id": "Thunderstorm",
+					"title": {
+						"en": "Thunderstorm",
+						"nl": "Onweer"
+					}
+				},
+				{
+					"id": "Snow",
+					"title": {
+						"en": "Snow",
+						"nl": "Sneeuw"
+					}
+				},
+				{
+					"id": "Extreme",
+					"title": {
+						"en": "Extreme",
+						"nl": "Extreem"
+					}
+				}
+			]
 		},
 		"sunrise": {
 			"type": "string",
@@ -638,7 +680,7 @@
 				"args": [{
 					"name": "ChangedUltraviolet",
 					"type": "device",
-					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
+					"filter": "driver_id=owmOnecallCurrent"
 				}]
 			}, {
 				"id": "CloudinessChanged",
@@ -1028,7 +1070,7 @@
 				"args": [{
 						"name": "device",
 						"type": "device",
-						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
+						"filter": "driver_id=owmOnecallCurrent"
 					},
 					{
 						"name": "uvi",
