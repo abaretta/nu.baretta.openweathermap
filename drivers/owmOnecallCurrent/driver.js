@@ -2,7 +2,7 @@
 // need Homey module, see SDK Guidelines
 const Homey = require('homey');
 
-class owmCurrentDriver extends Homey.Driver {
+class owmOnecallDriver extends Homey.Driver {
 
     onPair(socket) {
 
@@ -32,4 +32,4 @@ class owmCurrentDriver extends Homey.Driver {
     } // end onPair
 
 }
-module.exports = owmCurrentDriver;
+module.exports = owmOnecallDriver;

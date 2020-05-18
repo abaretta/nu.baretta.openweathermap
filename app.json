@@ -322,6 +322,347 @@
 				}
 			]
 		},
+		"conditioncode_detail": {
+			"type": "enum",
+			"title": {
+				"en": "OWM exact condition code",
+				"nl": "OWM exact conditie code"
+			},
+			"uiComponent": null,
+			"getable": true,
+			"setable": false,
+			"values": [{
+					"id": "200",
+					"title": {
+						"en": "thunderstorm with light rain"
+					}
+				},
+				{
+					"id": "201",
+					"title": {
+						"en": "thunderstorm with rain"
+					}
+				},
+				{
+					"id": "202",
+					"title": {
+						"en": "thunderstorm with heavy rain"
+					}
+				},
+				{
+					"id": "210",
+					"title": {
+						"en": "light thunderstorm"
+					}
+				},
+				{
+					"id": "211",
+					"title": {
+						"en": "thunderstorm"
+					}
+				},
+				{
+					"id": "212",
+					"title": {
+						"en": "heavy thunderstorm"
+					}
+				},
+				{
+					"id": "221",
+					"title": {
+						"en": "ragged thunderstorm"
+					}
+				},
+				{
+					"id": "230",
+					"title": {
+						"en": "thunderstorm with light drizzle"
+					}
+				},
+				{
+					"id": "231",
+					"title": {
+						"en": "thunderstorm with drizzle"
+					}
+				},
+				{
+					"id": "232",
+					"title": {
+						"en": "thunderstorm with heavy drizzle"
+					}
+				},
+				{
+					"id": "300",
+					"title": {
+						"en": "light intensity drizzle"
+					}
+				},
+				{
+					"id": "301",
+					"title": {
+						"en": "drizzle"
+					}
+				},
+				{
+					"id": "302",
+					"title": {
+						"en": "heavy intensity drizzle"
+					}
+				},
+				{
+					"id": "310",
+					"title": {
+						"en": "light intensity drizzle rain"
+					}
+				},
+				{
+					"id": "311",
+					"title": {
+						"en": "drizzle rain"
+					}
+				},
+				{
+					"id": "312",
+					"title": {
+						"en": "heavy intensity drizzle rain"
+					}
+				},
+				{
+					"id": "313",
+					"title": {
+						"en": "shower rain and drizzle"
+					}
+				},
+				{
+					"id": "314",
+					"title": {
+						"en": "heavy shower rain and drizzle"
+					}
+				},
+				{
+					"id": "321",
+					"title": {
+						"en": "shower drizzle"
+					}
+				},
+				{
+					"id": "500",
+					"title": {
+						"en": "light rain"
+					}
+				},
+				{
+					"id": "501",
+					"title": {
+						"en": "moderate rain"
+					}
+				},
+				{
+					"id": "502",
+					"title": {
+						"en": "heavy intensity rain"
+					}
+				},
+				{
+					"id": "503",
+					"title": {
+						"en": "very heavy rain"
+					}
+				},
+				{
+					"id": "504",
+					"title": {
+						"en": "extreme rain"
+					}
+				},
+				{
+					"id": "511",
+					"title": {
+						"en": "freezing rain"
+					}
+				},
+				{
+					"id": "520",
+					"title": {
+						"en": "light intensity shower rain"
+					}
+				},
+				{
+					"id": "521",
+					"title": {
+						"en": "shower rain"
+					}
+				},
+				{
+					"id": "522",
+					"title": {
+						"en": "heavy intensity shower rain"
+					}
+				},
+				{
+					"id": "531",
+					"title": {
+						"en": "ragged shower rain"
+					}
+				},
+				{
+					"id": "600",
+					"title": {
+						"en": "light snow"
+					}
+				},
+				{
+					"id": "601",
+					"title": {
+						"en": "Snow"
+					}
+				},
+				{
+					"id": "602",
+					"title": {
+						"en": "Heavy snow"
+					}
+				},
+				{
+					"id": "611",
+					"title": {
+						"en": "Sleet"
+					}
+				},
+				{
+					"id": "612",
+					"title": {
+						"en": "Light shower sleet"
+					}
+				},
+				{
+					"id": "613",
+					"title": {
+						"en": "Shower sleet"
+					}
+				},
+				{
+					"id": "615",
+					"title": {
+						"en": "Light rain and snow"
+					}
+				},
+				{
+					"id": "616",
+					"title": {
+						"en": "Rain and snow"
+					}
+				},
+				{
+					"id": "620",
+					"title": {
+						"en": "Light shower snow"
+					}
+				},
+				{
+					"id": "621",
+					"title": {
+						"en": "Shower snow"
+					}
+				},
+				{
+					"id": "622",
+					"title": {
+						"en": "Heavy shower snow"
+					}
+				},
+				{
+					"id": "701",
+					"title": {
+						"en": "mist"
+					}
+				},
+				{
+					"id": "711",
+					"title": {
+						"en": "Smoke"
+					}
+				},
+				{
+					"id": "721",
+					"title": {
+						"en": "Haze"
+					}
+				},
+				{
+					"id": "731",
+					"title": {
+						"en": "sand/ dust whirls"
+					}
+				},
+				{
+					"id": "741",
+					"title": {
+						"en": "fog"
+					}
+				},
+				{
+					"id": "751",
+					"title": {
+						"en": "sand"
+					}
+				},
+				{
+					"id": "761",
+					"title": {
+						"en": "dust"
+					}
+				},
+				{
+					"id": "762",
+					"title": {
+						"en": "volcanic ash"
+					}
+				},
+				{
+					"id": "771",
+					"title": {
+						"en": "squalls"
+					}
+				},
+				{
+					"id": "781",
+					"title": {
+						"en": "tornado"
+					}
+				},
+				{
+					"id": "800",
+					"title": {
+						"en": "clear sky"
+					}
+				},
+				{
+					"id": "801",
+					"title": {
+						"en": "few clouds: 11-25%"
+					}
+				},
+				{
+					"id": "802",
+					"title": {
+						"en": "scattered clouds: 25-50%"
+					}
+				},
+				{
+					"id": "803",
+					"title": {
+						"en": "broken clouds: 51-84%"
+					}
+				},
+				{
+					"id": "804",
+					"title": {
+						"en": "overcast clouds: 85-100%"
+					}
+				}
+			]
+		},
 		"sunrise": {
 			"type": "string",
 			"title": {
@@ -349,12 +690,12 @@
 		"triggers": [{
 				"id": "ConditionChanged",
 				"title": {
-					"en": "The weatherconditions have changed",
-					"nl": "De weersomstandigheden zijn veranderd"
+					"en": "The main weathercondition has changed",
+					"nl": "De categorie van de weersomstandigheden is veranderd"
 				},
 				"hint": {
-					"en": "Triggers when the condition of the weather changes.",
-					"nl": "Triggert zodra de weersomstandigheden veranderen."
+					"en": "Triggers when the main condition category of the weather changes, e.g. from Clouds to Clear.",
+					"nl": "Triggert zodra de categorie van de weersomstandigheden veranderd, bijv. van Bewolkt naar Helder."
 				},
 				"tokens": [{
 						"name": "conditioncode",
@@ -366,6 +707,45 @@
 						"example": {
 							"en": "Mist",
 							"nl": "Mist"
+						}
+					},
+					{
+						"name": "location",
+						"type": "string",
+						"title": {
+							"en": "Location",
+							"nl": "locatie"
+						},
+						"example": {
+							"en": "Amsterdam"
+						}
+					}
+				],
+				"args": [{
+					"name": "ChangedCondition",
+					"type": "device",
+					"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
+				}]
+			}, {
+				"id": "ConditionDetailChanged",
+				"title": {
+					"en": "The specific weathercondition has changed",
+					"nl": "De specifieke weersomstandigheden zijn veranderd"
+				},
+				"hint": {
+					"en": "Triggers when the condition of the weather changes, e.g. from 'few clouds' to 'scattered clouds'.",
+					"nl": "Triggert zodra de weersomstandigheden veranderden, bijv. van 'licht bewolkt' naar 'geheel bewolkt'."
+				},
+				"tokens": [{
+						"name": "conditioncode",
+						"type": "number",
+						"title": {
+							"en": "Weather condition code",
+							"nl": "Code weersomstandigheid"
+						},
+						"example": {
+							"en": "801",
+							"nl": "801"
 						}
 					},
 					{
@@ -647,42 +1027,6 @@
 				}]
 			},
 			{
-				"id": "UltravioletChanged",
-				"title": {
-					"en": "UV index has changed",
-					"nl": "UV index is veranderd"
-				},
-				"hint": {
-					"en": "Triggers when the UV index changes.",
-					"nl": "Triggert zodra de UV index veranderd."
-				},
-				"tokens": [{
-						"name": "measure_ultraviolet",
-						"type": "number",
-						"title": {
-							"en": "UV index",
-							"nl": "UV index"
-						},
-						"example": 6.42
-					},
-					{
-						"name": "location",
-						"type": "string",
-						"title": {
-							"en": "Location",
-							"nl": "locatie"
-						},
-						"example": {
-							"en": "Amsterdam"
-						}
-					}
-				],
-				"args": [{
-					"name": "ChangedUltraviolet",
-					"type": "device",
-					"filter": "driver_id=owmOnecallCurrent"
-				}]
-			}, {
 				"id": "CloudinessChanged",
 				"title": {
 					"en": "Cloudiness (%) has changed",
@@ -840,8 +1184,8 @@
 					"nl": "Het weer !{{is|is niet}}:"
 				},
 				"hint": {
-					"en": "Description of the weather.",
-					"nl": "Beschrijving van het weer."
+					"en": "Broad description of the weather.",
+					"nl": "Algemene beschrijving van het weer."
 				},
 				"args": [{
 						"name": "argument_main",
@@ -912,6 +1256,357 @@
 				]
 			},
 			{
+				"id": "Conditioncode_detail",
+				"title": {
+					"en": "The weather in detail !{{is|isn't}}:",
+					"nl": "Het weer in detail !{{is|is niet}}:"
+				},
+				"hint": {
+					"en": "Detailed description of the weather.",
+					"nl": "Gedetailleerde beschrijving van het weer."
+				},
+				"args": [{
+						"name": "argument_main",
+						"type": "dropdown",
+						"values": [{
+								"id": "200",
+								"label": {
+									"en": "thunderstorm with light rain"
+								}
+							},
+							{
+								"id": "201",
+								"label": {
+									"en": "thunderstorm with rain"
+								}
+							},
+							{
+								"id": "202",
+								"label": {
+									"en": "thunderstorm with heavy rain"
+								}
+							},
+							{
+								"id": "210",
+								"label": {
+									"en": "light thunderstorm"
+								}
+							},
+							{
+								"id": "211",
+								"label": {
+									"en": "thunderstorm"
+								}
+							},
+							{
+								"id": "212",
+								"label": {
+									"en": "heavy thunderstorm"
+								}
+							},
+							{
+								"id": "221",
+								"label": {
+									"en": "ragged thunderstorm"
+								}
+							},
+							{
+								"id": "230",
+								"label": {
+									"en": "thunderstorm with light drizzle"
+								}
+							},
+							{
+								"id": "231",
+								"label": {
+									"en": "thunderstorm with drizzle"
+								}
+							},
+							{
+								"id": "232",
+								"label": {
+									"en": "thunderstorm with heavy drizzle"
+								}
+							},
+							{
+								"id": "300",
+								"label": {
+									"en": "light intensity drizzle"
+								}
+							},
+							{
+								"id": "301",
+								"label": {
+									"en": "drizzle"
+								}
+							},
+							{
+								"id": "302",
+								"label": {
+									"en": "heavy intensity drizzle"
+								}
+							},
+							{
+								"id": "310",
+								"label": {
+									"en": "light intensity drizzle rain"
+								}
+							},
+							{
+								"id": "311",
+								"label": {
+									"en": "drizzle rain"
+								}
+							},
+							{
+								"id": "312",
+								"label": {
+									"en": "heavy intensity drizzle rain"
+								}
+							},
+							{
+								"id": "313",
+								"label": {
+									"en": "shower rain and drizzle"
+								}
+							},
+							{
+								"id": "314",
+								"label": {
+									"en": "heavy shower rain and drizzle"
+								}
+							},
+							{
+								"id": "321",
+								"label": {
+									"en": "shower drizzle"
+								}
+							},
+							{
+								"id": "500",
+								"label": {
+									"en": "light rain"
+								}
+							},
+							{
+								"id": "501",
+								"label": {
+									"en": "moderate rain"
+								}
+							},
+							{
+								"id": "502",
+								"label": {
+									"en": "heavy intensity rain"
+								}
+							},
+							{
+								"id": "503",
+								"label": {
+									"en": "very heavy rain"
+								}
+							},
+							{
+								"id": "504",
+								"label": {
+									"en": "extreme rain"
+								}
+							},
+							{
+								"id": "511",
+								"label": {
+									"en": "freezing rain"
+								}
+							},
+							{
+								"id": "520",
+								"label": {
+									"en": "light intensity shower rain"
+								}
+							},
+							{
+								"id": "521",
+								"label": {
+									"en": "shower rain"
+								}
+							},
+							{
+								"id": "522",
+								"label": {
+									"en": "heavy intensity shower rain"
+								}
+							},
+							{
+								"id": "531",
+								"label": {
+									"en": "ragged shower rain"
+								}
+							},
+							{
+								"id": "600",
+								"label": {
+									"en": "light snow"
+								}
+							},
+							{
+								"id": "601",
+								"label": {
+									"en": "Snow"
+								}
+							},
+							{
+								"id": "602",
+								"label": {
+									"en": "Heavy snow"
+								}
+							},
+							{
+								"id": "611",
+								"label": {
+									"en": "Sleet"
+								}
+							},
+							{
+								"id": "612",
+								"label": {
+									"en": "Light shower sleet"
+								}
+							},
+							{
+								"id": "613",
+								"label": {
+									"en": "Shower sleet"
+								}
+							},
+							{
+								"id": "615",
+								"label": {
+									"en": "Light rain and snow"
+								}
+							},
+							{
+								"id": "616",
+								"label": {
+									"en": "Rain and snow"
+								}
+							},
+							{
+								"id": "620",
+								"label": {
+									"en": "Light shower snow"
+								}
+							},
+							{
+								"id": "621",
+								"label": {
+									"en": "Shower snow"
+								}
+							},
+							{
+								"id": "622",
+								"label": {
+									"en": "Heavy shower snow"
+								}
+							},
+							{
+								"id": "701",
+								"label": {
+									"en": "mist"
+								}
+							},
+							{
+								"id": "711",
+								"label": {
+									"en": "Smoke"
+								}
+							},
+							{
+								"id": "721",
+								"label": {
+									"en": "Haze"
+								}
+							},
+							{
+								"id": "731",
+								"label": {
+									"en": "sand/ dust whirls"
+								}
+							},
+							{
+								"id": "741",
+								"label": {
+									"en": "fog"
+								}
+							},
+							{
+								"id": "751",
+								"label": {
+									"en": "sand"
+								}
+							},
+							{
+								"id": "761",
+								"label": {
+									"en": "dust"
+								}
+							},
+							{
+								"id": "762",
+								"label": {
+									"en": "volcanic ash"
+								}
+							},
+							{
+								"id": "771",
+								"label": {
+									"en": "squalls"
+								}
+							},
+							{
+								"id": "781",
+								"label": {
+									"en": "tornado"
+								}
+							},
+							{
+								"id": "800",
+								"label": {
+									"en": "clear sky"
+								}
+							},
+							{
+								"id": "801",
+								"label": {
+									"en": "few clouds: 11-25%"
+								}
+							},
+							{
+								"id": "802",
+								"label": {
+									"en": "scattered clouds: 25-50%"
+								}
+							},
+							{
+								"id": "803",
+								"label": {
+									"en": "broken clouds: 51-84%"
+								}
+							},
+							{
+								"id": "804",
+								"label": {
+									"en": "overcast clouds: 85-100%"
+								}
+							}
+						]
+					},
+					{
+						"name": "device",
+						"type": "device",
+						"filter": "driver_id=owmCurrent|owmForecast|owmLongterm|owmOnecallCurrent"
+					}
+				]
+			}, {
 				"id": "Temp",
 				"title": {
 					"en": "Temperature !{{is|isn't}} higher than",
@@ -1053,27 +1748,6 @@
 					},
 					{
 						"name": "bar",
-						"type": "number"
-					}
-				]
-			},
-			{
-				"id": "Ultraviolet",
-				"title": {
-					"en": "UV index !{{is|isn't}} more than",
-					"nl": "UV index !{{is|is niet}} meer dan"
-				},
-				"hint": {
-					"en": "UV index.",
-					"nl": "UV index."
-				},
-				"args": [{
-						"name": "device",
-						"type": "device",
-						"filter": "driver_id=owmOnecallCurrent"
-					},
-					{
-						"name": "uvi",
 						"type": "number"
 					}
 				]
@@ -1365,6 +2039,7 @@
 				"measure_visibility",
 				"description",
 				"conditioncode",
+				"conditioncode_detail",
 				"sunrise",
 				"sunset"
 			],

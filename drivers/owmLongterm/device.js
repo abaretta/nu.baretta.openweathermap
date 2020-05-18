@@ -31,6 +31,8 @@ class owmLongterm extends Homey.Device {
         this._flowTriggerConditionChanged = new Homey.FlowCardTriggerDevice('ConditionChanged')
             .register()
 
+        this._flowTriggerConditionDetailChanged = new Homey.FlowCardTriggerDevice('ConditionDetailChanged').register()
+
         this._flowTriggerWeatherChanged = new Homey.FlowCardTriggerDevice('WeatherChanged')
             .register()
 
@@ -67,6 +69,12 @@ class owmLongterm extends Homey.Device {
             .registerRunListener((args, state) => {
                 //var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
                 var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
+                return Promise.resolve(result);
+            })
+
+        this._weatherConditionDetail = new Homey.FlowCardCondition('Conditioncode_detail').register()
+            .registerRunListener(async (args, state) => {
+                var result = (await state.conditioncode == args.argument_main);
                 return Promise.resolve(result);
             })
 
@@ -169,7 +177,7 @@ class owmLongterm extends Homey.Device {
 
     pollWeatherDaily(settings) {
         //run once, then at interval
-        var pollminutes = 30;
+        var pollminutes = 15;
 
         this.pollingintervalDaily = weather.setIntervalImmediately(_ => {
             this.pollOpenWeatherMapDaily(settings)
@@ -195,9 +203,12 @@ class owmLongterm extends Homey.Device {
 
                 //var conditioncode = data.list[forecastInterval].weather[0].id;
                 var conditioncode = data.list[forecastInterval].weather[0].main;
-                this.log("current condition: ")
+                this.log("Main condition: ")
                 //this.log(weather.conditionToString(conditioncode));
                 this.log(conditioncode);
+
+                var conditioncode_detail = data.list[forecastInterval].weather[0].id;
+                this.log("Specific conditioncode: " + data.list[forecastInterval].weather[0].id);
 
                 var temp = data.list[forecastInterval].temp.day
                 var temp_min = data.list[forecastInterval].temp.min
@@ -387,6 +398,17 @@ class owmLongterm extends Homey.Device {
                     };
                     this._flowTriggerConditionChanged.trigger(device, tokens).catch(this.error)
                 }
+                if (this.getCapabilityValue('conditioncode_detail') !== conditioncode_detail && conditioncode_detail !== undefined) {
+                    this.log("Specific weatherconditioncode has changed. Previous conditioncode: " + this.getCapabilityValue('conditioncode_detail') + " New conditioncode: " + conditioncode_detail);
+                    let state = {
+                        "conditioncode": conditioncode_detail
+                    };
+                    let tokens = {
+                        "conditioncode": conditioncode_detail,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerConditionDetailChanged.trigger(device, tokens, state).catch(this.error)
+                }
                 if (this.getCapabilityValue('description') != description) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
                     let state = {
@@ -403,6 +425,7 @@ class owmLongterm extends Homey.Device {
 
                 const capabilitySet = {
                     'conditioncode': conditioncode,
+                    'conditioncode_detail': conditioncode_detail,
                     'measure_temperature': temp,
                     'measure_temperature.min': temp_min,
                     'measure_temperature.max': temp_max,

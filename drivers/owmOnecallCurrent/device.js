@@ -3,7 +3,7 @@
 
 const Homey = require('homey');
 const weather = require('index.js');
-const intervalCurrent = 10;
+const intervalCurrent = 5;
 
 class owmCurrent extends Homey.Device {
 
@@ -29,13 +29,15 @@ class owmCurrent extends Homey.Device {
         // Flows
         this._flowTriggerConditionChanged = new Homey.FlowCardTriggerDevice('ConditionChanged').register();
 
+        this._flowTriggerConditionDetailChanged = new Homey.FlowCardTriggerDevice('ConditionDetailChanged').register();
+
         this._flowTriggerWeatherChanged = new Homey.FlowCardTriggerDevice('WeatherChanged').register()
 
         this._flowTriggerWindBeaufortChanged = new Homey.FlowCardTriggerDevice('WindBeaufortChanged').register()
 
         this._flowTriggerWindDirectionCompassChanged = new Homey.FlowCardTriggerDevice('WindDirectionCompassChanged').register()
 
-        this._flowTriggerUltravioletChanged = new Homey.FlowCardTriggerDevice('UltravioletChanged').register()
+        // this._flowTriggerUltravioletChanged = new Homey.FlowCardTriggerDevice('UltravioletChanged').register()
 
         this._flowTriggerCloudinessChanged = new Homey.FlowCardTriggerDevice('CloudinessChanged').register()
 
@@ -48,44 +50,22 @@ class owmCurrent extends Homey.Device {
         this._weatherCondition = new Homey.FlowCardCondition('Conditioncode').register()
             .registerRunListener(async (args, state) => {
                 var result = (await state.conditioncode == args.argument_main);
-                this.log("Condition: " + state.conditioncode);
-                this.log("Weather condition argument: " + args.argument_main);
+                return Promise.resolve(result);
+            })
+
+        this._weatherConditionDetail = new Homey.FlowCardCondition('Conditioncode_detail').register()
+            .registerRunListener(async (args, state) => {
+                var result = (await state.conditioncode == args.argument_main);
                 return Promise.resolve(result);
             })
 /*
-        this._conditionTemp = new Homey.FlowCardCondition("Temp").register()
-            .registerRunListener(async (args, state) => {
-                var result = (await state.measure_temperature >= args.degrees);
-                return Promise.resolve(result);
-            })
-
-        this._conditionPressure = new Homey.FlowCardCondition("Pressure").register()
-            .registerRunListener(async (args, state) => {
-                var result = (await state.measure_pressure >= args.bar);
-                return Promise.resolve(result);
-            })
-
-        this._conditionHumidity = new Homey.FlowCardCondition("Humidity").register()
-            .registerRunListener(async (args, state) => {
-                var result = (await state.measure_humidity >= args.humidity);
-                return Promise.resolve(result);
-            })
-
-        this._conditionWindspeed = new Homey.FlowCardCondition("Windspeed").register()
-            .registerRunListener(async (args, state) => {
-                var result = (await state.measure_wind_strength >= args.windspeed);
-                this.log("Windspeed condition argument: " + args.windspeed);
-                return Promise.resolve(result);
-            })
-
-*/
         // should be included by default like the other pre-defined capabilities
         this._conditionUltraviolet = new Homey.FlowCardCondition("Ultraviolet").register()
             .registerRunListener(async (args, state) => {
                 var result = (await state.measure_ultraviolet >= args.uvi);
                 return Promise.resolve(result);
             })
-
+*/
         this._conditionClouds = new Homey.FlowCardCondition("Clouds").register()
             .registerRunListener(async (args, state) => {
                 var result = (await state.measure_cloudiness >= args.cloudiness);
@@ -162,6 +142,9 @@ class owmCurrent extends Homey.Device {
                     .catch(this.error);
                 var conditioncode = data.current.weather[0].main;
                 this.log("Main conditioncode: " + data.current.weather[0].main);
+
+                var conditioncode_detail = data.current.weather[0].id;
+                this.log("Specific conditioncode: " + data.current.weather[0].id);
 
                 var temp = data.current.temp;
                 var hum = data.current.humidity;
@@ -271,7 +254,7 @@ class owmCurrent extends Homey.Device {
                     };
                     this._flowTriggerWindDirectionCompassChanged.trigger(device, tokens, state).catch(this.error)
                 }
-                if (this.getCapabilityValue('measure_ultraviolet') !== uvi && uvi !== undefined) {
+            /*    if (this.getCapabilityValue('measure_ultraviolet') !== uvi && uvi !== undefined) {
                     this.log("UV index has changed. Previous UV index: " + this.getCapabilityValue('measure_ultraviolet') + " New UV index: " + uvi);
                     let state = {
                         "measure_ultraviolet": uvi
@@ -281,7 +264,7 @@ class owmCurrent extends Homey.Device {
                         "location": GEOlocation
                     };
                     this._flowTriggerUltravioletChanged.trigger(device, tokens, state).catch(this.error)
-                } 
+                } */ 
                 if (this.getCapabilityValue('measure_cloudiness') !== cloudiness && cloudiness !== undefined) {
                     this.log("cloudiness has changed. Previous cloudiness: " + this.getCapabilityValue('measure_cloudiness') + " New cloudiness: " + cloudiness);
                     let state = {
@@ -316,7 +299,7 @@ class owmCurrent extends Homey.Device {
                     this._flowTriggerSnowChanged.trigger(device, tokens, state).catch(this.error)
                 }
                 if (this.getCapabilityValue('conditioncode') !== conditioncode && conditioncode !== undefined) {
-                    this.log("weathercondition has changed. Previous conditioncode: " + this.getCapabilityValue('conditioncode') + " New conditioncode: " + conditioncode);
+                    this.log("Main weatherconditioncode has changed. Previous conditioncode: " + this.getCapabilityValue('conditioncode') + " New main conditioncode: " + conditioncode);
                     let state = {
                         "conditioncode": conditioncode
                     };
@@ -326,6 +309,17 @@ class owmCurrent extends Homey.Device {
                     };
                     this._flowTriggerConditionChanged.trigger(device, tokens, state).catch(this.error)
                 }
+                if (this.getCapabilityValue('conditioncode_detail') !== conditioncode_detail && conditioncode_detail !== undefined) {
+                    this.log("Specific weatherconditioncode has changed. Previous conditioncode: " + this.getCapabilityValue('conditioncode_detail') + " New conditioncode: " + conditioncode_detail);
+                    let state = {
+                        "conditioncode": conditioncode_detail
+                    };
+                    let tokens = {
+                        "conditioncode": conditioncode_detail,
+                        "location": GEOlocation
+                    };
+                    this._flowTriggerConditionDetailChanged.trigger(device, tokens, state).catch(this.error)
+                }                
                 if (this.getCapabilityValue('description') !== description && description !== undefined) {
                     this.log("description has changed. Previous description: " + this.getCapabilityValue('description') + " New description: " + description);
                     let state = {
@@ -342,6 +336,7 @@ class owmCurrent extends Homey.Device {
 
                 const capabilitySet = {
                     'conditioncode': conditioncode,
+                    'conditioncode_detail': conditioncode_detail,
                     'measure_temperature': temp,
                     'measure_humidity': hum,
                     'measure_pressure': pressure,
