@@ -110,7 +110,7 @@ class owmCurrent extends Homey.Device {
     onDeleted() {
 
         let id = this.getData().id;
-        clearInterval(this.pollingIntervalCurrent);
+        clearInterval(this.pollingintervalcurrent);
         this.log('device deleted:', id);
 
     } // end onDeleted
