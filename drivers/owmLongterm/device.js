@@ -67,92 +67,91 @@ class owmLongterm extends Homey.Device {
 
         this._weatherCondition = new Homey.FlowCardCondition('Conditioncode').register()
             .registerRunListener((args, state) => {
-                //var result = (weather.conditionToString(this.getCapabilityValue('conditioncode')) == args.argument_main)
-                var result = (this.getCapabilityValue('conditioncode') == args.argument_main)
+                let result = (this.getCapabilityValue('conditioncode') == args.argument_main)
                 return Promise.resolve(result);
             })
 
         this._weatherConditionDetail = new Homey.FlowCardCondition('Conditioncode_detail').register()
             .registerRunListener(async (args, state) => {
-                var result = (await state.conditioncode == args.argument_main);
+                let result = (await state.conditioncode == args.argument_main);
                 return Promise.resolve(result);
             })
 
         this._conditionTemp = new Homey.FlowCardCondition("Temp").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temperature') >= args.degrees);
+                let result = (this.getCapabilityValue('measure_temperature') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempmin = new Homey.FlowCardCondition("Tempmin").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temperature.min') >= args.degrees);
+                let result = (this.getCapabilityValue('measure_temperature.min') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempmax = new Homey.FlowCardCondition("Tempmax").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temperature.max') >= args.degrees);
+                let result = (this.getCapabilityValue('measure_temperature.max') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempeve = new Homey.FlowCardCondition("Tempeve").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temperature.evening') >= args.degrees);
+                let result = (this.getCapabilityValue('measure_temperature.evening') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempmorn = new Homey.FlowCardCondition("Tempmorn").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temperature.morning') >= args.degrees);
+                let result = (this.getCapabilityValue('measure_temperature.morning') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionTempnight = new Homey.FlowCardCondition("Tempnight").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_temperature.night') >= args.degrees);
+                let result = (this.getCapabilityValue('measure_temperature.night') >= args.degrees);
                 return Promise.resolve(result);
             })
 
         this._conditionPressure = new Homey.FlowCardCondition("Pressure").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_pressure') >= args.bar);
+                let result = (this.getCapabilityValue('measure_pressure') >= args.bar);
                 return Promise.resolve(result);
             })
 
         this._conditionClouds = new Homey.FlowCardCondition("Clouds").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_cloudiness') >= args.cloudiness);
+                let result = (this.getCapabilityValue('measure_cloudiness') >= args.cloudiness);
                 return Promise.resolve(result);
             })
 
         this._conditionHumidity = new Homey.FlowCardCondition("Humidity").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_humidity') >= args.humidity);
+                let result = (this.getCapabilityValue('measure_humidity') >= args.humidity);
                 return Promise.resolve(result);
             })
 
         this._conditionWindspeed = new Homey.FlowCardCondition("Windspeed").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_wind_strength') >= args.windspeed);
+                let result = (this.getCapabilityValue('measure_wind_strength') >= args.windspeed);
                 return Promise.resolve(result);
             })
 
         this._conditionWindforce = new Homey.FlowCardCondition("Windforce").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_windstrength_beaufort') >= args.windforce);
+                let result = (this.getCapabilityValue('measure_windstrength_beaufort') >= args.windforce);
                 return Promise.resolve(result);
             })
 
         this._conditionWinddirection = new Homey.FlowCardCondition("Winddirection").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_wind_direction_string') == args.winddirection);
+                let result = (this.getCapabilityValue('measure_wind_direction_string') == args.winddirection);
                 return Promise.resolve(result);
             })
 
         this._conditionSnow = new Homey.FlowCardCondition("Snow").register()
             .registerRunListener((args, state) => {
-                var result = (this.getCapabilityValue('measure_snow') == args.snow);
+                let result = (this.getCapabilityValue('measure_snow') == args.snow);
                 return Promise.resolve(result);
             })
 
@@ -177,7 +176,7 @@ class owmLongterm extends Homey.Device {
 
     pollWeatherDaily(settings) {
         //run once, then at interval
-        var pollminutes = 15;
+        let pollminutes = 15;
 
         this.pollingintervalDaily = weather.setIntervalImmediately(_ => {
             this.pollOpenWeatherMapDaily(settings)
@@ -194,7 +193,7 @@ class owmLongterm extends Homey.Device {
                 let forecastInterval = this.getSetting('forecastInterval');
                 this.log("Received OWM data");
 
-                var GEOlocation = data.city.name + ", " + data.city.country;
+                let GEOlocation = data.city.name + ", " + data.city.country;
 
                 this.setSettings({
                         GEOlocation: GEOlocation,
@@ -462,7 +461,7 @@ class owmLongterm extends Homey.Device {
 
     onSettings(settings, newSettingsObj, changedKeysArr, callback) {
         try {
-            for (var i = 0; i < changedKeysArr.length; i++) {
+            for (let i = 0; i < changedKeysArr.length; i++) {
                 switch (changedKeysArr[i]) {
                     case 'APIKey':
                         this.log('APIKey changed to ' + newSettingsObj.APIKey);

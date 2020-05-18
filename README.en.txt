@@ -1,8 +1,16 @@
 OpenWeatherMap-app for Homey
 
-This app allows you to poll the OpenWeatherMap API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. Note that the current version is no longer backward compatible with Homey V1. For V1 users an alpha version is able on request.
+This app allows you to poll the OpenWeatherMap (OWM) API for localised weather data and use this in your Homey home automation flows. Several instances (locations) can run simultaneously. Note that the current version is no longer backward compatible with Homey V1.
 
-Current weather
+Note that it seems OpenWeatherMap is restricting more and more API's to paying customers. This means that for the current weather, 5 and 16 forecast API's, your API key may or may not work.
+
+The good news is that OWM has made available a new API: the "Onecall API". In the first version using the Onecall API includes the current weather data, hourly and daily forecasts will be added in upcoming versions.
+
+Onecall API (new)
+
+This table includes data for the current weather as well as forecasts for the coming hours and days. It also includes UV data. In the current version of the app only the current weather data is included, upcoming versions will also include forecast data.
+
+Current weather 
 
 The 'current weather' data comes from the OWM current weather data, refer to http://openweathermap.org/current. It includes visibility, sunrise and sunset data which are not included in the forecast tables. Note that the max. and min. temperatures in the current data indicate the possible range in which the actual temperature is expected, it can be seen as a measure for the standard deviation of the current temperature.
 

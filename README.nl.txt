@@ -4,7 +4,15 @@ Deze app maakt het mogelijk om data en weersvooruitzichten in Homey te ontvangen
 
 Het gebruik van de app vereist een (gratis) API key, zie https://home.openweathermap.org/users/sign_up. 
 
+OpenWeatherMap beperkt de toegang tot steeds API's tot betalende klanten. Als gevolg kan het zijn dat een nieuwe API key niet werkt voor de tabellen met het huidige weer en de 5- en 16 daagse voorspelling.
+
+Gelukkig heeft OWM een nieuwe API beschikbaar gemaakt: de "Onecall API". In de eerste versie van de Homey OpenWeatherMap app met ondersteuning voor de Onecall API wordt alleen nog het huidige weer weergegeven. In komende versies zullen ook de voorspelling per uur en per dag toegevoegd worden.
+
 De OpenWeatherMap API heeft verschillende tabellen:
+
+Onecall API (nieuw)
+
+Dit is een tabel met data voor zowel het huidige weer als de voorspelling voor de komende uren en dagen. De tabel bevat ook data met de UV index en de gevoelstemperatuur. In de huidige versie van de app zit alleen data voor het huidige weer, in komende versie zullen ook de voorspellingen toegevoegd worden.
 
 Huidige weer ('current weather')
 
